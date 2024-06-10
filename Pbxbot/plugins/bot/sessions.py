@@ -14,8 +14,7 @@ from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
 
 
 @Pbxbot.bot.on_message(
-    filters.command("session") & Config.AUTH_USERS & filters.private
-)
+    filters.command("session"))
 async def session_menu(_, message: Message):
     await message.reply_text(
         "**👻 𝖯𝗅𝖾𝖺𝗌𝖾 𝖼𝗁𝗈𝗈𝗌𝖾 𝖺𝗇 𝗈𝗉𝗍𝗂𝗈𝗇 𝖿𝗋𝗈𝗆 𝖻𝖾𝗅𝗈𝗐:**",
