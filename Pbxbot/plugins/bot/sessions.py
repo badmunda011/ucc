@@ -22,7 +22,7 @@ async def session_menu(_, message: Message):
     )
 
 
-@Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 👑"))
+@Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🤡"))
 async def new_session(_, message: Message):
     await message.reply_text(
         "**ᴏᴋᴀʏ!**ʟᴇᴛs sᴇᴛᴜᴘ ᴀ ɴᴇᴡ sᴇssɪᴏɴ☠️",
@@ -149,7 +149,7 @@ async def rm_session_cb(client: Client, cb: CallbackQuery):
     await cb.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
 
 
-@Pbxbot.bot.on_message(filters.regex(r"ʟɪsᴛ 🪧"))
+@Pbxbot.bot.on_message(filters.regex(r"ʟɪsᴛ 📄"))
 async def list_sessions(_, message: Message):
     all_sessions = await db.get_all_sessions()
     if not all_sessions:
@@ -162,7 +162,7 @@ async def list_sessions(_, message: Message):
     await message.reply_text(text)
 
 
-@Pbxbot.bot.on_message(filters.regex(r"ʜᴏᴍᴇ 📲"))
+@Pbxbot.bot.on_message(filters.regex(r"ʜᴏᴍᴇ ⚜️"))
 async def go_home(_, message: Message):
     await message.reply_text(
         "**Home 🏠**",
