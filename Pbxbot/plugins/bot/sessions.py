@@ -17,7 +17,7 @@ from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
     filters.command("session"))
 async def session_menu(_, message: Message):
     await message.reply_text(
-        "**👻 Pʟᴇᴀsᴇ ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ғʀᴏᴍ ʙᴇʟᴏᴡ ✅**",
+        "**🤡 Pʟᴇᴀsᴇ ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ғʀᴏᴍ ʙᴇʟᴏᴡ 👻**",
         reply_markup=session_keyboard(),
     )
 
