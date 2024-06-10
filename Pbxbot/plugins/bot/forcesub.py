@@ -15,7 +15,7 @@ from ..btnsG import gen_inline_keyboard
 from . import BotHelp, Config, Symbols, db, Pbxbot
 
 
-@Pbxbot.bot.on_message(filters.command("forcesub") & Config.AUTH_USERS & filters.group)
+@Pbxbot.bot.on_message(filters.command("forcesub"))
 async def force_sub(client: Client, message: Message):
     if len(message.command) < 2:
         return await message.reply_text("Give a channel username with command!")
@@ -46,7 +46,7 @@ async def force_sub(client: Client, message: Message):
         Config.FORCESUBS.add(message.chat.id)
 
 
-@Pbxbot.bot.on_message(filters.command("unforcesub") & Config.AUTH_USERS)
+@Pbxbot.bot.on_message(filters.command("unforcesub"))
 async def unforce_sub(client: Client, message: Message):
     if len(message.command) < 2:
         return await message.reply_text(
@@ -79,7 +79,7 @@ async def unforce_sub(client: Client, message: Message):
         return await message.reply_text(f"**Error:**\n`{e}`")
 
 
-@Pbxbot.bot.on_message(filters.command("listforcesub") & Config.AUTH_USERS)
+@Pbxbot.bot.on_message(filters.command("listforcesub"))
 async def list_force_subs(client: Client, message: Message):
     if not await is_user_admin(message.chat, client.me.id):
         return await message.reply_text("To use forcesub i must be an admin!")
@@ -100,7 +100,7 @@ async def list_force_subs(client: Client, message: Message):
     await message.reply_text(text)
 
 
-@Pbxbot.bot.on_message(filters.command("getforcesub") & Config.AUTH_USERS)
+@Pbxbot.bot.on_message(filters.command("getforcesub"))
 async def getforcesub(client: Client, message: Message):
     if len(message.command) < 2:
         chat = message.chat
@@ -131,7 +131,6 @@ async def getforcesub(client: Client, message: Message):
     & filters.new_chat_members
     & ~filters.bot
     & ~filters.service
-    & ~Config.AUTH_USERS
     & ~filters.me
 )
 async def handle_force_sub(client: Client, message: Message):
@@ -224,3 +223,4 @@ BotHelp("ForceSub").add(
 ).info(
     "ForceSub 🚀"
 ).done()
+        
