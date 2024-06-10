@@ -22,7 +22,7 @@ async def session_menu(_, message: Message):
     )
 
 
-@Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🤡"))
+@Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🔮"))
 async def new_session(_, message: Message):
     await message.reply_text(
         "**ᴏᴋᴀʏ!**ʟᴇᴛs sᴇᴛᴜᴘ ᴀ ɴᴇᴡ sᴇssɪᴏɴ☠️",
