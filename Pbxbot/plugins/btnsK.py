@@ -17,7 +17,7 @@ def session_keyboard() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
         [
             [
-                KeyboardButton("ɴᴇᴡ 🤡"),
+                KeyboardButton("ɴᴇᴡ 🔮"),
                 KeyboardButton("ᴅᴇʟᴇᴛᴇ 🚫"),
             ],
             [
