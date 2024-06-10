@@ -25,7 +25,7 @@ async def session_menu(_, message: Message):
 @Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 👑"))
 async def new_session(_, message: Message):
     await message.reply_text(
-        "**𝖮𝗄𝖺𝗒!** 𝖫𝖾𝗍'𝗌 𝗌𝖾𝗍𝗎𝗉 𝖺 𝗇𝖾𝗐 𝗌𝖾𝗌𝗌𝗂𝗈𝗇",
+        "*𝖮𝗄𝖺𝗒! 𝖫𝖾𝗍'𝗌 𝗌𝖾𝗍𝗎𝗉 𝖺 𝗇𝖾𝗐 𝗌𝖾𝗌𝗌𝗂𝗈𝗇",
         reply_markup=ReplyKeyboardRemove(),
     )
 
