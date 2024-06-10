@@ -24,7 +24,7 @@ async def help_pm(_, message: Message):
 
 @Pbxbot.bot.on_message(filters.command("restart"))
 async def restart_clients(_, message: Message):
-    await message.reply_text("Restarted Bot Successfully ✅")
+    await message.reply_text("Rᴇsᴛᴀʀᴛᴇᴅ Bᴏᴛ Sᴜᴄᴄᴇssғᴜʟʟʏ ᴘʙx 2.0  ✅")
     try:
         if HEROKU_APP:
             try:
