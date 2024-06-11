@@ -41,7 +41,6 @@ class Config:
     MUTED_USERS = filters.user()
     DEVS = filters.user([6898413162, 6566179661])
     STAN_USERS = filters.user()
-    FORCESUBS = filters.chat()
 
     # Global config: do not edit
     AFK_CACHE = {}
