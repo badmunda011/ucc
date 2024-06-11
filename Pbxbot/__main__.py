@@ -3,7 +3,6 @@ from pyrogram import idle
 from Pbxbot import __version__
 from Pbxbot.core import (
     Config,
-    ForcesubSetup,
     GachaBotsSetup,
     TemplateSetup,
     UserSetup,
@@ -18,7 +17,6 @@ async def main():
     await Pbxbot.startup()
     await db.connect()
     await UserSetup()
-    await ForcesubSetup()
     await GachaBotsSetup()
     await TemplateSetup()
     await Flood.updateFromDB()
