@@ -58,14 +58,6 @@ async def UserSetup() -> None:
     await _GbanUsers()
 
 
-async def ForcesubSetup() -> None:
-    """Initialize Forcesub Config"""
-    chats = await db.get_all_forcesubs()
-    for chat in chats:
-        if chat not in Config.FORCESUBS:
-            Config.FORCESUBS.add(chat["chat"])
-
-
 async def GachaBotsSetup() -> None:
     """Initialize GachaBots Config"""
     bots = await db.get_all_gachabots_id()
