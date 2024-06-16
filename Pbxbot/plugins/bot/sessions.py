@@ -84,7 +84,7 @@ async def new_session(_, message: Message):
         await db.update_session(user_id, session_string)
         await client.disconnect()
         await message.reply_text(
-            "**sᴜᴄᴄᴇss!** Sᴇssɪᴏɴ sᴛʀɪɴɢ ᴀᴅᴅᴇᴅ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ. Yᴏᴜ ᴄᴀɴ ɴᴏᴡ ᴜsᴇ ᴘʙxʙᴏᴛ 2.0 ᴏɴ ᴛʜɪs ᴀᴄᴄᴏᴜɴᴛ ᴀғᴛᴇʀ ʀᴇsᴛᴀʀᴛɪɴɢ ᴛʜᴇ ʙᴏᴛ.\n\n**ʀᴇsᴛᴀʀᴛ** /restart ᴄʟɪᴄᴋ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴡᴀɪᴛ 1ᴍ. 🙈❤️"
+            "**sᴜᴄᴄᴇss!** Sᴇssɪᴏɴ sᴛʀɪɴɢ ᴀᴅᴅᴇᴅ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ. Yᴏᴜ ᴄᴀɴ ɴᴏᴡ ᴜsᴇ ᴘʙxʙᴏᴛ 2.0 ᴏɴ ᴛʜɪs ᴀᴄᴄᴏᴜɴᴛ ᴀғᴛᴇʀ ʀᴇsᴛᴀʀᴛɪɴɢ ᴛʜᴇ ʙᴏᴛ.\n\n**ʀᴇsᴛᴀʀᴛ** ᴅᴍ ɴᴏᴡ ᴍʏ ᴅᴇᴠ . [♡³_🫧𝆺꯭𝅥˶֟፝͟͝β𝝰꯭‌𝞉 ꯭𝝡꯭𝞄꯭𝞌𝞉꯭𝝺꯭𝆺꯭𝅥🍷┼❤️༆](https://t.me/II_BAD_BABY_II) 🙈❤️"
         )
     except TimeoutError:
         await message.reply_text(
