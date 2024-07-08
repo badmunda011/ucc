@@ -8,7 +8,7 @@ load_dotenv()
 
 class Config:
     # editable configs
-    API_HASH = int(getenv("API_HASH", 4c246fb0c649477cc2e79b6a178ddfaa))
+    API_HASH = getenv("API_HASH", None)
     API_ID = int(getenv("API_ID", 0))
     BOT_TOKEN = getenv("BOT_TOKEN", None)
     DATABASE_URL = getenv("DATABASE_URL", None)
