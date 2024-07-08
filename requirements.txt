@@ -1,4 +1,5 @@
 bs4
+pyroaddon
 pymediainfo
 gtts
 pydub
