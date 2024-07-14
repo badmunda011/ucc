@@ -10,6 +10,7 @@ geopy
 git-python
 glitch_this
 googlesearch-python
+git+https://github.com/KurimuzonAkuma/pyrogram.git@v2.1.21
 googletrans @ git+https://github.com/badmunda98/py-googletrans
 git+https://github.com/badmunda98/BadAPI
 heroku3
