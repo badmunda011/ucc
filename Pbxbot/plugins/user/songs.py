@@ -118,7 +118,7 @@ async def download_song(_, message):
 
 
 @on_message("ig", allow_stan=True)
-async def download_instareels(c: app, m: Message):
+async def download_instareels(_, message: Message):
     user_id = message.from_user.id
     current_time = time()
     # Update the last message timestamp for the user
@@ -172,7 +172,7 @@ async def download_instareels(c: app, m: Message):
 
 
 @on_message("reel", allow_stan=True)
-async def instagram_reel(client, message):
+async def instagram_reel(_, message: Message):
     user_id = message.from_user.id
     current_time = time()
     # Update the last message timestamp for the user
