@@ -14,6 +14,7 @@ from Pbxbot.functions.utility import BList, Flood, TGraph
 
 
 async def main():
+    call_py = PyTgCalls(bot)
     await Pbxbot.startup()
     await db.connect()
     await UserSetup()
