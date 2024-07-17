@@ -39,3 +39,4 @@ __» Feel free to contact us if you need any help regarding the bot.__**
 5. restart the bot with /restart command.**
 
 **❤️ @ll_THE_BAD_BOT_ll ❤️**
+"""
