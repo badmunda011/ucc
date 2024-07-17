@@ -1,4 +1,5 @@
 import os
+from . import *
 import re
 import asyncio
 from pyrogram import Client
