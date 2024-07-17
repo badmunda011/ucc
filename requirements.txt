@@ -1,3 +1,6 @@
+py-tgcalls==0.8.1
+asyncio
+youtube-search-python
 bs4
 pyroaddon
 pymediainfo
