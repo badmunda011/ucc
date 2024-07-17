@@ -42,6 +42,5 @@ __» Feel free to contact us if you need any help regarding the bot.__**
 """
 
 CLONE_MSG = """
-Usage:  /start sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️  ɴᴏᴡ ʀᴇsᴛᴀʀᴛ ʙᴏᴛ
-
+Usage:  /start sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️ ɴᴏᴡ ʀᴇsᴛᴀʀᴛ ʙᴏᴛ
 **❤️ @ll_THE_BAD_BOT_ll ❤️**
