@@ -11,7 +11,7 @@ from . import HELP_MSG, START_MSG, BotHelp, Config, Pbxbot
 
 
 @Pbxbot.bot.on_message(filters.command("start"))
-async def clone(bot: app, msg: Message):
+async def start_pm(_, message: Message):
     chat = msg.chat
     text = await msg.reply("Usage:\n\n  /clone sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️")
     cmd = msg.command
