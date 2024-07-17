@@ -7,25 +7,20 @@ from Pbxbot.core import LOGS
 from Pbxbot.functions.tools import restart
 
 from ..btnsG import gen_bot_help_buttons, start_button
-from . import HELP_MSG, START_MSG, BotHelp, Config, Pbxbot
+from . import HELP_MSG, START_MSG, CLONE_MSG, BotHelp, Config, Pbxbot
 
-
-@Pbxbot.bot.on_message(filters.command("start"))
-async def start_pm(_, message: Message):
-    chat = msg.chat
-    text = await msg.reply("Usage:\n\n  /clone sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️")
-    cmd = msg.command
-    phone = msg.command[1]
-    try:
-        await text.edit("ʀᴜᴋᴏ ɴᴀ ᴍᴇʀɪ ᴊᴀᴀɴ...💌")
-                   # change this Directry according to ur repo
-        client = Client(name="Melody", api_id=API_ID, api_hash=API_HASH, session_string=phone, plugins=dict(root="Pbx/modules"))
-        await client.start()
-        user = await client.get_me()
-        await msg.reply(f" 💘 ᴄʜɪʟʟ ʙᴀʙʏ ᴄʜɪʟ ❤️  {user.first_name} 💨.")
-    except Exception as e:
-        await msg.reply(f"**ERROR:** `{str(e)}`\nPress /start to Start again.")
-
+@Pbxbot.bot.on_message(filters.regex("start"))
+async def go_home(_, message: Message):
+    await message.reply_text(
+        "**clone ✅**",
+        reply_markup=ReplyKeyboardRemove(),
+    )
+    await message.reply_text(
+        CLONE_MSG.format(message.from_user.mention),
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup(start_button()),
+    )
+    
 
 @Pbxbot.bot.on_message(filters.command("startt") & Config.AUTH_USERS)
 async def start_pm(_, message: Message):
