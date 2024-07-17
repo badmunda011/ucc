@@ -16,7 +16,8 @@ START_MSG = """
 **❤️ @ll_THE_BAD_BOT_ll ❤️**
 """
 
-CLONE_MSG = """ Usage:  /start sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️  ɴᴏᴡ ʀᴇsᴛᴀʀᴛ ʙᴏᴛ
+CLONE_MSG = """
+Usage:  /start sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️  ɴᴏᴡ ʀᴇsᴛᴀʀᴛ ʙᴏᴛ
 """
 
 HELP_MSG = """
