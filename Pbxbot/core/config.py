@@ -155,7 +155,7 @@ all_env: list[str] = [
 ]
 
 # music
-call_py = PyTgCalls(Pbxbot)
+call_py = PyTgCalls
 
 contact_filter = filters.create(
     lambda _, __, message: (message.from_user and message.from_user.is_contact)
