@@ -17,7 +17,7 @@ async def go_home(_, message: Message):
     )
     await message.reply_text(
         CLONE_MSG.format(message.from_user.mention),
-        disable_web_page_preview=True,
+        disable_web_page_preview=Fasle,
     )
     
 
