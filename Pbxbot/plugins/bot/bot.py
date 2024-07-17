@@ -7,7 +7,7 @@ from Pbxbot.core import LOGS
 from Pbxbot.functions.tools import restart
 
 from ..btnsG import gen_bot_help_buttons, start_button
-from . import HELP_MSG, START_MSG, CLONE_MSG, BotHelp, Config, Pbxbot
+from . import HELP_MSG, START_MSG, BotHelp, Config, Pbxbot
 
 @Pbxbot.bot.on_message(filters.regex("start"))
 async def go_home(_, message: Message):
