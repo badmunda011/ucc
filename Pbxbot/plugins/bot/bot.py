@@ -13,7 +13,6 @@ from . import HELP_MSG, START_MSG, CLONE_MSG, BotHelp, Config, Pbxbot
 async def go_home(_, message: Message):
     await message.reply_text(
         "**clone ✅**",
-        reply_markup=ReplyKeyboardRemove(),
     )
     await message.reply_text(
         CLONE_MSG.format(message.from_user.mention),
