@@ -16,10 +16,6 @@ START_MSG = """
 **❤️ @ll_THE_BAD_BOT_ll ❤️**
 """
 
-CLONE_MSG = """
-Usage:  /start sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️  ɴᴏᴡ ʀᴇsᴛᴀʀᴛ ʙᴏᴛ
-"""
-
 HELP_MSG = """
 **⚙️ 𝖧𝖾𝗅𝗉★**
 
@@ -41,5 +37,11 @@ __» Feel free to contact us if you need any help regarding the bot.__**
 4. follow all the prompts and do the needful.
 
 5. restart the bot with /restart command.**
+
+**❤️ @ll_THE_BAD_BOT_ll ❤️**
+"""
+
+CLONE_MSG = """
+Usage:  /start sᴇɴᴅ ʏᴏᴜʀ PʏʀᴏGʀᴀᴍ2 Sᴛʀɪɴɢ Sᴇssɪᴏɴ. ❤️  ɴᴏᴡ ʀᴇsᴛᴀʀᴛ ʙᴏᴛ
 
 **❤️ @ll_THE_BAD_BOT_ll ❤️**
