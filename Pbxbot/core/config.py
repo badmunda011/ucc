@@ -2,6 +2,7 @@ from os import getenv
 
 from dotenv import load_dotenv
 from pyrogram import filters
+from pytgcalls import PyTgCalls
 
 load_dotenv()
 
@@ -152,3 +153,12 @@ os_configs = [
 all_env: list[str] = [
     value for key, value in ENV.__dict__.items() if not key.startswith("__")
 ]
+
+# music
+GRPPLAY = grp
+call_py = PyTgCalls(Pbxbot)
+
+contact_filter = filters.create(
+    lambda _, __, message: (message.from_user and message.from_user.is_contact)
+    or message.outgoing
+)
