@@ -1,4 +1,4 @@
-py-tgcalls==0.8.1
+py-tgcalls==2.0.2
 asyncio
 youtube-search-python
 bs4
