@@ -1,14 +1,15 @@
+from pyrogram.errors.exceptions.flood_420 import FloodWait
+from pyrogram.types import *
+from . import *
+
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from . import HelpMenu, Symbols, db, Pbxbot, on_message
 from Pbxbot.core import ENV
 from pyrogram.errors.exceptions.flood_420 import FloodWait
-from pyrogram.types import *
 from pyrogram.types import Message
 
-from . import *
-
-@on_message("pornhub", allow_stan=True)
+@on_message("link", allow_stan=True)
 async def dnr(client: Client, message: Message):
     if len(message.text.split()) < 2 and not message.reply_to_message:
         return await message.reply("Usage: /<command> <link> or reply to a message with the link.")
@@ -23,7 +24,7 @@ async def dnr(client: Client, message: Message):
     # Send the link to the bot
     target_bot = "@UVDownloaderBot"
     try:
-        sent_message = await ubot.send_message(target_bot, link)
+        sent_message = await Pbxbot.send_message(target_bot, link)
     except Exception as e:
         return await response_message.edit(f"Failed to send the link: {e}")
 
@@ -32,9 +33,9 @@ async def dnr(client: Client, message: Message):
     # Fetch the last received media after sending the link
     media_downloaded = False
     try:
-        async for bot_response in ubot.search_messages(target_bot, limit=1):
+        async for bot_response in Pbxbot.search_messages(target_bot, limit=1):
             if bot_response.media:
-                file_path = await ubot.download_media(bot_response)
+                file_path = await Pbxbot.download_media(bot_response)
                 if file_path:
                     media_downloaded = True
                     await client.send_document(
