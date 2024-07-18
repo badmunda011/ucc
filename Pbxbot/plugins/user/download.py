@@ -8,10 +8,7 @@ from pyrogram.types import Message
 
 from . import *
 
-# List of commands to handle
-commands = ["insta", "spotify", "pornhub", "xhamster", "tiktok", "twitter", "reddit", "streamcable", "tgstory", "xnxx", "twitch", "pintrest"]
-
-@on_message(filters.command(commands))
+@on_message("pornhub", allow_stan=True)
 async def dnr(client: Client, message: Message):
     if len(message.text.split()) < 2 and not message.reply_to_message:
         return await message.reply("Usage: /<command> <link> or reply to a message with the link.")
