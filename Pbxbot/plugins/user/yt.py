@@ -12,7 +12,7 @@ from . import *
 
 
 
-@on_message("sg", allow_stan=True)
+@on_message("link", allow_stan=True)
 async def sg(client: Client, message: Message):
     args = await extract_user(message)
     lol = await edit_or_reply(message, "ᴡᴀɪᴛ..`")
