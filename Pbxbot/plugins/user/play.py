@@ -13,7 +13,6 @@ from ntgcalls import TelegramServerError
 from pytgcalls.exceptions import AlreadyJoinedError, NoActiveGroupCall
 from pytgcalls.types import AudioQuality, MediaStream, Update, VideoQuality
 from pytgcalls.types.stream import StreamAudioEnded
-from pytgcalls.types.input_stream import AudioPiped
 from youtubesearchpython import VideosSearch
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 import yt_dlp
