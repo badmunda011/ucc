@@ -1,5 +1,4 @@
 import os
-n
 import time
 from platform import python_version
 
