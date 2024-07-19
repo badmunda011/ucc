@@ -8,7 +8,11 @@ from pyrogram import Client
 from Pbxbot.bad.queues import QUEUE, add_to_queue
 from pyrogram import filters
 from pyrogram.types import Message
-from pytgcalls import StreamType
+from pytgcalls import PyTgCalls
+from ntgcalls import TelegramServerError
+from pytgcalls.exceptions import AlreadyJoinedError, NoActiveGroupCall
+from pytgcalls.types import AudioQuality, MediaStream, Update, VideoQuality
+from pytgcalls.types.stream import StreamAudioEnded
 from pytgcalls.types.input_stream import AudioPiped
 from youtubesearchpython import VideosSearch
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
