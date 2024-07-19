@@ -52,6 +52,7 @@ class Config:
     CMD_MENU = {}
     HELP_DICT = {}
     TEMPLATES = {}
+    logging.getLogger("ntgcalls").setLevel(logging.ERROR)
 
 
 class ENV:
