@@ -241,18 +241,6 @@ async def stream(client, m: Message):
 
 #musicplay
 
-import os
-import asyncio
-from pyrogram import Client
-from Pbxbot.core.config import call_py, contact_filter
-from Pbxbot.core.config import *
-from Pbxbot.bad.queues import QUEUE, add_to_queue
-from pyrogram import filters
-from pyrogram.types import Message
-from pytgcalls import StreamType
-from pytgcalls.types.input_stream import AudioPiped
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-
 
 @on_message("playy", allow_stan=True)
 async def playfrom(client, m: Message):
@@ -302,25 +290,6 @@ async def playfrom(client, m: Message):
 
 #vcplay
 
-import os
-import re
-import asyncio
-from pyrogram import Client
-from Pbxbot.bad.queues import QUEUE, add_to_queue
-from Pbxbot.core.config import call_py, contact_filter
-from Pbxbot.core.config import *
-from pyrogram import filters
-from pyrogram.types import Message
-from pytgcalls import StreamType
-from pytgcalls.types.input_stream import AudioVideoPiped
-from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQualityAudio
-from pytgcalls.types.input_stream.quality import (
-    HighQualityVideo,
-    MediumQualityVideo,
-    LowQualityVideo,
-)
-from youtubesearchpython import VideosSearch
-import yt_dlp
 
 def ytsearch(query):
     try:
