@@ -1,4 +1,4 @@
-py-tgcalls
+py-tgcalls==2.0.2
 ntgcalls==1.2.0
 asyncio
 youtube-search-python
