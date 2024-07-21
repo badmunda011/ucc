@@ -5,7 +5,6 @@ from time import time
 import string
 from pyrogram import Client, idle
 from pytgcalls import PyTgCalls
-import AudioPiped
 
 from pytgcalls import idle as pyidle
 from . import *
