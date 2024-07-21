@@ -1,4 +1,4 @@
-py-tgcalls==0.9.7
+pytgcalls==3.0.0.dev21
 ntgcalls==1.2.0
 asyncio
 youtube-search-python==1.6.6
