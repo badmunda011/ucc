@@ -1,5 +1,7 @@
 import os
 import random
+import asyncio
+from time import time
 import string
 from . import *
 from Pbxbot.core.config import call_py, contact_filter
