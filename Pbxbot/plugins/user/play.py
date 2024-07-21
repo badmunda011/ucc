@@ -1,4 +1,6 @@
 import os
+import random
+import string
 from . import *
 from Pbxbot.core.config import call_py, contact_filter
 from Pbxbot.core.config import *
@@ -11,7 +13,7 @@ from pyrogram.types import Message
 from pytgcalls import PyTgCalls
 from ntgcalls import TelegramServerError
 from pytgcalls.exceptions import GroupCallNotFound
-from pytgcalls import join_group_call
+from pytgcalls.exceptions import NoActiveGroupCall
 from pytgcalls.exceptions import AlreadyJoinedError, NoActiveGroupCall
 from pytgcalls.types import AudioQuality, MediaStream, Update, VideoQuality
 from pytgcalls.types.stream import StreamAudioEnded
