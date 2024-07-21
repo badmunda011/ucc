@@ -11,7 +11,7 @@ from pyrogram.types import Message
 from pytgcalls import PyTgCalls
 from ntgcalls import TelegramServerError
 from pytgcalls.exceptions import GroupCallNotFound
-from PyTgCalls import join_group_call
+from pyTgCalls import join_group_call
 from pytgcalls.exceptions import AlreadyJoinedError, NoActiveGroupCall
 from pytgcalls.types import AudioQuality, MediaStream, Update, VideoQuality
 from pytgcalls.types.stream import StreamAudioEnded
