@@ -26,6 +26,8 @@ from youtubesearchpython import VideosSearch
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 import yt_dlp
 
+audio_piped = True
+
 def ytsearch(query):
     try:
         search = VideosSearch(query, limit=1)
