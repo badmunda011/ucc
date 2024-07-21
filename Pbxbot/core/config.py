@@ -2,7 +2,6 @@ from os import getenv
 
 from dotenv import load_dotenv
 from pyrogram import filters
-from pytgcalls import PyTgCalls
 import logging
 
 load_dotenv()
