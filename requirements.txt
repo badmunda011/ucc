@@ -1,7 +1,8 @@
-py-tgcalls==2.0.2
+py-tgcalls==2.0.0
 ntgcalls==1.2.0
 asyncio
-youtube-search-python
+youtube-search-python==1.6.6
+youtube-search==2.1.2
 bs4
 pyroaddon
 pymediainfo
