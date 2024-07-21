@@ -7,6 +7,7 @@ from pyrogram import Client, idle
 from pytgcalls import PyTgCalls
 
 from pytgcalls import idle as pyidle
+from pytgcalls import StreamType
 from . import *
 from Pbxbot.core.config import call_py, contact_filter
 from Pbxbot.core.config import *
