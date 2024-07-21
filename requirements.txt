@@ -1,5 +1,6 @@
 py-tgcalls==1.2.9
 ntgcalls==1.1.2
+TgCrypto
 asyncio
 AudioPiped
 youtube-search-python==1.6.6
