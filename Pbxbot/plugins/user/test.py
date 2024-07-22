@@ -1,6 +1,6 @@
 import os
 import random
-import asyncio
+from asyncio.queues import QueueEmpty
 from time import time
 import string
 from pyrogram import Client, idle
