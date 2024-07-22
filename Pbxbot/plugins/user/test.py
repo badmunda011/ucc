@@ -3,6 +3,7 @@ import random
 from asyncio.queues import QueueEmpty
 from time import time
 import string
+from Pbxbot.bad.streamtype import *
 from pyrogram import Client, idle
 from pytgcalls import PyTgCalls
 
