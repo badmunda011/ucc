@@ -29,6 +29,19 @@ from youtubesearchpython import VideosSearch
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 import yt_dlp
 
+
+def my_function(arg1, arg2):
+  """My function does something.
+
+  Args:
+    arg1: The first argument.
+    arg2: The second argument.
+  """
+
+  # Do something with arg1 and arg2.
+my_function(arg1, arg2)
+
+
 audio_piped = True
 
 def ytsearch(query):
