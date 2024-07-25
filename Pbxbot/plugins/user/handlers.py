@@ -4,7 +4,7 @@ from . import *
 from pytgcalls import StreamType, PyTgCalls
 from pyrogram import Client
 from pyrogram.raw.base import Update
-from pytgcalls.types.stream import AudioPiped, AudioVideoPiped
+from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
 from pytgcalls.types.stream import StreamAudioEnded  
 from pytgcalls.types.input_stream.quality import HighQualityAudio
 from pytgcalls.types.input_stream.quality import HighQualityVideo, MediumQualityVideo, LowQualityVideo
