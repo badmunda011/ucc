@@ -1,5 +1,5 @@
 from typing import Dict, List, Union
-from ..clients.clients import mongodb
+
 
 streamsdb = mongodb.streamsdb
 
