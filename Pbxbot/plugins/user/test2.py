@@ -29,6 +29,10 @@ from pytgcalls.types.stream import StreamAudioEnded
 from youtubesearchpython import VideosSearch
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 import yt_dlp
+import os
+
+if not os.path.exists("search"):
+    os.makedirs("search")
 
 # music player
 def ytsearch(query):
