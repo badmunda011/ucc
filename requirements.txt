@@ -1,5 +1,5 @@
 tgcrypto==1.2.5
-py-tgcalls
+pytgcalls
 ntgcalls==1.2.1
 TgCrypto
 asyncio
