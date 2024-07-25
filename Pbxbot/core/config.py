@@ -169,6 +169,5 @@ GROUP_MODE = "True"
 if GROUP_MODE == ("True" or "true"):
     # Do something
 
-
-if grp.is_member("root"):
-    print("The user is a member of the root group.")
+grp.is_member("root"):
+    GRPPLAY = grp
