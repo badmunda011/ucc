@@ -1,9 +1,5 @@
 from typing import Dict, List, Union
 
-
-streamsdb = mongodb.streamsdb
-
-
 async def get_chat_id(user_id: int) -> int:
     check = await streamsdb.find_one(
       {"user_id": user_id, "chat_id": {"$lt": 0}}
