@@ -1,6 +1,6 @@
-tgcrypto==1.2.5
-py-tgcalls==0.2.8
+py-tgcalls==0.1.0
 ntgcalls==1.2.1
+tgcrypto==1.2.5
 TgCrypto
 asyncio
 youtube-search-python==1.6.6
