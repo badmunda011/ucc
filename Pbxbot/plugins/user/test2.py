@@ -7,9 +7,7 @@ from Pbxbot.bad.streamtype import *
 from Pbxbot.bad.ults import CHAT_TITLE, gen_thumb
 from pyrogram import Client, idle
 from pytgcalls import PyTgCalls
-
 from pytgcalls import idle as pyidle
-from pytgcalls import StreamType
 from . import *
 from Pbxbot.core.config import call_py, contact_filter
 from Pbxbot.core.config import *
