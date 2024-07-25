@@ -22,7 +22,7 @@ async def gen_thumb(thumbnail, title, userid, ctitle):
                 await f.write(await resp.read())
                 await f.close()
     image1 = Image.open(f"search/thumb{userid}.png")
-    image2 = Image.open(f"plugins/choose/rrc.png")
+    image2 = Image.open(f"Pbxbot/resources/images/rrc.png")
     image3 = changeImageSize(1280, 720, image1)
     image4 = changeImageSize(1280, 720, image2)
     image5 = image3.convert("RGBA")
@@ -30,8 +30,8 @@ async def gen_thumb(thumbnail, title, userid, ctitle):
     Image.alpha_composite(image5, image6).save(f"search/temp{userid}.png")
     img = Image.open(f"search/temp{userid}.png")
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("plugins/choose/Roboto-Light.ttf", 55)
-    font2 = ImageFont.truetype("plugins/choose/finalfont.ttf", 65)
+    font = ImageFont.truetype("Pbxbot/resources/fonts/Roboto-Light.ttf", 55)
+    font2 = ImageFont.truetype("Pbxbot/resources/fonts/finalfont.ttf", 65)
     draw.text(
         (20, 630),
         f"{title[:25]}...",
