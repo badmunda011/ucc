@@ -169,4 +169,5 @@ GROUP_MODE = "True"
 if GROUP_MODE == ("True" or "true"):
     # Do something
 
-GRPPLAY = grp
+if grp.is_member("root"):
+    GRPPLAY = grp
