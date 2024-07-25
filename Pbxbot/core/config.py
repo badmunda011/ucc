@@ -167,7 +167,6 @@ contact_filter = filters.create(
 
 GROUP_MODE = "True"
 if GROUP_MODE == ("True" or "true"):
+    GRPPLAY = grp
     # Do something
 
-if grp.is_member == ("root"):
-    GRPPLAY = grp
