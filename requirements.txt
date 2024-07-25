@@ -1,6 +1,6 @@
 tgcrypto==1.2.5
 git+https://github.com/pytgcalls/pytgcalls
-ntgcalls==1.2.0
+ntgcalls==1.2.1
 TgCrypto
 asyncio
 youtube-search-python==1.6.6
