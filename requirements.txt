@@ -1,4 +1,4 @@
-py-tgcalls==0.1.0
+py-tgcalls==0.2.1
 ntgcalls==1.2.1
 tgcrypto==1.2.5
 TgCrypto
