@@ -9,8 +9,6 @@ import os
 if not os.path.exists("search"):
     os.makedirs("search")
 
-    f = await aiofiles.open(f"search/thumb{userid}.png", mode="wb")
-
 
 def changeImageSize(maxWidth, maxHeight, image):
     widthRatio = maxWidth / image.size[0]
