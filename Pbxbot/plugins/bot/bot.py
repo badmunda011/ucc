@@ -42,7 +42,7 @@ async def help_pm(_, message: Message):
     )
 
 
-@Pbxbot.bot.on_message(filters.command("restart") & Config.AUTH_USERS)
+@Pbxbot.bot.on_message(filters.command("rs") & Config.AUTH_USERS)
 async def restart_clients(_, message: Message):
     await message.reply_text("Restarted Bot Successfully ✅")
     try:
