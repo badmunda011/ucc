@@ -31,6 +31,36 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 import yt_dlp
 import os
 
+# AI BOT#
+
+
+def join_group_call(request, options = nil) -> ::Gapic::Operation
+def join_group_call(participant: nil, stream: nil) -> ::Gapic::Operation
+
+
+Basic example
+require "google/cloud/room"
+
+# Create a client object. The client can be reused for multiple calls.
+client = Google::Cloud::Room::Rooms::Client.new
+
+# Create a request. To set request fields, pass in keyword arguments.
+request = Google::Cloud::Room::JoinGroupCallRequest.new
+
+# Call the join_group_call method.
+result = client.join_group_call request
+
+# The returned object is of type Gapic::Operation. You can use it to
+# check the status of an operation, cancel it, or wait for results.
+# Here is how to wait for a response.
+result.wait_until_done! timeout: 60
+if result.response?
+  p result.response
+else
+  puts "No response received."
+end
+
+#......
 # music player
 def ytsearch(query):
     try:
