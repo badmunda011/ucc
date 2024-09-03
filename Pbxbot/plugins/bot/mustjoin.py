@@ -17,7 +17,7 @@ async def must_join_channel(app: Client, msg: Message):
         return
     try:
         try:
-            await app.get_chat_member(MUST_JOIN, msg.from_user.id)
+            await app.get_chat_member(MUST_JOIN,MUST_JOIN2,MUST_JOIN3,MUST_JOIN4, msg.from_user.id)
         except UserNotParticipant:
             if MUST_JOIN.isalpha():
                 link = "https://t.me/" + MUST_JOIN
@@ -26,8 +26,11 @@ async def must_join_channel(app: Client, msg: Message):
                 link4 = "https://t.me/" + MUST_JOIN4
                 
             else:
-                chat_info = await app.get_chat(MUST_JOIN)
+                chat_info = await app.get_chat(MUST_JOIN,MUST_JOIN2,MUST_JOIN3,MUST_JOIN4)
                 link = chat_info.invite_link
+                link2 = chat_info.invite_link
+                link3 = chat_info.invite_link
+                link4 = chat_info.invite_link
             try:
                 await msg.reply_photo(
                     photo="https://telegra.ph/file/afdb310aefd322f49de79.jpg", caption=f"๏ ᴀᴄᴄᴏʀᴅɪɴɢ ᴛᴏ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ ʏᴏᴜ'ᴠᴇ ɴᴏᴛ ᴊᴏɪɴᴇᴅ , ɪғ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴜsᴇ ᴍᴇ ᴛʜᴇɴ ᴊᴏɪɴ  ᴀɴᴅ sᴛᴀʀᴛ ᴍᴇ ᴀɢᴀɪɴ ! ",
