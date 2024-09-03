@@ -7,7 +7,7 @@ from . import *
 
 MUST_JOIN = "PBX_CHAT"
 #------------------------
-@custom_handler(filters.incoming & filters.private, group=-1)
+@Pbxbot.bot.on_message(filters.incoming & filters.private, group=-1)
 async def must_join_channel(app: Client, msg: Message):
     if not MUST_JOIN:
         return
