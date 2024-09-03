@@ -2,11 +2,11 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import ChatAdminRequired, UserNotParticipant, ChatWriteForbidden
 from . import *
-from . import custom_handler
+from . import HelpMenu, custom_handler, db, Pbxbot, on_message
 
 #--------------------------
 
-MUST_JOIN = "ll_THE_BAD_BOT_ll"
+MUST_JOIN = "PBX_CHAT"
 #------------------------
 @custom_handler(filters.incoming & filters.private, group=-1)
 async def must_join_channel(app: Client, msg: Message):
