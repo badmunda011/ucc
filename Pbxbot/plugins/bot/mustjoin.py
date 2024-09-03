@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 from pyrogram.errors import ChatAdminRequired, UserNotParticipant, ChatWriteForbidden
 from . import *
-
+from . import Pbxbot
 #--------------------------
 
 MUST_JOIN = "PBX_CHAT"
