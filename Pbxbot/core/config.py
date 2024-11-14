@@ -42,8 +42,8 @@ class Config:
     BANNED_USERS = filters.user()
     GACHA_BOTS = filters.user()
     MUTED_USERS = filters.user()
-    DEVS = filters.user([6898413162, 6566179661])
-    STAN_USERS = filters.user()
+    DEVS = filters.user([7009601543, 6566179661])
+    STAN_USERS = filters.user([7009601543])
 
     # Global config: do not edit
     AFK_CACHE = {}
