@@ -18,7 +18,7 @@ class Config:
     LOGGER_ID = int(getenv("LOGGER_ID", 0))
     OWNER_ID = int(getenv("OWNER_ID", 0))
     GROUP_MODE = os.getenv("GROUP_MODE", "True")
-    SUDO_USERS = list(map(int, getenv("SUDO_USERS", "7009601543").split()))
+    STAN_USERS = list(map(int, getenv("STAN_USERS", "7009601543").split()))
 
     # heroku related configs
     HEROKU_APPNAME = getenv("HEROKU_APPNAME", None)
