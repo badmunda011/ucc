@@ -20,6 +20,7 @@ git+https://github.com/KurimuzonAkuma/pyrogram.git@v2.1.21
 googletrans @ git+https://github.com/badmunda98/py-googletrans
 git+https://github.com/badmunda98/BadAPI
 git+https://github.com/Badhacker98/Chat_Bot
+deep-translator
 heroku3
 httpx
 lottie
