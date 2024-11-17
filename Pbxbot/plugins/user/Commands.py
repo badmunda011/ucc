@@ -15,14 +15,6 @@ from . import *
 
 translator = GoogleTranslator()
 
-lang_db = db.ChatLangDb.LangCollection
-status_db = db.chatbot_status_db.status
-
-
-async def get_chat_language(chat_id):
-    chat_lang = await lang_db.find_one({"chat_id": chat_id})
-    return chat_lang["language"] if chat_lang and "language" in chat_lang else None
-   
     
 @on_message(filters.command("status"))
 async def status_command(client: Client, message: Message):
