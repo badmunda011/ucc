@@ -15,9 +15,6 @@ import asyncio
 
 translator = GoogleTranslator()
 
-lang_db = db.ChatLangDb.LangCollection
-status_db = db.chatbot_status_db.status
-
 replies_cache = []
 
 async def load_replies_cache():
