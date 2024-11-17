@@ -16,7 +16,7 @@ from . import *
 translator = GoogleTranslator()
 
     
-@on_message(filters.command("status"))
+@on_message("status", allow_stan=True)
 async def status_command(client: Client, message: Message):
     chat_id = message.chat.id
     chat_status = await status_db.find_one({"chat_id": chat_id})
@@ -27,14 +27,14 @@ async def status_command(client: Client, message: Message):
         await message.reply("No status found for this chat.")
 
 
-@on_message(filters.command(["resetlang", "nolang"]))
+@on_message("nolang", allow_stan=True)
 async def reset_language(client: Client, message: Message):
     chat_id = message.chat.id
     lang_db.update_one({"chat_id": chat_id}, {"$set": {"language": "nolang"}}, upsert=True)
     await message.reply_text("**Bot language has been reset in this chat to mix language.**")
 
 
-@on_message(filters.command("chatbot"))
+@on_message("chatbot", allow_stan=True)
 async def chatbot_command(client: Client, message: Message):
     command = message.text.split()
     if len(command) > 1:
@@ -56,7 +56,7 @@ async def chatbot_command(client: Client, message: Message):
 
 
 
-@on_message(filters.command(["lang", "language", "setlang"]))
+@on_message("setlang", allow_stan=True)
 async def set_language(client: Client, message: Message):
     command = message.text.split()
     if len(command) > 1:
