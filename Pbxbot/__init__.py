@@ -1,6 +1,6 @@
 import os
 import time
-from bad import SUKH
+import bad
 from platform import python_version
 from motor.motor_asyncio import AsyncIOMotorClient as MongoCli
 
