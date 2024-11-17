@@ -17,7 +17,12 @@ __version__ = {
     "python": python_version(),
 }
 
-
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
+LOGGER = logging.getLogger(__name__)
+boot = time.time()
+mongo = MongoCli(bad.SUKH)
+db = mongo.Anonymous
+OWNER = bad.OWNER_ID
 
 try:
     if Config.HEROKU_APIKEY is not None and Config.HEROKU_APPNAME is not None:
