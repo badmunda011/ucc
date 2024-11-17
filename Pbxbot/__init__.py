@@ -1,6 +1,7 @@
 import os
 import time
 from platform import python_version
+from motor.motor_asyncio import AsyncIOMotorClient as MongoCli
 
 import heroku3
 from pyrogram import __version__ as pyrogram_version
