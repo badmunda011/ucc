@@ -1,6 +1,7 @@
 import os
 import time
 import bad
+import uvloop
 from platform import python_version
 from motor.motor_asyncio import AsyncIOMotorClient as MongoCli
 
@@ -18,8 +19,29 @@ __version__ = {
     "python": python_version(),
 }
 
-mongo = MongoCli(bad.SUKH)
-db = mongo.Anonymous
+uvloop.install()
+
+logging.basicConfig(
+    format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
+    datefmt="%d-%b-%y %H:%M:%S",
+    handlers=[logging.FileHandler("log.txt"), logging.StreamHandler()],
+    level=logging.INFO,
+)
+
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
+LOGS = logging.getLogger(__name__)
+boot = time.time()
+mongodb = MongoCli(bad.SUKH)
+db = mongodb.Anonymous
+mongo = MongoClient(bad.SUKH)
+OWNER = bad.OWNER_ID
+_boot_ = time.time()
+clonedb = None
+def dbb():
+    global db
+    global clonedb
+    clonedb = {}
+    db = {}
 
 try:
     if Config.HEROKU_APIKEY is not None and Config.HEROKU_APPNAME is not None:
