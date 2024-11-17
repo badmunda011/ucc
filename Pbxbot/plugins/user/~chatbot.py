@@ -9,6 +9,7 @@ from Pbxbot.bad.chats import add_served_chat
 from Pbxbot.bad.users import add_served_user
 from Pbxbot.bad import add_served_cchat, add_served_cuser
 from Pbxbot import db
+from . import *
 from Pbxbot.bad import chatai
 import asyncio
 
@@ -78,7 +79,7 @@ async def get_chat_language(chat_id):
     chat_lang = await lang_db.find_one({"chat_id": chat_id})
     return chat_lang["language"] if chat_lang and "language" in chat_lang else None
     
-@Client.on_message(filters.incoming)
+@on_message(filters.incoming)
 async def chatbot_response(client: Client, message: Message):
     try:
         chat_id = message.chat.id
