@@ -15,9 +15,9 @@ from . import *
 
 translator = GoogleTranslator()
 
+lang_db = db.ChatLangDb.LangCollection
 status_db = db.chatbot_status_db.status
 
-    
 @on_message("status", allow_stan=True)
 async def status_command(client: Client, message: Message):
     chat_id = message.chat.id
