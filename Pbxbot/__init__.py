@@ -33,7 +33,7 @@ logging.basicConfig(
 )
 
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
-LOGS = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 boot = time.time()
 mongodb = MongoCli(bad.SUKH)
 db = mongodb.Anonymous
