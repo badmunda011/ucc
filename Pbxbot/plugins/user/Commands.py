@@ -9,7 +9,7 @@ from pyrogram.enums import ChatAction, ChatMemberStatus as CMS
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, CallbackQuery
 from deep_translator import GoogleTranslator
 from Pbxbot import db
-from Pbxbot.bad import chatai
+from Pbxbot.database import chatai
 import asyncio
 from . import *
 
