@@ -11,7 +11,7 @@ from Pbxbot.database import add_served_cchat, add_served_cuser
 from Pbxbot import db
 from . import HelpMenu, custom_handler, db, Pbxbot, on_message
 from . import *
-from Pbxbot.bad import chatai
+from Pbxbot.database import chatai
 import asyncio
 
 translator = GoogleTranslator()
