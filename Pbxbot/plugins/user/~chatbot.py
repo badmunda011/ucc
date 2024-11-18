@@ -5,9 +5,9 @@ from pyrogram.errors import MessageEmpty
 from pyrogram.enums import ChatAction, ChatMemberStatus as CMS
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, CallbackQuery
 from deep_translator import GoogleTranslator
-from Pbxbot.bad.chats import add_served_chat
-from Pbxbot.bad.users import add_served_user
-from Pbxbot.bad import add_served_cchat, add_served_cuser
+from Pbxbot.database.chats import add_served_chat
+from Pbxbot.database.users import add_served_user
+from Pbxbot.database import add_served_cchat, add_served_cuser
 from Pbxbot import db
 from . import HelpMenu, custom_handler, db, Pbxbot, on_message
 from . import *
