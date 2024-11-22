@@ -1,5 +1,7 @@
 import os, aiofiles, aiohttp, ffmpeg, random, re
 import requests
+from Pbxbot.core import Pbxbot
+from . import *
 from pytgcalls import PyTgCalls as pytgcalls
 from pyrogram import filters, Client
 from youtube_search import YoutubeSearch
@@ -63,7 +65,7 @@ async def search_youtube_with_cookies(query):
             else:
                 raise Exception(f"Failed to search YouTube. Status: {response.status}")
 
-# Example usage in your `play` function
+@on_message("play", allow_stan=True)
 async def play(_, message):
     query = message.text.split(None, 1)[1]
     try:
