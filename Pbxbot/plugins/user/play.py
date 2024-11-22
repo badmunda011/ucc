@@ -308,7 +308,7 @@ async def skip(_, message: Message):
 
 
 @pytgcalls.on_stream_end()
-async def on_stream_end(_, update: Update) -> None:
+async def on_stream_end(client, update):
     chat_id = update.chat_id
     rq.task_done(chat_id)
 
