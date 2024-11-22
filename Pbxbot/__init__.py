@@ -1,18 +1,11 @@
 import os
-import logging
-from pymongo import MongoClient
 import time
-import bad
-import uvloop
 from platform import python_version
-from motor.motor_asyncio import AsyncIOMotorClient as MongoCli
 
 import heroku3
 from pyrogram import __version__ as pyrogram_version
 
 from .core import LOGS, Config
-ID_CHATBOT = None
-CLONE_OWNERS = {}
 
 START_TIME = time.time()
 
@@ -23,66 +16,6 @@ __version__ = {
     "python": python_version(),
 }
 
-uvloop.install()
-
-logging.basicConfig(
-    format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
-    datefmt="%d-%b-%y %H:%M:%S",
-    handlers=[logging.FileHandler("log.txt"), logging.StreamHandler()],
-    level=logging.INFO,
-)
-
-logging.getLogger("pyrogram").setLevel(logging.ERROR)
-LOGGER = logging.getLogger(__name__)
-boot = time.time()
-mongodb = MongoCli(bad.SUKH)
-db = mongodb.Anonymous
-mongo = MongoClient(bad.SUKH)
-OWNER = bad.OWNER_ID
-_boot_ = time.time()
-clonedb = None
-def dbb():
-    global db
-    global clonedb
-    clonedb = {}
-    db = {}
-
-cloneownerdb = db.clone_owners
-
-async def load_clone_owners():
-    async for entry in cloneownerdb.find():
-        bot_id = entry["bot_id"]
-        user_id = entry["user_id"]
-        CLONE_OWNERS[bot_id] = user_id
-
-async def save_clonebot_owner(bot_id, user_id):
-    await cloneownerdb.update_one(
-        {"bot_id": bot_id},
-        {"$set": {"user_id": user_id}},
-        upsert=True
-    )
-async def get_clone_owner(bot_id):
-    data = await cloneownerdb.find_one({"bot_id": bot_id})
-    if data:
-        return data["user_id"]
-    return None
-
-async def delete_clone_owner(bot_id):
-    await cloneownerdb.delete_one({"bot_id": bot_id})
-    CLONE_OWNERS.pop(bot_id, None)
-
-async def save_idclonebot_owner(clone_id, user_id):
-    await cloneownerdb.update_one(
-        {"clone_id": clone_id},
-        {"$set": {"user_id": user_id}},
-        upsert=True
-    )
-
-async def get_idclone_owner(clone_id):
-    data = await cloneownerdb.find_one({"clone_id": clone_id})
-    if data:
-        return data["user_id"]
-    return None
 
 try:
     if Config.HEROKU_APIKEY is not None and Config.HEROKU_APPNAME is not None:
