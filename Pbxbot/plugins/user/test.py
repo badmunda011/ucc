@@ -23,7 +23,7 @@ async def get_audio_stream(link):
         "outtmpl": "downloads/%(title)s.%(ext)s",  # Save in "downloads" directory
         "noplaylist": True,
         "quiet": True,
-        "cookiefile": "cookies.txt",  # Use cookies to bypass CAPTCHA
+        "cookiefile": "cookies/cookies.txt",  # Use cookies to bypass CAPTCHA
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
