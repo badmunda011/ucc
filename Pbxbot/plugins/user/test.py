@@ -26,14 +26,16 @@ async def save_cookies(session):
 async def load_cookies(session):
     if os.path.exists(COOKIES_FILE):
         async with aiofiles.open(COOKIES_FILE, 'rb') as file:
+            content = await file.read()
+            if not content:  # Check if the file is empty
+                print("Cookies file is empty. Skipping loading.")
+                return  # Do nothing if the file is empty
             try:
-                cookies = pickle.loads(await file.read())
+                cookies = pickle.loads(content)
                 session.cookie_jar.update_cookies(cookies)
-            except pickle.UnpicklingError:
-                print("Invalid cookie file format. Starting fresh...")
-                # Reinitialize the cookies file by ignoring its content
-                async with aiofiles.open(COOKIES_FILE, 'wb') as reset_file:
-                    await reset_file.write(b"")  # Empty file
+            except (pickle.UnpicklingError, EOFError):
+                print("Invalid or empty cookies file. Skipping loading.")
+                return
 
 # Example usage: Play command
 @on_message("play", allow_stan=True)
