@@ -14,7 +14,33 @@ from pytgcalls.types import AudioPiped, AudioQuality, AudioParameters
 from youtube_search import YoutubeSearch
 from asyncio.queues import QueueEmpty
 import pickle  # Use pickle for serialization/deserialization
+import yt_dlp
 
+async def get_audio_stream(link):
+    """Download audio from a YouTube link and return the file path."""
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "outtmpl": "downloads/%(title)s.%(ext)s",  # Save in "downloads" directory
+        "noplaylist": True,
+        "quiet": True,
+        "postprocessors": [
+            {
+                "key": "FFmpegExtractAudio",
+                "preferredcodec": "mp3",
+                "preferredquality": "192",
+            }
+        ],
+    }
+
+    # Ensure the downloads directory exists
+    os.makedirs("downloads", exist_ok=True)
+
+    # Download the audio
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(link, download=True)
+        file_path = ydl.prepare_filename(info).replace(".webm", ".mp3").replace(".m4a", ".mp3")
+
+    return file_path
 
 COOKIES_FILE = "cookies.txt"
 
