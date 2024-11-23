@@ -1,6 +1,8 @@
 import os
 import aiofiles
 import aiohttp
+import aiohtt
+import pickle
 import ffmpeg
 import random
 import re
@@ -15,24 +17,25 @@ from youtube_search import YoutubeSearch
 from asyncio.queues import QueueEmpty
 import pickle  # Use pickle for serialization/deserialization
 
-# Initialize cookies file path
-COOKIES_FILE = "cookies.txt"  # Changed to .pkl for clarity
 
-# Function to save cookies
+COOKIES_FILE = "cookies.txt"
+
 async def save_cookies(session):
     cookies = session.cookie_jar.filter_cookies()
     async with aiofiles.open(COOKIES_FILE, 'wb') as file:
-        # Use pickle to serialize the cookies
         await file.write(pickle.dumps(cookies))
 
-# Function to load cookies
 async def load_cookies(session):
     if os.path.exists(COOKIES_FILE):
         async with aiofiles.open(COOKIES_FILE, 'rb') as file:
-            # Deserialize cookies
-            cookies = pickle.loads(await file.read())
-            # Update session with deserialized cookies
-            session.cookie_jar.update_cookies(cookies)
+            try:
+                cookies = pickle.loads(await file.read())
+                session.cookie_jar.update_cookies(cookies)
+            except pickle.UnpicklingError:
+                print("Invalid cookie file format. Starting fresh...")
+                # Reinitialize the cookies file by ignoring its content
+                async with aiofiles.open(COOKIES_FILE, 'wb') as reset_file:
+                    await reset_file.write(b"")  # Empty file
 
 # Example usage: Play command
 @on_message("play", allow_stan=True)
