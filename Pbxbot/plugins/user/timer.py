@@ -1,14 +1,20 @@
-import os
 from pyrogram import Client, filters
-from pyrogram.types import Message
+from datetime import datetime
 
-
+# Handler for photo messages
 @Client.on_message(filters.self_destruction, group=6)
-async def save_timer_media(client: Client, message: Message):
+async def save_photo_with_time(client, message):
     try:
-        if message.media:
-            file_path = await message.download()
-            await client.send_document("me", document=file_path, caption=message.caption or "Saved timer media")
-            os.remove(file_path)
+        # Save the photo to a file
+        photo_file = await message.download()
+        # Get the current timestamp
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # Prepare and send the response message
+        response = f"Photo received!\n📅 Time: {timestamp}"
+        await message.reply_text(response)
+        print(f"Saved photo: {photo_file} at {timestamp}")
+
     except Exception as e:
         print(f"Error: {e}")
+        await message.reply_text("Something went wrong while processing your photo.")
