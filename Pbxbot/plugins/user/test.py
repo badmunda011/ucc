@@ -44,7 +44,7 @@ async def get_audio_stream(link):
 
     return file_path
 
-COOKIES_FILE = "cookies.txt"
+COOKIES_FILE = "cookies/cookies.txt"
 
 async def save_cookies(session):
     cookies = session.cookie_jar.filter_cookies()
