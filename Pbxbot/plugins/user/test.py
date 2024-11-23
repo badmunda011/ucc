@@ -10,27 +10,29 @@ from pyrogram.types import *
 from Pbxbot.core import Pbxbot
 from . import *
 from pytgcalls import PyTgCalls
-from pytgcalls.types import AudioPiped, AudioVideoPiped, AudioQuality, AudioParameters
+from pytgcalls.types import AudioPiped, AudioQuality, AudioParameters
 from youtube_search import YoutubeSearch
 from asyncio.queues import QueueEmpty
-
+import pickle  # Use pickle for serialization/deserialization
 
 # Initialize cookies file path
-COOKIES_FILE = "cookies.txt"
+COOKIES_FILE = "cookies.txt"  # Changed to .pkl for clarity
 
 # Function to save cookies
 async def save_cookies(session):
+    cookies = session.cookie_jar.filter_cookies()
     async with aiofiles.open(COOKIES_FILE, 'wb') as file:
-        cookies = session.cookie_jar.filter_cookies()
-        await file.write(cookies.serialize())
+        # Use pickle to serialize the cookies
+        await file.write(pickle.dumps(cookies))
 
 # Function to load cookies
 async def load_cookies(session):
     if os.path.exists(COOKIES_FILE):
         async with aiofiles.open(COOKIES_FILE, 'rb') as file:
-            cookies = await file.read()
+            # Deserialize cookies
+            cookies = pickle.loads(await file.read())
+            # Update session with deserialized cookies
             session.cookie_jar.update_cookies(cookies)
-
 
 # Example usage: Play command
 @on_message("play", allow_stan=True)
@@ -62,4 +64,3 @@ async def play(client, message):
             ),
         )
         await message.reply(f"🎧 Playing: {title}\nDuration: {duration}")
-        
