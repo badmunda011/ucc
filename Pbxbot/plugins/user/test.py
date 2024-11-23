@@ -23,7 +23,7 @@ async def get_audio_stream(link):
         "outtmpl": "downloads/%(title)s.%(ext)s",  # Save in "downloads" directory
         "noplaylist": True,
         "quiet": True,
-        "cookiefile": "cookies/cookies.txt",  # Use cookies to bypass CAPTCHA
+        "cookiefile": "Pbxbot/bad/cookies.txt",  # Use cookies to bypass CAPTCHA
         "postprocessors": [
             {
                 "key": "FFmpegExtractAudio",
@@ -44,7 +44,7 @@ async def get_audio_stream(link):
 
     return file_path
 
-COOKIES_FILE = "cookies/cookies.txt"
+COOKIES_FILE = "Pbxbot/bad/cookies.txt"
 
 async def save_cookies(session):
     cookies = session.cookie_jar.filter_cookies()
