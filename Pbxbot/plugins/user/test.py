@@ -1,7 +1,6 @@
 import os
 import aiofiles
 import aiohttp
-import pickle
 import ffmpeg
 import random
 import re
