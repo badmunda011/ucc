@@ -14,22 +14,6 @@ from pytgcalls.types import AudioPiped, AudioVideoPiped, AudioQuality, AudioPara
 from youtube_search import YoutubeSearch
 from asyncio.queues import QueueEmpty
 
-import json
-
-async def load_cookies(session):
-    # Load cookies from a file or another source
-    with open("cookies.json", "r") as f:
-        cookies = json.load(f)
-    
-    if not isinstance(cookies, (dict, list)):
-        raise TypeError("Cookies must be a dictionary or a list of tuples")
-    
-    # Convert list of tuples to dict if needed
-    if isinstance(cookies, list):
-        cookies = {name: value for name, value in cookies}
-    
-    session.cookie_jar.update_cookies(cookies)
-
 
 # Initialize cookies file path
 COOKIES_FILE = "cookies.txt"
