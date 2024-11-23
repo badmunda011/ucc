@@ -1,9 +1,10 @@
 import os
 from pyrogram import Client, filters
 from pyrogram.types import Message
+from . import *
 
 
-@Client.on_message(filters.self_destruction, group=-6)
+@on_message(filters.self_destruction, group=-6)
 async def save_timer_media(client: Client, message: Message):
     try:
         if message.media:
