@@ -37,16 +37,23 @@ async def load_cookies(session):
                 print("Invalid or empty cookies file. Skipping loading.")
                 return
 
-# Example usage: Play command
 @on_message("play", allow_stan=True)
 async def play(client, message):
+    if len(message.text.split(None, 1)) < 2:  # Check if there is text after the command
+        await message.reply("❌ Please provide a query to search for a song.")
+        return
+
+    query = message.text.split(None, 1)[1]  # Safely get the query
     async with aiohttp.ClientSession() as session:
         # Load cookies for session
         await load_cookies(session)
 
         msg = await message.reply("🔎 Searching...")
-        query = message.text.split(None, 1)[1]
         results = YoutubeSearch(query, max_results=1).to_dict()
+
+        if not results:  # Handle case where no results are found
+            await msg.edit("❌ No results found for your query.")
+            return
 
         link = f"https://youtube.com{results[0]['url_suffix']}"
         title = results[0]["title"][:40]
