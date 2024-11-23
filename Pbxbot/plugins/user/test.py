@@ -1,77 +1,64 @@
-import os, aiofiles, aiohttp, ffmpeg, random, re
+import os
+import aiofiles
+import aiohttp
+import ffmpeg
+import random
+import re
 import requests
+from pyrogram import Client, filters
+from pyrogram.types import *
 from Pbxbot.core import Pbxbot
 from . import *
-from pytgcalls import PyTgCalls as pytgcalls
-from pyrogram import filters, Client
+from pytgcalls import PyTgCalls
+from pytgcalls.types import AudioPiped, AudioVideoPiped, AudioQuality, AudioParameters
 from youtube_search import YoutubeSearch
-from Pbxbot.bad.utils import get_audio_stream, get_video_stream
+from asyncio.queues import QueueEmpty
 
-# Load cookies from a file (you can customize this path)
-COOKIES_PATH = "cookies.txt"
+# Initialize cookies file path
+COOKIES_FILE = "cookies.txt"
 
-# Utility to read cookies
-def load_cookies(filepath):
-    cookies = {}
-    try:
-        with open(filepath, "r") as file:
-            for line in file:
-                if not line.startswith("#") and line.strip():
-                    parts = line.strip().split("\t")
-                    if len(parts) >= 7:
-                        domain, flag, path, secure, expiry, name, value = parts
-                        cookies[name] = value
-    except FileNotFoundError:
-        print(f"Cookies file not found: {filepath}")
-    return cookies
+# Function to save cookies
+async def save_cookies(session):
+    async with aiofiles.open(COOKIES_FILE, 'wb') as file:
+        cookies = session.cookie_jar.filter_cookies()
+        await file.write(cookies.serialize())
 
-# Load cookies for use
-cookies = load_cookies(COOKIES_PATH)
+# Function to load cookies
+async def load_cookies(session):
+    if os.path.exists(COOKIES_FILE):
+        async with aiofiles.open(COOKIES_FILE, 'rb') as file:
+            cookies = await file.read()
+            session.cookie_jar.update_cookies(cookies)
 
-# Updated get_audio_stream and get_video_stream
-async def get_audio_stream_with_cookies(url):
-    """Fetch audio stream URL using cookies."""
-    headers = {"User-Agent": "Mozilla/5.0"}
-    async with aiohttp.ClientSession(cookies=cookies, headers=headers) as session:
-        async with session.get(url) as response:
-            if response.status == 200:
-                return await response.text()
-            else:
-                raise Exception(f"Failed to fetch audio stream. Status: {response.status}")
 
-async def get_video_stream_with_cookies(url):
-    """Fetch video stream URL using cookies."""
-    headers = {"User-Agent": "Mozilla/5.0"}
-    async with aiohttp.ClientSession(cookies=cookies, headers=headers) as session:
-        async with session.get(url) as response:
-            if response.status == 200:
-                return await response.text()
-            else:
-                raise Exception(f"Failed to fetch video stream. Status: {response.status}")
-
-# Replace `get_audio_stream` and `get_video_stream` with the new functions
-get_audio_stream = get_audio_stream_with_cookies
-get_video_stream = get_video_stream_with_cookies
-
-# Integration with YoutubeSearch
-async def search_youtube_with_cookies(query):
-    """Search YouTube using cookies."""
-    headers = {"User-Agent": "Mozilla/5.0"}
-    search_url = f"https://www.youtube.com/results?search_query={query}"
-    async with aiohttp.ClientSession(cookies=cookies, headers=headers) as session:
-        async with session.get(search_url) as response:
-            if response.status == 200:
-                return await response.text()
-            else:
-                raise Exception(f"Failed to search YouTube. Status: {response.status}")
-
+# Example usage: Play command
 @on_message("play", allow_stan=True)
-async def play(_, message):
-    query = message.text.split(None, 1)[1]
-    try:
-        # Search YouTube using cookies
-        search_results = await search_youtube_with_cookies(query)
-        # Parse results and fetch the first video link (Implement parsing logic)
-        # Example: results = YoutubeSearch(search_results, max_results=1).to_dict()
-    except Exception as e:
-        await message.reply(f"Error while searching YouTube: {e}")
+async def play(client, message):
+    async with aiohttp.ClientSession() as session:
+        # Load cookies for session
+        await load_cookies(session)
+
+        msg = await message.reply("🔎 Searching...")
+        query = message.text.split(None, 1)[1]
+        results = YoutubeSearch(query, max_results=1).to_dict()
+
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        title = results[0]["title"][:40]
+        thumbnail = results[0]["thumbnails"][0]
+        thumb_name = f"{title}.jpg"
+        duration = results[0]["duration"]
+
+        # Save cookies for future use
+        await save_cookies(session)
+
+        # Process song and stream
+        file_path = await get_audio_stream(link)  # Define get_audio_stream function
+        await pytgcalls.join_group_call(
+            message.chat.id,
+            AudioPiped(
+                file_path,
+                AudioParameters.from_quality(AudioQuality.HIGH)
+            ),
+        )
+        await message.reply(f"🎧 Playing: {title}\nDuration: {duration}")
+        
