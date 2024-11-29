@@ -3,6 +3,7 @@ import os, platform, random, re, socket
 import sys, time, textwrap
 from . import HelpMenu, Symbols, db, Pbxbot, on_message
 from os import getenv
+from bad import SUKH
 from io import BytesIO
 from time import strftime
 from functools import partial
