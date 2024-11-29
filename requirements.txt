@@ -22,7 +22,7 @@ glitch_this
 googlesearch-python
 deep-translator
 heroku3
-httpx
+httpx==0.25.0
 lottie
 lyricsgenius
 motor==3.6.0
