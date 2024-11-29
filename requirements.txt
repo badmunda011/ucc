@@ -1,8 +1,11 @@
-py-tgcalls==0.9.7
+yt-dlp==2024.11.18
+gitpython==3.1.43
+py-tgcalls==2.1.0.dev2
 tgcrypto==1.2.5
-TgCrypto
-asyncio
-youtube-search-python==1.6.6
+youtube-search-python
+aiofiles==24.1.0
+aiohttp==3.10.3
+asyncio==3.4.3
 youtube-search==2.1.2
 bs4
 pyroaddon
@@ -22,8 +25,9 @@ heroku3
 httpx
 lottie
 lyricsgenius
-motor
-pillow
+motor==3.6.0
+ntgcalls==1.3.0b3
+pillow==9.5.0
 psutil
 pyroaddon
 pyrogram
@@ -40,5 +44,3 @@ wikipedia
 git+https://github.com/KurimuzonAkuma/pyrogram.git@v2.1.21
 googletrans @ git+https://github.com/badmunda98/py-googletrans
 git+https://github.com/badmunda98/BadAPI
-git+https://github.com/THE-VIP-BOY-OP/yt-dlp-youtube-oauth2
-git+https://github.com/badmunda98/yt-dp-fork
