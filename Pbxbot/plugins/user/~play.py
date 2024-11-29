@@ -46,6 +46,8 @@ ACTIVE_MEDIA_CHATS = []
 
 QUEUE = {}
 
+mongo_async_cli = _mongo_async_(MONGO_DB_URL)
+mongodb = mongo_async_cli.adityaxdb
 
 # start and run
 
