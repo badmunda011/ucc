@@ -32,7 +32,8 @@ from pyrogram.errors import (
 from pytgcalls.exceptions import NoActiveGroupCall
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pytgcalls.types import ChatUpdate, Update, GroupCallConfig
-from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
+from pytgcalls.types import MediaStream, AudioQuality, VideoQuality
+from pytgcalls.types import Call
 
 from PIL import Image, ImageDraw, ImageEnhance
 from PIL import ImageFilter, ImageFont, ImageOps
