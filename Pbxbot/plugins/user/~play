@@ -4,12 +4,13 @@ from yt_dlp import YoutubeDL
 from pyrogram.types import Message
 import subprocess
 from . import *
+from io import BytesIO
 
 # Function to handle the search and music play
 async def search_and_play_music(query, message):
     YTDL_OPTS = {
         "format": "bestaudio/best",
-        "outtmpl": "%(title)s.%(ext)s",  # Audio file ka name aur extension
+        "outtmpl": "%(title)s.%(ext)s",  # Audio file name and extension
         "noplaylist": True,
         "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
         "quiet": True,
@@ -38,8 +39,13 @@ async def search_and_play_music(query, message):
         # Inform user about the successful download
         await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
 
-        # Play the downloaded audio using ffmpeg
-        subprocess.run(["ffmpeg", "-i", file_path, "-f", "mp3", "-acodec", "mp3", "pipe:1"])
+        # Convert audio to a byte stream for sending
+        with open(file_path, "rb") as audio_file:
+            audio_stream = BytesIO(audio_file.read())
+            audio_stream.seek(0)
+
+            # Send the audio file as a bot message
+            await message.reply_audio(audio_stream, caption=f"Now playing: **{title}**")
 
         # Clean up after playing
         os.remove(file_path)
