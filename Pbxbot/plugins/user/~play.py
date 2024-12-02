@@ -10,7 +10,7 @@ YTDL_OPTS = {
     "format": "bestaudio/best",
     "outtmpl": "%(title)s.%(ext)s",
     "noplaylist": True,
-    "cookiefile": "cookies.txt",  # Cookies for YouTube authentication
+    "cookiefile": "Pbxbot/cookies.txt",  # Cookies for YouTube authentication
     "quiet": True,
 }
 
