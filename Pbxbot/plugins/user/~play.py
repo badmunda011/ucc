@@ -21,7 +21,6 @@ async def search_and_play_music(query, message):
         ],
         "cookiefile": "Pbxbot/cookies.txt",  # Optional, remove if not needed
         }
-
     try:
         with youtube_dl.YoutubeDL(YTDL_OPTS) as ytdl:
             info = ytdl.extract_info(f"ytsearch:{query}", download=True)
