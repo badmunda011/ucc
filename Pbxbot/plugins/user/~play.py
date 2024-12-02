@@ -3,7 +3,6 @@ from pyrogram import Client, filters
 from yt_dlp import YoutubeDL  # Correct import for yt_dlp
 from pyrogram.types import Message
 from . import *
-import os
 
 # Function to handle the search and music play
 async def search_and_play_music(query, message):
