@@ -8,19 +8,17 @@ import os
 # Function to handle the search and music play
 async def search_and_play_music(query, message):
     YTDL_OPTS = {
-        "format": "bestaudio/best",
-        "outtmpl": "downloads/%(title)s.%(ext)s",
-        "noplaylist": True,
-        "quiet": True,
-        "postprocessors": [
-            {
-                "key": "FFmpegExtractAudio",
-                "preferredcodec": "mp3",
-                "preferredquality": "192",
-            }
-        ],
-        "cookiefile": "Pbxbot/cookies.txt",  # Optional, remove if not needed
-        }
+    "format": "bestaudio/best",
+    "outtmpl": "%(title)s.%(ext)s",  # Audio file ka name aur extension
+    "noplaylist": True,
+    "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
+    "quiet": True,
+    "postprocessors": [{
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+    }],
+    }
     try:
         with youtube_dl.YoutubeDL(YTDL_OPTS) as ytdl:
             info = ytdl.extract_info(f"ytsearch:{query}", download=True)
