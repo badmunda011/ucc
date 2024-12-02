@@ -41,6 +41,6 @@ telegraph
 tgcrypto
 Unidecode
 wikipedia
-git+https://github.com/KurimuzonAkuma/pyrogram.git@v2.1.21
+git+https://github.com/KurimuzonAkuma/pyrogram
 googletrans @ git+https://github.com/badmunda98/py-googletrans
 git+https://github.com/badmunda98/BadAPI
