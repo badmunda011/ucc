@@ -14,7 +14,6 @@ def play_audio(file_path):
 
 # YTDL options for downloading audio
 YTDL_OPTS = {
-YTDL_OPTS = {
     "format": "bestaudio/best",
     "outtmpl": "downloads/%(title)s.%(ext)s",  # Saving file to the correct path
     "noplaylist": True,
