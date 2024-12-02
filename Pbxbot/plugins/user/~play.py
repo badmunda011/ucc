@@ -1,7 +1,8 @@
 import os
 from pyrogram import Client, filters
-from yt_dlp import YoutubeDL  # Correct import for yt_dlp
+from yt_dlp import YoutubeDL
 from pyrogram.types import Message
+import subprocess
 from . import *
 
 # Function to handle the search and music play
@@ -17,9 +18,12 @@ async def search_and_play_music(query, message):
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
     }
     try:
-        with YoutubeDL(YTDL_OPTS) as ytdl:  # Use YoutubeDL from yt_dlp
+        with YoutubeDL(YTDL_OPTS) as ytdl:
             info = ytdl.extract_info(f"ytsearch:{query}", download=True)
             video = info["entries"][0]
             title = video["title"]
@@ -34,8 +38,8 @@ async def search_and_play_music(query, message):
         # Inform user about the successful download
         await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
 
-        # Play the downloaded audio (use ffmpeg or any other method)
-        os.system(f"ffplay -nodisp -autoexit '{file_path}'")
+        # Play the downloaded audio using ffmpeg
+        subprocess.run(["ffmpeg", "-i", file_path, "-f", "mp3", "-acodec", "mp3", "pipe:1"])
 
         # Clean up after playing
         os.remove(file_path)
