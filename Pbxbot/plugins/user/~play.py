@@ -1,6 +1,6 @@
 import os
 from pyrogram import Client, filters
-from yt_dlp import YoutubeDL
+from yt_dlp import YoutubeDL  # Correct import for yt_dlp
 from pyrogram.types import Message
 from . import *
 import os
@@ -8,19 +8,19 @@ import os
 # Function to handle the search and music play
 async def search_and_play_music(query, message):
     YTDL_OPTS = {
-    "format": "bestaudio/best",
-    "outtmpl": "%(title)s.%(ext)s",  # Audio file ka name aur extension
-    "noplaylist": True,
-    "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
-    "quiet": True,
-    "postprocessors": [{
-        "key": "FFmpegExtractAudio",
-        "preferredcodec": "mp3",
-        "preferredquality": "192",
-    }],
+        "format": "bestaudio/best",
+        "outtmpl": "%(title)s.%(ext)s",  # Audio file ka name aur extension
+        "noplaylist": True,
+        "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
+        "quiet": True,
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192",
+        }],
     }
     try:
-        with youtube_dl.YoutubeDL(YTDL_OPTS) as ytdl:
+        with YoutubeDL(YTDL_OPTS) as ytdl:  # Use YoutubeDL from yt_dlp
             info = ytdl.extract_info(f"ytsearch:{query}", download=True)
             video = info["entries"][0]
             title = video["title"]
