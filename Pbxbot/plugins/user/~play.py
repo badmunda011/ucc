@@ -8,10 +8,15 @@ from . import *
 # YTDL options for audio extraction
 YTDL_OPTS = {
     "format": "bestaudio/best",
-    "outtmpl": "%(title)s.%(ext)s",
+    "outtmpl": "%(title)s.%(ext)s",  # Audio file ka name aur extension
     "noplaylist": True,
-    "cookiefile": "Pbxbot/cookies.txt",  # Cookies for YouTube authentication
+    "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
     "quiet": True,
+    "postprocessors": [{
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+    }],
 }
 
 # Play music command
@@ -27,21 +32,18 @@ async def play_music(client, message: Message):
     try:
         # Download the song from YouTube
         with YoutubeDL(YTDL_OPTS) as ytdl:
-            info = ytdl.extract_info(f"ytsearch:{query}", download=False)
-            video = info["entries"][0]  # First search result
-            url = video["url"]
-            title = video["title"]
-
-            # Download audio
-            audio_file = ytdl.extract_info(url, download=True)["filepath"]
+            info = ytdl.extract_info(f"ytsearch:{query}", download=True)
+            title = info["entries"][0]["title"]
+            downloaded_file = ytdl.prepare_filename(info["entries"][0])
 
         # Play the downloaded audio using ffmpeg
         await message.reply(f"🎶 Now playing: **{title}**")
-        os.system(f"ffplay -nodisp -autoexit '{audio_file}'")
+        os.system(f"ffplay -nodisp -autoexit '{downloaded_file}'")
 
         # Clean up the downloaded file
-        os.remove(audio_file)
+        os.remove(downloaded_file)
         await message.reply("✅ Finished playing!")
 
     except Exception as e:
         await message.reply(f"❌ Error: {e}")
+        
