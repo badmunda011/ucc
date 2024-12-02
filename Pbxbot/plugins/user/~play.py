@@ -1,27 +1,31 @@
 import os
-import asyncio
 from pyrogram import Client, filters
 from yt_dlp import YoutubeDL
 from pyrogram.types import Message
 from . import *
 
-# YTDL options for audio extraction
+# YTDL options for downloading audio
 YTDL_OPTS = {
     "format": "bestaudio/best",
-    "outtmpl": "%(title)s.%(ext)s",  # Audio file ka name aur extension
+    "outtmpl": "downloads/%(title)s.%(ext)s",  # Save file in 'downloads' directory
     "noplaylist": True,
-    "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
     "quiet": True,
-    "postprocessors": [{
-        "key": "FFmpegExtractAudio",
-        "preferredcodec": "mp3",
-        "preferredquality": "192",
-    }],
+    "postprocessors": [
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192",
+        }
+    ],
+    "cookiefile": "Pbxbot/cookies.txt",  # Optional, remove if not needed
 }
 
-# Play music command
+# Ensure downloads directory exists
+os.makedirs("downloads", exist_ok=True)
+
+# Play command
 @on_message("play", allow_stan=True)
-async def play_music(client, message: Message):
+async def play_music(client: Client, message: Message):
     query = " ".join(message.command[1:])
     if not query:
         await message.reply("❌ Please provide a song name! Example: `/play Faded`")
@@ -30,18 +34,24 @@ async def play_music(client, message: Message):
     await message.reply(f"🔍 Searching for: **{query}**")
 
     try:
-        # Download the song from YouTube
+        # Search and download the song
         with YoutubeDL(YTDL_OPTS) as ytdl:
             info = ytdl.extract_info(f"ytsearch:{query}", download=True)
-            title = info["entries"][0]["title"]
-            downloaded_file = ytdl.prepare_filename(info["entries"][0])
+            video = info["entries"][0]
+            title = video["title"]
+            file_path = ytdl.prepare_filename(video).replace(".webm", ".mp3")
 
-        # Play the downloaded audio using ffmpeg
-        await message.reply(f"🎶 Now playing: **{title}**")
-        os.system(f"ffplay -nodisp -autoexit '{downloaded_file}'")
+        # Check if file exists
+        if not os.path.exists(file_path):
+            await message.reply("❌ File not found after download. Something went wrong.")
+            return
 
-        # Clean up the downloaded file
-        os.remove(downloaded_file)
+        # Inform the user and play the audio
+        await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
+        os.system(f"ffplay -nodisp -autoexit '{file_path}'")
+
+        # Cleanup downloaded file
+        os.remove(file_path)
         await message.reply("✅ Finished playing!")
 
     except Exception as e:
