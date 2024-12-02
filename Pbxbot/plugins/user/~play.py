@@ -3,21 +3,23 @@ from pyrogram import Client, filters
 from yt_dlp import YoutubeDL
 from pyrogram.types import Message
 from . import *
+import pygame
+pygame.mixer.init()
+
+def play_audio(file_path):
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():  # Wait until the music is finished
+        pygame.time.Clock().tick(10)
 
 # YTDL options for downloading audio
 YTDL_OPTS = {
+YTDL_OPTS = {
     "format": "bestaudio/best",
-    "outtmpl": "downloads/%(title)s.%(ext)s",  # Save file in 'downloads' directory
+    "outtmpl": "downloads/%(title)s.%(ext)s",  # Saving file to the correct path
     "noplaylist": True,
     "quiet": True,
-    "postprocessors": [
-        {
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "192",
-        }
-    ],
-    "cookiefile": "Pbxbot/cookies.txt",  # Optional, remove if not needed
+    "cookiefile": None,  # Set to None if you don't need cookies
 }
 
 # Ensure downloads directory exists
