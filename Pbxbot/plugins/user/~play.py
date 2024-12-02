@@ -52,8 +52,8 @@ async def play_music(client: Client, message: Message):
 
     await message.reply(f"🔍 Searching for: **{query}**")
 
-    try:
-        with YoutubeDL(YTDL_OPTS) as ytdl:
+try:
+    with YoutubeDL(YTDL_OPTS) as ytdl:
         info = ytdl.extract_info(f"ytsearch:{query}", download=True)
         video = info["entries"][0]
         title = video["title"]
