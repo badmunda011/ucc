@@ -4,7 +4,6 @@ from yt_dlp import YoutubeDL
 from pyrogram.types import Message
 from . import *
 import pygame
-pygame.mixer.init()
 
 def play_audio(file_path):
     pygame.mixer.music.load(file_path)
