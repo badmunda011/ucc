@@ -4,6 +4,18 @@ from yt_dlp import YoutubeDL
 from pyrogram.types import Message
 from . import *
 import pygame
+import os
+import re
+
+def shorten_filename(filename, max_length=255):
+    if len(filename) > max_length:
+        filename = filename[:max_length]
+    return filename
+
+file_path = os.path.join("downloads", shorten_filename(video["title"]) + ".mp3")
+
+# Ensure the downloads directory exists
+os.makedirs("downloads", exist_ok=True)
 
 def play_audio(file_path):
     pygame.mixer.music.load(file_path)
@@ -14,10 +26,17 @@ def play_audio(file_path):
 # YTDL options for downloading audio
 YTDL_OPTS = {
     "format": "bestaudio/best",
-    "outtmpl": "downloads/%(title)s.%(ext)s",  # Saving file to the correct path
+    "outtmpl": "downloads/%(title)s.%(ext)s",  # Ensuring correct output path
     "noplaylist": True,
     "quiet": True,
-    "cookiefile": "Pbxbot/cookies.txt",  # Set to None if you don't need cookies
+    "postprocessors": [
+        {
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192",
+        }
+    ],
+    "cookiefile": "Pbxbot/cookies.txt",  # Optional, remove if not needed
 }
 
 # Ensure downloads directory exists
@@ -34,26 +53,27 @@ async def play_music(client: Client, message: Message):
     await message.reply(f"🔍 Searching for: **{query}**")
 
     try:
-        # Search and download the song
-        with YoutubeDL(YTDL_OPTS) as ytdl:
-            info = ytdl.extract_info(f"ytsearch:{query}", download=True)
-            video = info["entries"][0]
-            title = video["title"]
-            file_path = ytdl.prepare_filename(video).replace(".webm", ".mp3")
+    with YoutubeDL(YTDL_OPTS) as ytdl:
+        info = ytdl.extract_info(f"ytsearch:{query}", download=True)
+        video = info["entries"][0]
+        title = video["title"]
+        file_path = ytdl.prepare_filename(video).replace(".webm", ".mp3")
 
-        # Check if file exists
-        if not os.path.exists(file_path):
-            await message.reply("❌ File not found after download. Something went wrong.")
-            return
+    # Check if the file exists after download
+    if not os.path.exists(file_path):
+        print(f"File not found at {file_path}")  # Debugging line
+        await message.reply(f"❌ The file {title} could not be found after download.")
+        return
 
-        # Inform the user and play the audio
-        await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
-        os.system(f"ffplay -nodisp -autoexit '{file_path}'")
+    # Inform user about the successful download
+    await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
+    
+    # Play the downloaded audio (you can use ffmpeg or pygame here)
+    os.system(f"ffplay -nodisp -autoexit '{file_path}'")
 
-        # Cleanup downloaded file
-        os.remove(file_path)
-        await message.reply("✅ Finished playing!")
+    # Cleanup the downloaded file after playing
+    os.remove(file_path)
+    await message.reply("✅ Finished playing!")
 
-    except Exception as e:
-        await message.reply(f"❌ Error: {e}")
-        
+except Exception as e:
+    await message.reply(f"❌ Error: {str(e)}")
