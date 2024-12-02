@@ -64,16 +64,9 @@ try:
         print(f"File not found at {file_path}")  # Debugging line
         await message.reply(f"❌ The file {title} could not be found after download.")
         return
-
-    # Inform user about the successful download
-    await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
-    
-    # Play the downloaded audio (you can use ffmpeg or pygame here)
-    os.system(f"ffplay -nodisp -autoexit '{file_path}'")
-
-    # Cleanup the downloaded file after playing
-    os.remove(file_path)
-    await message.reply("✅ Finished playing!")
-
+        await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
+        os.system(f"ffplay -nodisp -autoexit '{file_path}'")
+        os.remove(file_path)
+        await message.reply("✅ Finished playing!")
 except Exception as e:
     await message.reply(f"❌ Error: {str(e)}")
