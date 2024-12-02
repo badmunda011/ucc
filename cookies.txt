@@ -2,7 +2,10 @@
 # http://curl.haxx.se/rfc/cookie_spec.html
 # This is a generated file!  Do not edit.
 
-	TRUE	/	TRUE	1747041219	VISITOR_PRIVACY_METADATA	CgJJThIEGgAgIg%3D%3D
+.youtube.com	TRUE	/	TRUE	1731491019	GPS	1
+.youtube.com	TRUE	/	TRUE	0	YSC	UeVuM-mYvvs
+.youtube.com	TRUE	/	TRUE	1747041219	VISITOR_INFO1_LIVE	_tjaip9hAeE
+.youtube.com	TRUE	/	TRUE	1747041219	VISITOR_PRIVACY_METADATA	CgJJThIEGgAgIg%3D%3D
 .youtube.com	TRUE	/	FALSE	1766049467	HSID	AKsvKFK5TQ2JFyiPc
 .youtube.com	TRUE	/	TRUE	1766049467	SSID	Adsuwte-o5vGNOk_x
 .youtube.com	TRUE	/	FALSE	1766049467	APISID	3ckY1hh-UfRqi_zh/Aj07GE3d1jpFglXl6
