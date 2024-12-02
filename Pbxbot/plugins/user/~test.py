@@ -8,6 +8,9 @@ from bad import SUKH as MONGO_URL
 from pymongo import MongoClient
 from pyrogram.enums import ChatMemberStatus as CMS
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup
+from . import *
+from . import HelpMenu, custom_handler, on_message
+
 
 WORD_MONGO_URL = "mongodb+srv://BADMUNDA:BADMYDAD@badhacker.i5nw9na.mongodb.net/"
 translator = GoogleTranslator()  
@@ -132,7 +135,7 @@ async def language_selection_callback(client: Client, callback_query):
     await callback_query.message.edit_text(f"**Bot language has been reset in this chat, now mix language is using.**", reply_markup=generate_language_buttons(languages))
     
 # Enable/Disable Command
-@Client.on_message(filters.command("chatbot"))
+@on_message(filters.command("chatbot"))
 async def manage_chatbot(client: Client, message: Message):
     chat_id = message.chat.id
     args = message.text.split()
