@@ -17,7 +17,7 @@ YTDL_OPTS = {
     "outtmpl": "downloads/%(title)s.%(ext)s",  # Saving file to the correct path
     "noplaylist": True,
     "quiet": True,
-    "cookiefile": None,  # Set to None if you don't need cookies
+    "cookiefile": "Pbxbot/cookies.txt",  # Set to None if you don't need cookies
 }
 
 # Ensure downloads directory exists
