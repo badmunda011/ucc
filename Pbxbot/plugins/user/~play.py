@@ -4,7 +4,7 @@ from pytgcalls.exceptions import GroupCallNotFound
 from pyrogram import Client, filters
 
 from . import *
-from Pbxbot.bad.stream import *
+from Pbxbot.bad.streamtype import *
 from Pbxbot.bad.utilities import queues
 
 # Function to handle downloading media with cookie support
