@@ -9,19 +9,19 @@ from io import BytesIO
 # Function to handle the search and music play
 async def search_and_play_music(query, message):
     YTDL_OPTS = {
-        "format": "bestaudio/best",
-        "outtmpl": "%(title)s.%(ext)s",  # Audio file name and extension
-        "noplaylist": True,
-        "cookiefile": "Pbxbot/cookies.txt",  # Make sure cookies.txt is valid
-        "quiet": True,
-        "postprocessors": [{
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "192",
-        }],
-        "headers": {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
+    "format": "bestaudio/best",
+    "outtmpl": "%(title)s.%(ext)s",
+    "noplaylist": True,
+    "cookiefile": "cookies.txt",  # Path to your exported cookies file
+    "quiet": True,
+    "postprocessors": [{
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+    }],
+    "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    }
     }
     try:
         # Use yt-dlp to download the audio in the background
