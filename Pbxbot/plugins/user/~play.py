@@ -12,7 +12,7 @@ async def search_and_play_music(query, message):
     "format": "bestaudio/best",
     "outtmpl": "%(title)s.%(ext)s",
     "noplaylist": True,
-    "cookiefile": "cookies.txt",  # Path to your exported cookies file
+    "cookiefile": "Pbxbot/cookies.txt",  # Path to your exported cookies file
     "quiet": True,
     "postprocessors": [{
         "key": "FFmpegExtractAudio",
