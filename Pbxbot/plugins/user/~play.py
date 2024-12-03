@@ -5,7 +5,7 @@ from pyrogram import Client, filters
 
 from . import *
 from Pbxbot.bad.streamtype import *
-from Pbxbot.bad.utilities import queues
+from Pbxbot.bad.music import queues
 
 # Function to handle downloading media with cookie support
 async def download_media_with_cookies(client, message, cookies=None):
