@@ -1,75 +1,112 @@
-import os
-import asyncio
+from asyncio.queues import QueueEmpty
+from pyrogram import filters
+from pytgcalls.exceptions import GroupCallNotFound
 from pyrogram import Client, filters
-from yt_dlp import YoutubeDL
+
 from . import *
-from pyrogram.types import Message
-from io import BytesIO
+from Pbxbot.bad.stream import *
+from Pbxbot.bad.utilities import queues
 
-# Function to handle the search and music play
-async def search_and_play_music(query, message):
-    YTDL_OPTS = {
-    "format": "bestaudio/best",
-    "outtmpl": "%(title)s.%(ext)s",
-    "noplaylist": True,
-    "cookiefile": "Pbxbot/cookies.txt",  # Path to your exported cookies file
-    "quiet": True,
-    "postprocessors": [{
-        "key": "FFmpegExtractAudio",
-        "preferredcodec": "mp3",
-        "preferredquality": "192",
-    }],
-    "headers": {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    }
-    }
-    try:
-        # Use yt-dlp to download the audio in the background
-        with YoutubeDL(YTDL_OPTS) as ytdl:
-            info = ytdl.extract_info(f"ytsearch:{query}", download=True)
-            video = info["entries"][0]
-            title = video["title"]
-            file_path = ytdl.prepare_filename(video).replace(".webm", ".mp3")
+# Function to handle downloading media with cookie support
+async def download_media_with_cookies(client, message, cookies=None):
+    file = None
+    if message.reply_to_message:
+        if message.reply_to_message.audio or message.reply_to_message.voice:
+            file = await client.download_media(message.reply_to_message, cookies=cookies)
+        elif message.reply_to_message.video or message.reply_to_message.document:
+            file = await client.download_media(message.reply_to_message, cookies=cookies)
+    return file
 
-        # Check if the file exists
-        if not os.path.exists(file_path):
-            print(f"File not found at {file_path}")  # Debugging line
-            await message.reply(f"❌ The file {title} could not be found after download.")
-            return
-
-        # Inform user about the successful download
-        await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
-
-        # Use asyncio.to_thread for non-blocking audio file reading and sending
-        await send_audio(message, file_path, title)
-
-        # Clean up after playing
-        os.remove(file_path)
-        await message.reply("✅ Finished playing!")
-
-    except Exception as e:
-        await message.reply(f"❌ Error: {str(e)}")
-
-# Function to handle sending audio asynchronously
-async def send_audio(message, file_path, title):
-    loop = asyncio.get_event_loop()
-    
-    # Run file reading and sending asynchronously
-    audio_stream = await loop.run_in_executor(None, read_audio_file, file_path)
-
-    # Send the audio to the chat
-    await message.reply_audio(audio_stream, caption=f"Now playing: **{title}**")
-
-# Helper function to read audio file and return as a byte stream
-def read_audio_file(file_path):
-    with open(file_path, "rb") as audio_file:
-        return BytesIO(audio_file.read())
-
-# Handle incoming messages for searching and playing music
+# Audio Player
 @Client.on_message(filters.command("play") & filters.private)
-async def play_music(client, message):
-    query = " ".join(message.command[1:])  # Get the query from the message
-    if not query:
-        await message.reply("❌ Please provide a song name.")
-        return
-    await search_and_play_music(query, message)
+async def audio_stream(client, message):
+    chat_id = message.chat.id
+    aux = await eor(message, "**Processing ...**")
+    cookies = "Pbxbot/cookies.txt"  # Specify the path to your cookies file if needed
+    audio = (
+        (
+            message.reply_to_message.audio
+            or message.reply_to_message.voice
+        )
+        if message.reply_to_message
+        else None
+    )
+    type = "Audio"
+    try:
+        if audio:
+            await aux.edit("Downloading ...")
+            file = await download_media_with_cookies(client, message, cookies)
+        else:
+            if len(message.command) < 2:
+                return await aux.edit("**🥀 ɢɪᴠᴇ ᴍᴇ sᴏᴍᴇ ǫᴜᴇʀʏ ᴛᴏ\nᴘʟᴀʏ ᴍᴜsɪᴄ ᴏʀ ᴠɪᴅᴇᴏ❗...**")
+            if "?si=" in message.text:
+                query = message.text.split(None, 1)[1].split("?si=")[0]
+            else:
+                query = message.text.split(None, 1)[1]
+            results = await get_result(query)
+            link = results[0]
+            file = await get_stream(link, type, cookies)
+        
+        try:
+            a = await call.get_call(chat_id)
+            if a.status == "not_playing":
+                stream = await run_stream(file, type)
+                await call.change_stream(chat_id, stream)
+                await aux.edit("Playing!")
+            elif a.status in ["playing", "paused"]:
+                position = await queues.put(chat_id, file=file, type=type)
+                await aux.edit(f"Queued At {position}")
+        except GroupCallNotFound:
+            stream = await run_stream(file, type)
+            await call.join_group_call(chat_id, stream)
+            await aux.edit("Playing!")
+    except Exception as e:
+        print(f"Error: {e}")
+        return await aux.edit("**Please Try Again !**")
+
+# Video Player
+@Client.on_message(filters.command("vplay") & filters.private)
+async def video_stream(client, message):
+    chat_id = message.chat.id
+    aux = await eor(message, "**Processing ...**")
+    cookies = "Pbxbot/cookies.txt"
+    video = (
+        (
+            message.reply_to_message.video
+            or message.reply_to_message.document
+        )
+        if message.reply_to_message
+        else None
+    )
+    type = "Video"
+    try:
+        if video:
+            await aux.edit("Downloading ...")
+            file = await download_media_with_cookies(client, message, cookies)
+        else:
+            if len(message.command) < 2:
+                return await aux.edit("**🥀 ɢɪᴠᴇ ᴍᴇ sᴏᴍᴇ ǫᴜᴇʀʏ ᴛᴏ\nᴘʟᴀʏ ᴍᴜsɪᴄ ᴏʀ ᴠɪᴅᴇᴏ❗...**")
+            if "?si=" in message.text:
+                query = message.text.split(None, 1)[1].split("?si=")[0]
+            else:
+                query = message.text.split(None, 1)[1]
+            results = await get_result(query)
+            link = results[0]
+            file = await get_stream(link, type, cookies)
+        
+        try:
+            a = await call.get_call(chat_id)
+            if a.status == "not_playing":
+                stream = await run_stream(file, type)
+                await call.change_stream(chat_id, stream)
+                await aux.edit("Playing!")
+            elif a.status in ["playing", "paused"]:
+                position = await queues.put(chat_id, file=file, type=type)
+                await aux.edit(f"Queued At {position}")
+        except GroupCallNotFound:
+            stream = await run_stream(file, type)
+            await call.join_group_call(chat_id, stream)
+            await aux.edit("Playing!")
+    except Exception as e:
+        print(f"Error: {e}")
+        return await aux.edit("**Please Try Again !**")
