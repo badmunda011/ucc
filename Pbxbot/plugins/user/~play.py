@@ -18,7 +18,7 @@ async def download_media_with_cookies(client, message, cookies=None):
     return file
 
 # Audio Player
-@Client.on_message(filters.command("play") & filters.private)
+@on_message("play", allow_stan=True)
 async def audio_stream(client, message):
     chat_id = message.chat.id
     aux = await eor(message, "**Processing ...**")
@@ -65,7 +65,7 @@ async def audio_stream(client, message):
         return await aux.edit("**Please Try Again !**")
 
 # Video Player
-@Client.on_message(filters.command("vplay") & filters.private)
+@on_message("vplay", allow_stan=True)
 async def video_stream(client, message):
     chat_id = message.chat.id
     aux = await eor(message, "**Processing ...**")
