@@ -1,9 +1,9 @@
 import os
+import asyncio
 from pyrogram import Client, filters
 from yt_dlp import YoutubeDL
-from pyrogram.types import Message
-import subprocess
 from . import *
+from pyrogram.types import Message
 from io import BytesIO
 
 # Function to handle the search and music play
@@ -24,6 +24,7 @@ async def search_and_play_music(query, message):
         }
     }
     try:
+        # Use yt-dlp to download the audio in the background
         with YoutubeDL(YTDL_OPTS) as ytdl:
             info = ytdl.extract_info(f"ytsearch:{query}", download=True)
             video = info["entries"][0]
@@ -39,13 +40,8 @@ async def search_and_play_music(query, message):
         # Inform user about the successful download
         await message.reply(f"🎶 Downloaded: **{title}**\nPlaying now...")
 
-        # Convert audio to a byte stream for sending
-        with open(file_path, "rb") as audio_file:
-            audio_stream = BytesIO(audio_file.read())
-            audio_stream.seek(0)
-
-            # Send the audio file as a bot message
-            await message.reply_audio(audio_stream, caption=f"Now playing: **{title}**")
+        # Use asyncio.to_thread for non-blocking audio file reading and sending
+        await send_audio(message, file_path, title)
 
         # Clean up after playing
         os.remove(file_path)
@@ -54,8 +50,23 @@ async def search_and_play_music(query, message):
     except Exception as e:
         await message.reply(f"❌ Error: {str(e)}")
 
+# Function to handle sending audio asynchronously
+async def send_audio(message, file_path, title):
+    loop = asyncio.get_event_loop()
+    
+    # Run file reading and sending asynchronously
+    audio_stream = await loop.run_in_executor(None, read_audio_file, file_path)
+
+    # Send the audio to the chat
+    await message.reply_audio(audio_stream, caption=f"Now playing: **{title}**")
+
+# Helper function to read audio file and return as a byte stream
+def read_audio_file(file_path):
+    with open(file_path, "rb") as audio_file:
+        return BytesIO(audio_file.read())
+
 # Handle incoming messages for searching and playing music
-@on_message("play", allow_stan=True)
+@Client.on_message(filters.command("play") & filters.private)
 async def play_music(client, message):
     query = " ".join(message.command[1:])  # Get the query from the message
     if not query:
