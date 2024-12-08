@@ -14,6 +14,8 @@ from .config import ENV, Config, Symbols
 from .database import db
 from .logger import LOGS
 
+call = PyTgCalls(Client)
+call_config = GroupCallConfig(auto_start=False)
 
 class PbxClient(Client):
     def __init__(self) -> None:
