@@ -1,9 +1,5 @@
 from pyrogram import idle
 
-
-call = PyTgCalls(app)
-call_config = GroupCallConfig(auto_start=False)
-
 from Pbxbot import __version__
 from Pbxbot.core import (
     Config,
