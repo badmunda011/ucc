@@ -2,6 +2,7 @@ import aiohttp, aiofiles, asyncio, base64, logging
 import os, platform, random, re, socket
 import sys, time, textwrap
 from . import *
+from Pbxbot.calls import *
 from . import HelpMenu, group_only, handler, Pbxbot, on_message, custom_handler
 from os import getenv
 from Pbxbot import *
