@@ -2,7 +2,7 @@ import aiohttp, aiofiles, asyncio, base64, logging
 import os, platform, random, re, socket
 import sys, time, textwrap
 from . import *
-from . import HelpMenu, group_only, handler, Pbxbot, on_message
+from . import HelpMenu, group_only, handler, Pbxbot, on_message, custom_handler
 from os import getenv
 from Pbxbot import *
 from Pbxbot.plugins.user.play import *
@@ -848,18 +848,4 @@ async def stream_audio_or_video(client, message):
         except Exception:
             LOGGER.info(f"🚫 Stream Error: {e}")
             return
-
-
-@Pbxbot.on_update(pytgfl.chat_update(ChatUpdate.Status.CLOSED_VOICE_CHAT))
-@Pbxbot.on_update(pytgfl.chat_update(ChatUpdate.Status.KICKED))
-@Pbxbot.on_update(pytgfl.chat_update(ChatUpdate.Status.LEFT_GROUP))
-async def stream_services_handler(_, update: Update):
-    chat_id = update.chat_id
-    return await close_stream(chat_id)
-
-
-@Pbxbot.on_update(pytgfl.stream_end())
-async def stream_end_handler(_, update: Update):
-    chat_id = update.chat_id
-    return await change_stream(chat_id)
 
