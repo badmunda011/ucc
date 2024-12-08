@@ -4,6 +4,8 @@ import importlib
 import os
 import sys
 from pathlib import Path
+from pytgcalls.types import ChatUpdate, Update, GroupCallConfig
+from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
 
 import pyroaddon  # pylint: disable=unused-import
 from pyrogram import Client
