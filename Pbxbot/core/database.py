@@ -8,9 +8,6 @@ from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
 from .config import Config, Symbols
 from .logger import LOGS
 
-mongo_async_cli = _mongo_async_(Config.DATABASE_URL)
-db = mongo_async_cli.badmundaxdb
-
 
 class Database:
     def __init__(self, uri: str) -> None:
