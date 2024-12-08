@@ -20,7 +20,7 @@ __version__ = {
 
 #yukki
 
-mongo_async_cli = _mongo_async_(bad.SUKH)
+mongo_async_cli = _mongo_async_(SUKH)
 mongodb = mongo_async_cli.badmundaxdb
 
 # Served Chats
