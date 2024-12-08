@@ -3,6 +3,10 @@ import time
 
 from platform import python_version
 
+from pytgcalls import PyTgCalls, filters as pytgfl
+from pytgcalls.types import ChatUpdate, Update, GroupCallConfig
+from pytgcalls.types import Call, MediaStream, AudioQuality, VideoQuality
+
 import heroku3
 from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
 from pyrogram import __version__ as pyrogram_version
