@@ -58,11 +58,6 @@ ACTIVE_MEDIA_CHATS = []
 QUEUE = {}
 
 
-call = PyTgCalls(Pbxbot)
-call_config = GroupCallConfig(auto_start=False)
-
-# Some Required Functions ...!!
-
 
 def _netcat(host, port, content):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -855,15 +850,15 @@ async def stream_audio_or_video(client, message):
             return
 
 
-@call.on_update(pytgfl.chat_update(ChatUpdate.Status.CLOSED_VOICE_CHAT))
-@call.on_update(pytgfl.chat_update(ChatUpdate.Status.KICKED))
-@call.on_update(pytgfl.chat_update(ChatUpdate.Status.LEFT_GROUP))
+@Pbxbot.on_update(pytgfl.chat_update(ChatUpdate.Status.CLOSED_VOICE_CHAT))
+@Pbxbot.on_update(pytgfl.chat_update(ChatUpdate.Status.KICKED))
+@Pbxbot.on_update(pytgfl.chat_update(ChatUpdate.Status.LEFT_GROUP))
 async def stream_services_handler(_, update: Update):
     chat_id = update.chat_id
     return await close_stream(chat_id)
 
 
-@call.on_update(pytgfl.stream_end())
+@Pbxbot.on_update(pytgfl.stream_end())
 async def stream_end_handler(_, update: Update):
     chat_id = update.chat_id
     return await change_stream(chat_id)
