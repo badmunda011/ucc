@@ -110,8 +110,8 @@ def get_readable_time(seconds: int) -> str:
 
 # Mongo Database Functions
 
-chatsdb = db.chatsdb
-usersdb = db.usersdb
+chatsdb = mongodb.chatsdb
+usersdb = mongodb.usersdb
 
 
 
