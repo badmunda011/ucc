@@ -59,6 +59,9 @@ ACTIVE_MEDIA_CHATS = []
 QUEUE = {}
 
 
+call = PyTgCalls(Pbxbot)
+call_config = GroupCallConfig(auto_start=False)
+
 # Some Required Functions ...!!
 
 
