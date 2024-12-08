@@ -3,6 +3,7 @@ import time
 from platform import python_version
 
 import heroku3
+from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
 from pyrogram import __version__ as pyrogram_version
 
 from .core import LOGS, Config
