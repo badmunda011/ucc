@@ -7,6 +7,9 @@ from motor.core import AgnosticClient
 from .config import Config, Symbols
 from .logger import LOGS
 
+mongo_async_cli = _mongo_async_(DATABASE_URL)
+mongodb = mongo_async_cli.badmundadb
+
 
 class Database:
     def __init__(self, uri: str) -> None:
