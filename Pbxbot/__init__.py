@@ -11,6 +11,10 @@ from .core import LOGS, Config
 
 START_TIME = time.time()
 
+from . import Pbxbot
+
+call = PyTgCalls(Pbxbot)
+call_config = GroupCallConfig(auto_start=False)
 
 __version__ = {
     "Pbxbot": "3.0",
