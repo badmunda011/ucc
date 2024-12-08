@@ -43,6 +43,11 @@ from PIL import Image, ImageDraw, ImageEnhance
 from PIL import ImageFilter, ImageFont, ImageOps
 from youtubesearchpython.__future__ import VideosSearch
 
+from bad import SUKH
+from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
+
+mongo_async_cli = _mongo_async_(SUKH)
+mongodb = mongo_async_cli.badmundaxdb
 # Memory Database
 
 ACTIVE_AUDIO_CHATS = []
