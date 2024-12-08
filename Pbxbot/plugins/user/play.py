@@ -10,12 +10,10 @@ from functools import partial
 from dotenv import load_dotenv
 from datetime import datetime
 from typing import Union, List, Pattern
-from CakeMusic.misc import SUDOERS
 from logging.handlers import RotatingFileHandler
 
 from typing import Union, List, Pattern
 from pyrogram import Client, filters as pyrofl
-from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError
 from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
 
