@@ -2,7 +2,7 @@ import aiohttp, aiofiles, asyncio, base64, logging
 import os, platform, random, re, socket
 import sys, time, textwrap
 from . import *
-from . import HelpMenu, group_only, handler, Pbxbot, on_message
+from . import HelpMenu, group_only, handler, Pbxbot, on_message, db
 from os import getenv
 from io import BytesIO
 from time import strftime
