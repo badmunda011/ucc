@@ -14,6 +14,7 @@ class Config:
     API_ID = int(getenv("API_ID", 27383453))
     BOT_TOKEN = getenv("BOT_TOKEN", None)
     DATABASE_URL = getenv("DATABASE_URL", None)
+    PLAY_IMAGE_URL = getenv("START_IMAGE_URL", "https://files.catbox.moe/6v7esb.jpg")
     HANDLERS = getenv("HANDLERS", ". ! ?").strip().split()
     LOGGER_ID = int(getenv("LOGGER_ID", 0))
     OWNER_ID = int(getenv("OWNER_ID", 0))
