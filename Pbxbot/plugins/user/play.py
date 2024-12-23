@@ -6,7 +6,7 @@ from . import HelpMenu, group_only, handler, Pbxbot, on_message, Config
 from pyrogram import Client, filters
 from Pbxbot import *
 
-from Pbxbot.core.clients import call
+from Pbxbot.core.clients import *
 from Pbxbot.core.config import *
 from Pbxbot.plugins.user.play import *
 from os import getenv
