@@ -26,8 +26,7 @@ class PbxClient(Client):
             bot_token=Config.BOT_TOKEN,
             plugins=dict(root="Pbxbot.plugins.bot"),
         )
-
-    call = PyTgCalls(Client)
+        self.call = None  # Placeholder for PyTgCalls instance
 
     async def start_user(self) -> None:
         sessions = await db.get_all_sessions()
@@ -68,6 +67,15 @@ class PbxClient(Client):
         LOGS.info(
             f"{Symbols.arrow_right * 2} Started PbxBot Client: '{me.username}' {Symbols.arrow_left * 2}"
         )
+
+    async def start_pytgcalls(self) -> None:
+        try:
+            LOGS.info("Starting PyTgCalls...")
+            self.call = PyTgCalls(self.bot)  # Initialize PyTgCalls with bot
+            await self.call.start()  # Start the PyTgCalls instance
+            LOGS.info("PyTgCalls Started.")
+        except Exception as e:
+            LOGS.error(f"Failed To Start PyTgCalls: {e}")
 
     async def load_plugin(self) -> None:
         count = 0
@@ -148,6 +156,7 @@ class PbxClient(Client):
         )
         await self.start_bot()
         await self.start_user()
+        await self.start_pytgcalls()
         await self.load_plugin()
 
 
