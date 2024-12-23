@@ -19,17 +19,21 @@ from pytgcalls import PyTgCalls
 
 class PbxClient(Client):
     def __init__(self) -> None:
-        self.users: list[Client] = []
-        self.bot: Client = Client(
+        super().__init__(  # Initialize the base Client class
             name="PBXBOT 2.0",
             api_id=Config.API_ID,
             api_hash=Config.API_HASH,
             bot_token=Config.BOT_TOKEN,
             plugins=dict(root="Pbxbot.plugins.bot"),
         )
-        self.call = PyTgCalls(self.bot)
-        Pbxbot = PbxClient()
-        call = Pbxbot.call
+        self.users: list[Client] = []
+        self.call = PyTgCalls(self)  # Initialize PyTgCalls with the current instance
+
+# Create the `Pbxbot` instance at the module level (outside the class)
+Pbxbot = PbxClient()
+
+# Optionally expose `call` for import elsewhere
+call = Pbxbot.call
         
 
     async def start_user(self) -> None:
