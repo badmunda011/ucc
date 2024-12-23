@@ -20,6 +20,9 @@ from pytgcalls import PyTgCalls
 
 class PbxClient(Client):
     def __init__(self) -> None:
+        # Initialize `storage` as a dictionary
+        self.storage = {}
+
         self.users: list[Client] = []
         self.bot: Client = Client(
             name="PBXBOT 2.0",
@@ -181,6 +184,14 @@ class PbxClient(Client):
         await self.start_pytgcalls()
         await self.load_plugin()
 
+
+class CustomMethods(PbxClient):
+    # Custom methods can remain unchanged
+    pass
+
+
+Pbxbot = CustomMethods()
+call = Pbxbot.call
 
 class CustomMethods(PbxClient):
     async def input(self, message: Message) -> str:
