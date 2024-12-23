@@ -41,6 +41,16 @@ class PbxClient(Client):
         except RPCError:
             return False
 
+    async def get_peer_by_id(self, chat_id):
+        """Helper to safely retrieve peer by chat ID."""
+        try:
+            peer = self.call.get_peer_by_id(chat_id)
+            return peer
+        except AttributeError as e:
+            LOGS.error(f"AttributeError in get_peer_by_id: {e}")
+            return None
+            
+            
     async def start_user(self) -> None:
         sessions = await db.get_all_sessions()
         for i, session in enumerate(sessions):
@@ -285,3 +295,4 @@ Pbxbot = CustomMethods()
 
 # Expose the call instance for external imports
 call = Pbxbot.call
+
