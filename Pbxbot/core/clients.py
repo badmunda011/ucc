@@ -16,7 +16,6 @@ from .logger import LOGS
 
 from pytgcalls import PyTgCalls
 
-
 class PbxClient(Client):
     def __init__(self) -> None:
         self.users: list[Client] = []
@@ -68,7 +67,7 @@ class PbxClient(Client):
         LOGS.info(
             f"{Symbols.arrow_right * 2} Started PbxBot Client: '{me.username}' {Symbols.arrow_left * 2}"
         )
-
+        
     async def start_pytgcalls(self) -> None:
         try:
             LOGS.info("Starting PyTgCalls...")
@@ -120,7 +119,7 @@ class PbxClient(Client):
 
     async def start_message(self, version: dict) -> None:
         await self.bot.send_animation(
-            Config.LOGGER_ID,
+                        Config.LOGGER_ID,
             "https://telegra.ph/file/48a4bb97b1b6e64184223.mp4",
             f"**{Symbols.check_mark} ᴘʙx 2.0 ɪs.ɴᴏᴡ ᴏɴʟɪɴᴇ!**\n\n"
             f"**{Symbols.triangle_right}  ᴄʟɪᴇɴᴛs ➠ ** `{len(self.users)}`\n"
@@ -144,7 +143,7 @@ class PbxClient(Client):
                         InlineKeyboardButton("⎯꯭̽🇨🇦꯭꯭ ⃪В꯭α꯭∂ ꯭м꯭υ꯭η∂꯭α_꯭آآ⎯꯭ ꯭̽🌸", url="https://t.me/ll_BAD_MUNDA_ll"),
                     ],
                     [
-                        InlineKeyboardButton("🦋 𝐏ʙx 𝐁ᴏᴛ 𝐒ᴜᴘᴘᴏʀᴛ ❤️", url="https://t.me/ll_THE_BAD_BOT_ll"),
+                    InlineKeyboardButton("🦋 𝐏ʙx 𝐁ᴏᴛ 𝐒ᴜᴘᴘᴏʀᴛ ❤️", url="https://t.me/ll_THE_BAD_BOT_ll"),
                     ],
                 ]
             ),
@@ -165,11 +164,13 @@ class CustomMethods(PbxClient):
         """Get the input from the user"""
         if len(message.command) < 2:
             output = ""
+
         else:
             try:
                 output = message.text.split(" ", 1)[1].strip() or ""
             except IndexError:
                 output = ""
+
         return output
 
     async def edit(
@@ -242,7 +243,9 @@ class CustomMethods(PbxClient):
             await self._log(tag, text, file)
 
 
-# Other imports and code...
+Pbxbot = CustomMethods()
+
+
 
 class CustomMethods(PbxClient):
     # Your utility methods...
