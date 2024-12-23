@@ -19,7 +19,7 @@ from pytgcalls import PyTgCalls
 
 class PbxClient(Client):
     def __init__(self) -> None:
-        super().__init__(  # Initialize the base Client class
+        super().__init__(
             name="PBXBOT 2.0",
             api_id=Config.API_ID,
             api_hash=Config.API_HASH,
@@ -27,11 +27,7 @@ class PbxClient(Client):
             plugins=dict(root="Pbxbot.plugins.bot"),
         )
         self.users: list[Client] = []
-        self.call = PyTgCalls(self)  # Initialize PyTgCalls with the current instance
-
-# Optionally expose `call` for import elsewhere
-call = Pbxbot.call
-        
+        self.call = PyTgCalls(self)
 
     async def start_user(self) -> None:
         sessions = await db.get_all_sessions()
@@ -47,23 +43,10 @@ call = Pbxbot.call
                 me = await client.get_me()
                 self.users.append(client)
                 LOGS.info(
-                    f"{Symbols.arrow_right * 2} Started User {i + 1}: '{me.first_name}' {Symbols.arrow_left * 2}"
+                    f"Started User {i + 1}: '{me.first_name}'"
                 )
-                is_in_logger = await self.validate_logger(client)
-                if not is_in_logger:
-                    LOGS.warning(
-                        f"Client #{i+1}: '{me.first_name}' is not in Logger Group! Check and add manually for proper functioning."
-                    )
-                try:
-                    await client.join_chat("https://t.me/ll_THE_BAD_BOT_ll")
-                except:
-                    pass
-                try:
-                    await client.join_chat("https://t.me/PBX_NETWORK")
-                except:
-                    pass
             except Exception as e:
-                LOGS.error(f"{i + 1}: {e}")
+                LOGS.error(f"Error starting user {i + 1}: {e}")
                 continue
 
     async def start_bot(self) -> None:
