@@ -81,13 +81,12 @@ class PbxClient(Client):
     async def start_pytgcalls(self) -> None:
         try:
             LOGS.info("Starting PyTgCalls...")
-            if not self.call.is_running:
-                await self.call.start()
-                LOGS.info("PyTgCalls Started.")
-            else:
-                LOGS.info("PyTgCalls is already running.")
+            await self.call.start()
+            LOGS.info("PyTgCalls Started.")
         except Exception as e:
             LOGS.error(f"Failed To Start PyTgCalls: {e}")
+
+    # Other methods remain unchanged
 
     async def load_plugin(self) -> None:
         count = 0
