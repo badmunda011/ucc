@@ -243,13 +243,6 @@ class CustomMethods(PbxClient):
             await self._log(tag, text, file)
 
 
-Pbxbot = CustomMethods()
-
-
-
-class CustomMethods(PbxClient):
-    # Your utility methods...
-    pass
 
 Pbxbot = CustomMethods()
 
