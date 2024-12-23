@@ -1,5 +1,4 @@
 import asyncio
-from . import Pbxbot
 import glob
 import importlib
 import os
@@ -28,7 +27,7 @@ class PbxClient(Client):
             plugins=dict(root="Pbxbot.plugins.bot"),
         )
 
-    call = PyTgCalls(Pbxbot)
+    call = PyTgCalls(CustomMethods)
 
     async def start_user(self) -> None:
         sessions = await db.get_all_sessions()
