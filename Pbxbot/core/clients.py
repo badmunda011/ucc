@@ -27,7 +27,7 @@ class PbxClient(Client):
             plugins=dict(root="Pbxbot.plugins.bot"),
         )
 
-    call = PyTgCalls(CustomMethods)
+    call = PyTgCalls(Client)
 
     async def start_user(self) -> None:
         sessions = await db.get_all_sessions()
