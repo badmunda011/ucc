@@ -14,6 +14,7 @@ from .config import ENV, Config, Symbols
 from .database import db
 from .logger import LOGS
 
+from pytgcalls import PyTgCalls
 
 class PbxClient(Client):
     def __init__(self) -> None:
