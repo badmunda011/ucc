@@ -29,9 +29,6 @@ class PbxClient(Client):
         self.users: list[Client] = []
         self.call = PyTgCalls(self)  # Initialize PyTgCalls with the current instance
 
-# Create the `Pbxbot` instance at the module level (outside the class)
-Pbxbot = PbxClient()
-
 # Optionally expose `call` for import elsewhere
 call = Pbxbot.call
         
