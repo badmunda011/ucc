@@ -3,6 +3,7 @@ import time
 
 from platform import python_version
 
+from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
 
 import heroku3
 from motor.motor_asyncio import AsyncIOMotorClient as _mongo_async_
@@ -60,3 +61,11 @@ if not os.path.isdir(Config.DWL_DIR):
 
 if not os.path.isdir(Config.TEMP_DIR):
     os.makedirs(Config.TEMP_DIR)
+
+
+
+
+mongo_async_cli = _mongo_async_(Config.DATABASE_URL)
+mongodb = mongo_async_cli.badmundaxdb
+db = mongodb.Anonymous
+mongodb = mongodb.program
