@@ -170,6 +170,9 @@ class CustomMethods(PbxClient):
                 output = message.text.split(" ", 1)[1].strip() or ""
             except IndexError:
                 output = ""
+        
+        # Correct way to access chat ID
+        chat_id = message.chat.id  # Accessing chat.id correctly
 
         return output
 
