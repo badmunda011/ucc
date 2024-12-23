@@ -1,4 +1,4 @@
-yt-dlp==2024.11.18
+yt-dlp==2024.12.15.232913.dev0
 gitpython==3.1.43
 py-tgcalls==2.1.0.dev2
 tgcrypto==1.2.5
