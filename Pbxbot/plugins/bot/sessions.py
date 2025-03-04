@@ -58,69 +58,19 @@ async def new_session(_, message: Message):
         reply_markup=ReplyKeyboardRemove(),
     )
 
-    phone_number = await Pbxbot.bot.ask(
-        message.chat.id,
-        "**1.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝗉𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗍𝗈 𝖺𝖽𝖽 𝗍𝗁𝖾 𝗌𝖾𝗌𝗌𝗂𝗈𝗇:",
-        filters=filters.text,
-        timeout=120,
+    buttons = [
+        [
+            InlineKeyboardButton(
+                " ᴘʙx 2.0 sᴇssɪᴏɴ", 
+                web_app=WebAppInfo(url="https://telegram.tools/session-string-generator#pyrogram")
+            ),
+        ]
+    ]
+
+    await message.reply_text(
+        "**👻 𝖯𝗅𝖾𝖺𝗌𝖾 𝖼𝗁𝗈𝗈𝗌𝖾 𝖺 𝗇𝖾𝗐 𝗈𝗉𝗍𝗂𝗈𝗇 𝖿𝗋𝗈𝗆 𝖻𝖾𝗅𝗈𝗐:**",
+        reply_markup=InlineKeyboardMarkup(buttons),
     )
-
-    if phone_number.text == "/cancel":
-        return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
-    elif not phone_number.text.startswith("+") and not phone_number.text[1:].isdigit():
-        return await message.reply_text(
-            "**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗆𝗎𝗌𝗍 𝖻𝖾 𝗂𝗇 𝖽𝗂𝗀𝗂𝗍𝗌 𝖺𝗇𝖽 𝗌𝗁𝗈𝗎𝗅𝖽 𝗌𝗍𝖺𝗋𝗍 𝗐𝗂𝗍𝗁 𝗍𝗁𝖾 '+' 𝗌𝗂𝗀𝗇."
-        )
-
-    try:
-        client = Client(
-            name="Pbxbot 2.0",
-            api_id=Config.API_ID,
-            api_hash=Config.API_HASH,
-            in_memory=True,
-        )
-        await client.connect()
-
-        code = await client.send_code(phone_number.text)
-        ask_otp = await Pbxbot.bot.ask(
-            message.chat.id,
-            "**2.** 𝖤𝗇𝗍𝖾𝗋 𝗍𝗁𝖾 𝖮𝖳𝖯 𝗌𝖾𝗇𝗍 𝗍𝗈 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝖻𝗒 𝗌𝖾𝗉𝖺𝗋𝖺𝗍𝖾 𝗆𝖾𝗌𝗌𝖺𝗀𝖾:",
-            filters=filters.text,
-            timeout=300,
-        )
-        if ask_otp.text == "/cancel":
-            return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
-        otp = ask_otp.text.replace(" ", "")
-
-        try:
-            await client.sign_in(phone_number.text, code.phone_code_hash, otp)
-        except SessionPasswordNeeded:
-            two_step_pass = await Pbxbot.bot.ask(
-                message.chat.id,
-                "**3.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝗐𝗈-𝗌𝗍𝖾𝗉 𝗏𝖾𝗋𝗂𝖿𝗂𝖼𝖺𝗍𝗂𝗈𝗇 𝗉𝖺𝗌𝗌𝗐𝗈𝗋𝖽:",
-                filters=filters.text,
-                timeout=120,
-            )
-            if two_step_pass.text == "/cancel":
-                return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
-            await client.check_password(two_step_pass.text)
-
-        session_string = await client.export_session_string()
-        await message.reply_text(
-            f"**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖸𝗈𝗎𝗋 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝗂𝗌 𝗀𝖾𝗇𝖾𝗋𝖺𝗍𝖾𝖽. 𝖠𝖽𝖽𝗂𝗇𝗀 𝗂𝗍 𝗍𝗈 𝗍𝗁𝖾 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
-        )
-        user_id = (await client.get_me()).id
-        await db.update_session(user_id, session_string)
-        await client.disconnect()
-        await message.reply_text(
-            "**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝖺𝖽𝖽𝖾𝖽 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
-        )
-    except TimeoutError:
-        await message.reply_text(
-            "**𝖳𝗂𝗆𝖾𝗈𝗎𝗍𝖤𝗋𝗋𝗈𝗋!** 𝖸𝗈𝗎 𝗍𝗈𝗈𝗄 𝗅𝗈𝗇𝗀𝖾𝗋 𝗍𝗁𝖺𝗇 𝖾𝗑𝖼𝗉𝖾𝖼𝗍𝖾𝖽 𝗍𝗈 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖾 𝗍𝗁𝖾 𝗉𝗋𝗈𝖼𝖾𝗌𝗌."
-        )
-    except Exception as e:
-        await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
 
 
 # Existing delete session command
