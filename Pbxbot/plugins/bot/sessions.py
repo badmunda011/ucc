@@ -7,7 +7,7 @@ from ..btnsG import gen_inline_keyboard, start_button
 from ..btnsK import session_keyboard
 from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
 
-GROUP_LINK = "https://t.me/BAD_TESTING_BOTS"
+GROUP_LINK = "https://t.me/+Ev8OXFt2t1UzNjY1"
 
 # New command to add session string manually
 @Pbxbot.bot.on_message(filters.command("add") & Config.AUTH_USERS & filters.private)
