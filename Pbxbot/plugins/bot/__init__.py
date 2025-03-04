@@ -34,9 +34,11 @@ __» Feel free to contact us if you need any help regarding the bot.__**
 
 3. now click on "new" button and add your account.
 
-4. follow all the prompts and do the needful.
+4. send /add { Paste Your Genrate Session }
 
-5. restart the bot with /restart command.**
+5. follow all the prompts and do the needful.
+
+6. restart the bot with /restart command.**
 
 **❤️ @ll_THE_BAD_BOT_ll ❤️**
 """
