@@ -41,13 +41,7 @@ def get_audio_url(query):
             return info["entries"][0]["url"], info["entries"][0]["id"]
         return None, None
 
-@on_message(
-    "play",
-    "vplay",
-    chat_type=group_only,
-    admin_only=True,
-    allow_stan=True,
-)
+@on_message("play", allow_stan=True)
 async def play_music(_, message):
     if len(message.command) < 2:
         return await message.reply("Usage: /play song_name")
