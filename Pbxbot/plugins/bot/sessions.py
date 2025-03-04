@@ -63,13 +63,13 @@ async def new_session(_, message: Message):
         [
             InlineKeyboardButton(
                 " ᴘʙx 2.0 sᴇssɪᴏɴ", 
-                web_app=WebAppInfo(url="https://telegram.tools/session-string-generator#pyrogram")
+                web_app=WebAppInfo(url="https://telegram.tools/session-string-generator#pyrogram,user")
             ),
         ]
     ]
 
     await message.reply_text(
-        "**👻 𝖯𝗅𝖾𝖺𝗌𝖾 𝖼𝗁𝗈𝗈𝗌𝖾 𝖺 𝗇𝖾𝗐 𝗈𝗉𝗍𝗂𝗈𝗇 𝖿𝗋𝗈𝗆 𝖻𝖾𝗅𝗈𝗐:**",
+        "**👻 Genrate Pyrogram String Session :**",
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
