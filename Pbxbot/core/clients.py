@@ -31,7 +31,7 @@ class PbxClient(Client):
             bot_token=Config.BOT_TOKEN,
             plugins=dict(root="Pbxbot.plugins.bot"),
         )
-        self.call = PyTgCalls(self.bot)
+        self.call = PyTgCalls(self.bot)  # Ensure this line is correct
 
     async def is_connected(self) -> bool:
         """Check if the bot is connected"""
