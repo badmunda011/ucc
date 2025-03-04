@@ -12,7 +12,7 @@ from . import HELP_MSG, START_MSG, BotHelp, Config, Pbxbot
 @Pbxbot.bot.on_message(filters.regex("start"))
 async def go_home(_, message: Message):
     await message.reply_text(
-        "** ᴛʏᴘᴇ  /session ✓ ❤️**",
+        "** ᴛʏᴘᴇ  /add {paste your py session} ✓ ❤️**",
     )
     await message.reply_text(
         CLONE_MSG.format(message.from_user.mention),
