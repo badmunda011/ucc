@@ -59,9 +59,10 @@ async def play_music(_, message):
     thumb = await get_thumb(videoid)
     
     chat_id = message.chat.id
-    await call.join_group_call(chat_id, AudioPiped(url, download=False))  # Ensure streaming
+    await call.join_group_call(chat_id, AudioPiped(url))  # Ensure streaming without download argument
     await message.reply_photo(thumb, caption=f"🎵 Playing: {query}")
-    
+
+
 @on_message(
     "stop",
     "end",
