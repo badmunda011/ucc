@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.errors import SessionPasswordNeeded
+from pyrogram.types import WebAppInfo
 from pyrogram.types import Message, ReplyKeyboardRemove
 import asyncio
 from pyrogram.types import (
