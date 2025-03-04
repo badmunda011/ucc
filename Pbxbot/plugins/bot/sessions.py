@@ -13,6 +13,7 @@ from ..btnsK import session_keyboard
 from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
 
 
+# Existing session menu command
 @Pbxbot.bot.on_message(
     filters.command("session") & Config.AUTH_USERS & filters.private
 )
@@ -23,6 +24,33 @@ async def session_menu(_, message: Message):
     )
 
 
+# New command to add session string manually
+@Pbxbot.bot.on_message(filters.command("add") & Config.AUTH_USERS & filters.private)
+async def add_session(_, message: Message):
+    parts = message.text.split(" ", 1)
+    if len(parts) < 2 or not parts[1]:
+        return await message.reply_text("**Error!** Please provide a valid session string.")
+    
+    session_string = parts[1]
+    try:
+        client = Client(
+            name="Pbxbot 2.0",
+            session_string=session_string,
+            api_id=Config.API_ID,
+            api_hash=Config.API_HASH,
+            in_memory=True,
+        )
+        await client.connect()
+        user_id = (await client.get_me()).id
+        await db.update_session(user_id, session_string)
+        await client.disconnect()
+        await message.reply_text(
+            "**Success!** Session string added to database."
+        )
+    except Exception as e:
+        await message.reply_text(f"**Error!** {e}")
+
+# Existing command to create a new session
 @Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 👑") & Config.AUTH_USERS & filters.private)
 async def new_session(_, message: Message):
     await message.reply_text(
@@ -32,7 +60,7 @@ async def new_session(_, message: Message):
 
     phone_number = await Pbxbot.bot.ask(
         message.chat.id,
-        "**1.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝗉𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗍𝗈 𝖺𝖽𝖽 𝗍𝗁𝖾 𝗌𝖾𝗌𝗌𝗂𝗈𝗇: \n\n__𝖲𝖾𝗇𝖽 /cancel 𝗍𝗈 𝖼𝖺𝗇𝖼𝖾𝗅 𝗍𝗁𝖾 𝗈𝗉𝖾𝗋𝖺𝗍𝗂𝗈𝗇.__",
+        "**1.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝗉𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗍𝗈 𝖺𝖽𝖽 𝗍𝗁𝖾 𝗌𝖾𝗌𝗌𝗂𝗈𝗇:",
         filters=filters.text,
         timeout=120,
     )
@@ -41,7 +69,7 @@ async def new_session(_, message: Message):
         return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
     elif not phone_number.text.startswith("+") and not phone_number.text[1:].isdigit():
         return await message.reply_text(
-            "**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗆𝗎𝗌𝗍 𝖻𝖾 𝗂𝗇 𝖽𝗂𝗀𝗂𝗍𝗌 𝖺𝗇𝖽 𝗌𝗁𝗈𝗎𝗅𝖽 𝖼𝗈𝗇𝗍𝖺𝗂𝗇 𝖼𝗈𝗎𝗇𝗍𝗋𝗒 𝖼𝗈𝖽𝖾."
+            "**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗁𝗈𝗇𝖾 𝗇𝗎𝗆𝖻𝖾𝗋 𝗆𝗎𝗌𝗍 𝖻𝖾 𝗂𝗇 𝖽𝗂𝗀𝗂𝗍𝗌 𝖺𝗇𝖽 𝗌𝗁𝗈𝗎𝗅𝖽 𝗌𝗍𝖺𝗋𝗍 𝗐𝗂𝗍𝗁 𝗍𝗁𝖾 '+' 𝗌𝗂𝗀𝗇."
         )
 
     try:
@@ -56,7 +84,7 @@ async def new_session(_, message: Message):
         code = await client.send_code(phone_number.text)
         ask_otp = await Pbxbot.bot.ask(
             message.chat.id,
-            "**2.** 𝖤𝗇𝗍𝖾𝗋 𝗍𝗁𝖾 𝖮𝖳𝖯 𝗌𝖾𝗇𝗍 𝗍𝗈 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝖻𝗒 𝗌𝖾𝗉𝖺𝗋𝖺𝗍𝗂𝗇𝗀 𝖾𝗏𝖾𝗋𝗒 𝗇𝗎𝗆𝖻𝖾𝗋 𝗐𝗂𝗍𝗁 𝖺 𝗌𝗉𝖺𝖼𝖾. \n\n**𝖤𝗑𝖺𝗆𝗉𝗅𝖾:** `2 4 1 7 4`\n\n__𝖲𝖾𝗇𝖽 /cancel 𝗍𝗈 𝖼𝖺𝗇𝖼𝖾𝗅 𝗍𝗁𝖾 𝗈𝗉𝖾𝗋𝖺𝗍𝗂𝗈𝗇.__",
+            "**2.** 𝖤𝗇𝗍𝖾𝗋 𝗍𝗁𝖾 𝖮𝖳𝖯 𝗌𝖾𝗇𝗍 𝗍𝗈 𝗒𝗈𝗎𝗋 𝗍𝖾𝗅𝖾𝗀𝗋𝖺𝗆 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝖻𝗒 𝗌𝖾𝗉𝖺𝗋𝖺𝗍𝖾 𝗆𝖾𝗌𝗌𝖺𝗀𝖾:",
             filters=filters.text,
             timeout=300,
         )
@@ -69,7 +97,7 @@ async def new_session(_, message: Message):
         except SessionPasswordNeeded:
             two_step_pass = await Pbxbot.bot.ask(
                 message.chat.id,
-                "**3.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝗐𝗈 𝗌𝗍𝖾𝗉 𝗏𝖾𝗋𝗂𝖿𝗂𝖼𝖺𝗍𝗂𝗈𝗇 𝗉𝖺𝗌𝗌𝗐𝗈𝗋𝖽: \n\n__𝖲𝖾𝗇𝖽 /cancel 𝗍𝗈 𝖼𝖺𝗇𝖼𝖾𝗅 𝗍𝗁𝖾 𝗈𝗉𝖾𝗋𝖺𝗍𝗂𝗈𝗇.__",
+                "**3.** 𝖤𝗇𝗍𝖾𝗋 𝗒𝗈𝗎𝗋 𝗍𝗐𝗈-𝗌𝗍𝖾𝗉 𝗏𝖾𝗋𝗂𝖿𝗂𝖼𝖺𝗍𝗂𝗈𝗇 𝗉𝖺𝗌𝗌𝗐𝗈𝗋𝖽:",
                 filters=filters.text,
                 timeout=120,
             )
@@ -79,29 +107,30 @@ async def new_session(_, message: Message):
 
         session_string = await client.export_session_string()
         await message.reply_text(
-            f"**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖸𝗈𝗎𝗋 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝗂𝗌 𝗀𝖾𝗇𝖾𝗋𝖺𝗍𝖾𝖽. 𝖠𝖽𝖽𝗂𝗇𝗀 𝗂𝗍 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾..."
+            f"**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖸𝗈𝗎𝗋 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝗂𝗌 𝗀𝖾𝗇𝖾𝗋𝖺𝗍𝖾𝖽. 𝖠𝖽𝖽𝗂𝗇𝗀 𝗂𝗍 𝗍𝗈 𝗍𝗁𝖾 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
         )
         user_id = (await client.get_me()).id
         await db.update_session(user_id, session_string)
         await client.disconnect()
         await message.reply_text(
-            "**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝖺𝖽𝖽𝖾𝖽 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾. 𝖸𝗈𝗎 𝖼𝖺𝗇 𝗇𝗈𝗐 𝗎𝗌𝖾 Pbxbot 2.0 𝗈𝗇 𝗍𝗁𝗂𝗌 𝖺𝖼𝖼𝗈𝗎𝗇𝗍 𝖺𝖿𝗍𝖾𝗋 𝗋𝖾𝗌𝗍𝖺𝗋𝗍𝗂𝗇𝗀 𝗍𝗁𝖾 𝖻𝗈𝗍.\n\n**𝖭𝖮𝖳𝖤:** 𝖥𝗈𝗋 𝗌𝖾𝖼𝗎𝗋𝗂𝗍𝗒 𝗉𝗎𝗋𝗉𝗈𝗌𝖾𝗌 𝗇𝗈𝖻𝗈𝖽𝗒 𝗐𝗂𝗅𝗅 𝗁𝖺𝗏𝖾 𝗍𝗁𝖾 𝖺𝖼𝖼𝖾𝗌𝗌 𝗍𝗈 𝗒𝗈𝗎𝗋 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀. 𝖭𝗈𝗍 𝖾𝗏𝖾𝗇 𝗒𝗈𝗎 𝗈𝗋 𝗍𝗁𝖾 𝖻𝗈𝗍."
+            "**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀 𝖺𝖽𝖽𝖾𝖽 𝗍𝗈 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾."
         )
     except TimeoutError:
         await message.reply_text(
-            "**𝖳𝗂𝗆𝖾𝗈𝗎𝗍𝖤𝗋𝗋𝗈𝗋!** 𝖸𝗈𝗎 𝗍𝗈𝗈𝗄 𝗅𝗈𝗇𝗀𝖾𝗋 𝗍𝗁𝖺𝗇 𝖾𝗑𝖼𝗉𝖾𝖼𝗍𝖾𝖽 𝗍𝗈 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖾 𝗍𝗁𝖾 𝗉𝗋𝗈𝖼𝖾𝗌𝗌. 𝖯𝗅𝖾𝖺𝗌𝖾 𝗍𝗋𝗒 𝖺𝗀𝖺𝗂𝗇."
+            "**𝖳𝗂𝗆𝖾𝗈𝗎𝗍𝖤𝗋𝗋𝗈𝗋!** 𝖸𝗈𝗎 𝗍𝗈𝗈𝗄 𝗅𝗈𝗇𝗀𝖾𝗋 𝗍𝗁𝖺𝗇 𝖾𝗑𝖼𝗉𝖾𝖼𝗍𝖾𝖽 𝗍𝗈 𝖼𝗈𝗆𝗉𝗅𝖾𝗍𝖾 𝗍𝗁𝖾 𝗉𝗋𝗈𝖼𝖾𝗌𝗌."
         )
     except Exception as e:
         await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
 
 
+# Existing delete session command
 @Pbxbot.bot.on_message(
     filters.regex(r"ᴅᴇʟᴇᴛᴇ 🚫") & Config.AUTH_USERS & filters.private
 )
 async def delete_session(_, message: Message):
     all_sessions = await db.get_all_sessions()
     if not all_sessions:
-        return await message.reply_text("𝖭𝗈 𝗌𝖾𝗌𝗌𝗂𝗈𝗇𝗌 𝖿𝗈𝗎𝗇𝖽 𝗂𝗇 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾.")
+        return await message.reply_text("𝖭𝗈 𝗌𝖾𝗌𝗌𝗂𝗈𝗇𝗌 𝖿𝗈𝗎𝗇𝖽 𝗂𝗇 𝖽𝗂𝗌𝗍𝗒𝖻𝖺𝗌𝖾.")
 
     collection = []
     for i in all_sessions:
@@ -116,6 +145,7 @@ async def delete_session(_, message: Message):
     )
 
 
+# Existing callback query handler to remove session
 @Pbxbot.bot.on_callback_query(filters.regex(r"rm_session"))
 async def rm_session_cb(client: Client, cb: CallbackQuery):
     collection = []
@@ -134,12 +164,12 @@ async def rm_session_cb(client: Client, cb: CallbackQuery):
         owner_name = "𝖮𝗐𝗇𝖾𝗋"
     if cb.from_user.id not in [user_id, owner_id]:
         return await cb.answer(
-            f"𝖠𝖼𝖼𝖾𝗌𝗌 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝗍𝗈 𝖺𝗇𝗈𝗍𝗁𝖾𝗋 𝗎𝗌𝖾𝗋𝗌. Only {owner_name} and session client can delete this session!",
+            f"𝖠𝖼𝖼𝖾𝗌𝗌 𝗋𝖾𝗌𝗍𝗋𝗂𝖼𝗍𝖾𝖽 𝗍𝗈 𝖺𝗇𝗈𝗍𝗁𝖾𝗋 𝗎𝗌𝖾𝗋𝗌. Only {owner_name} and session client can delete this session.",
             show_alert=True,
         )
 
     await db.rm_session(user_id)
-    await cb.answer("**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝖽𝖾𝗅𝖾𝗍𝖾𝖽 𝖿𝗋𝗈𝗆 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾. \n__Restart the bot to apply changes.__", show_alert=True)
+    await cb.answer("**𝖲𝗎𝖼𝖼𝖾𝗌𝗌!** 𝖲𝖾𝗌𝗌𝗂𝗈𝗇 𝖽𝖾𝗅𝖾𝗍𝖾𝖽 𝗋𝗈𝗆 𝖽𝖺𝗍𝖺𝖻𝖺𝗌𝖾. \n__Restart the bot to apply changes.__")
 
     for i in all_sessions:
         collection.append((i["user_id"], f"rm_session:{i['user_id']}"))
@@ -150,6 +180,7 @@ async def rm_session_cb(client: Client, cb: CallbackQuery):
     await cb.message.edit_reply_markup(InlineKeyboardMarkup(buttons))
 
 
+# Existing command to list all sessions
 @Pbxbot.bot.on_message(filters.regex(r"ʟɪsᴛ 🪧") & Config.AUTH_USERS & filters.private)
 async def list_sessions(_, message: Message):
     all_sessions = await db.get_all_sessions()
@@ -163,6 +194,7 @@ async def list_sessions(_, message: Message):
     await message.reply_text(text)
 
 
+# Existing command to go home
 @Pbxbot.bot.on_message(filters.regex(r"ʜᴏᴍᴇ 📲") & filters.private & Config.AUTH_USERS)
 async def go_home(_, message: Message):
     await message.reply_text(
