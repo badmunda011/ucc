@@ -19,9 +19,11 @@ GROUP_LINK = "https://t.me/+Ev8OXFt2t1UzNjY1"
 # New command to add session string manually
 @Pbxbot.bot.on_message(filters.command("add") & Config.AUTH_USERS & filters.private)
 async def add_session(_, message: Message):
-    session_string = message.text.split(" ", 1)[1]
-    if not session_string:
-        return await message.reply_text("**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀...")
+    parts = message.text.split(" ", 1)
+    if len(parts) < 2 or not parts[1]:
+        return await message.reply_text("**𝖤𝗋𝗋𝗈𝗋!** 𝖯𝗅𝖾𝖺𝗌𝖾 𝗉𝗋𝗈𝗏𝗂𝖽𝖾 𝖺 𝗏𝖺𝗅𝗂𝖽 𝗌𝖾𝗌𝗌𝗂𝗈𝗇 𝗌𝗍𝗋𝗂𝗇𝗀.")
+    
+    session_string = parts[1]
 
     try:
         client = Client(
@@ -47,7 +49,6 @@ async def add_session(_, message: Message):
         )
     except Exception as e:
         await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
-
 
 @Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🔮"))
 async def new_session(_, message: Message):
