@@ -52,12 +52,16 @@ async def play_music(_, message):
     if not url:
         return await message.reply("Song not found!")
 
+    # Check if the URL is valid
+    if not url.startswith('http'):
+        return await message.reply("Invalid URL!")
+
     thumb = await get_thumb(videoid)
     
     chat_id = message.chat.id
-    await call.join_group_call(chat_id, AudioPiped(url))  # Pbxbot ka PyTgCalls use ho raha hai
+    await call.join_group_call(chat_id, AudioPiped(url, download=False))  # Ensure streaming
     await message.reply_photo(thumb, caption=f"🎵 Playing: {query}")
-
+    
 @on_message(
     "stop",
     "end",
