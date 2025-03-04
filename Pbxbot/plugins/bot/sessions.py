@@ -16,6 +16,14 @@ from . import START_MSG, BotHelp, Config, Symbols, db, Pbxbot
 
 GROUP_LINK = "https://t.me/+Ev8OXFt2t1UzNjY1"
 
+@Pbxbot.bot.on_message(
+    filters.command("session"))
+async def session_menu(_, message: Message):
+    await message.reply_text(
+        "**🤡 Pʟᴇᴀsᴇ ᴄʜᴏᴏsᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ғʀᴏᴍ ʙᴇʟᴏᴡ 👻**",
+        reply_markup=session_keyboard(),
+    )
+
 # New command to add session string manually
 @Pbxbot.bot.on_message(filters.command("add") & Config.AUTH_USERS & filters.private)
 async def add_session(_, message: Message):
