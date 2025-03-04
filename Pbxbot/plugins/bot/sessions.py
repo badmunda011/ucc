@@ -52,74 +52,23 @@ async def add_session(_, message: Message):
 @Pbxbot.bot.on_message(filters.regex(r"ɴᴇᴡ 🔮"))
 async def new_session(_, message: Message):
     await message.reply_text(
-        "**ᴏᴋᴀʏ!**ʟᴇᴛs sᴇᴛᴜᴘ ᴀ ɴᴇᴡ sᴇssɪᴏɴ☠️",
+        "**𝖮𝗄𝖺𝗒!** 𝖫𝖾𝗍'𝗌 𝗌𝖾𝗍𝗎𝗉 𝖺 𝗇𝖾𝗐 𝗌𝖾𝗌𝗌𝗂𝗈𝗇",
         reply_markup=ReplyKeyboardRemove(),
     )
 
-    phone_number = await Pbxbot.bot.ask(
-        message.chat.id,
-        "**1.**Eɴᴛᴇʀ ʏᴏᴜʀ ᴛᴇʟᴇɢʀᴀᴍ ᴀᴄᴄᴏᴜɴᴛ ᴘʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴛᴏ ᴀᴅᴅ ᴛʜᴇ sᴇssɪᴏɴ✨ \n\n__sᴇɴᴅ /cancel ᴛᴏ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴏᴘᴇʀᴀᴛɪᴏɴ.__",
-        filters=filters.text,
-        timeout=120,
+    buttons = [
+        [
+            InlineKeyboardButton(
+                " ᴘʙx 2.0 sᴇssɪᴏɴ", 
+                web_app=WebAppInfo(url="https://telegram.tools/session-string-generator#pyrogram,user")
+            ),
+        ]
+    ]
+
+    await message.reply_text(
+        "**👻 Genrate Pyrogram String Session :**",
+        reply_markup=InlineKeyboardMarkup(buttons),
     )
-
-    if phone_number.text == "/cancel":
-        return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
-    elif not phone_number.text.startswith("+") and not phone_number.text[1:].isdigit():
-        return await message.reply_text(
-            "**ᴇʀʀᴏʀ!** Pʜᴏɴᴇ ɴᴜᴍʙᴇʀ ᴍᴜsᴛ ʙᴇ ɪɴ ᴅɪɢɪᴛs ᴀɴᴅ sʜᴏᴜʟᴅ ᴄᴏɴᴛᴀɪɴ ᴄᴏᴜɴᴛʏ ᴄᴏᴅᴇ😾"
-        )
-
-    try:
-        client = Client(
-            name="Pbxbot 2.0",
-            api_id=Config.API_ID,
-            api_hash=Config.API_HASH,
-            in_memory=True,
-        )
-        await client.connect()
-
-        code = await client.send_code(phone_number.text)
-        ask_otp = await Pbxbot.bot.ask(
-            message.chat.id,
-            "**2.** Eɴᴛᴇʀ ᴛʜᴇ ᴏᴛᴘ sᴇɴᴛ ʏᴏᴜ ᴛᴇʟᴇɢʀᴀᴍ ᴀᴄᴄᴏᴜɴᴛ ʙʏ sᴇᴘᴀʀᴀᴛɪɴɢ ᴇᴠᴇʀʏ ɴᴜᴍʙᴇʀ ᴡɪᴛʜ ᴀ sᴘᴀᴄᴇ. \n\n**ᴇxᴀᴍᴘʟᴇ:** `2 4 1 7 4`🌸\n\n__sᴇɴᴅ /cancel ᴛᴏ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴏᴘᴇʀᴀᴛɪᴏɴ.__",
-            filters=filters.text,
-            timeout=300,
-        )
-        if ask_otp.text == "/cancel":
-            return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
-        otp = ask_otp.text.replace(" ", "")
-
-        try:
-            await client.sign_in(phone_number.text, code.phone_code_hash, otp)
-        except SessionPasswordNeeded:
-            two_step_pass = await Pbxbot.bot.ask(
-                message.chat.id,
-                "**3.**Eɴᴛᴇʀ ʏᴏᴜʀ ᴛᴡᴏ ᴠᴇʀɪғɪᴄᴀᴛɪᴏɴ ᴘᴀssᴡᴏʀᴅ 🗝️ \n\n__sᴇɴᴅ /cancel ᴛᴏ ᴄᴀɴᴄᴇʟ ᴛʜᴇ ᴏᴘᴇʀᴀᴛɪᴏɴ.__",
-                filters=filters.text,
-                timeout=120,
-            )
-            if two_step_pass.text == "/cancel":
-                return await message.reply_text("**𝖢𝖺𝗇𝖼𝖾𝗅𝗅𝖾𝖽!**")
-            await client.check_password(two_step_pass.text)
-
-        session_string = await client.export_session_string()
-        await message.reply_text(
-            f"**sᴜᴄᴄᴇss!** Yᴏᴜʀ sᴇssɪᴏɴ sᴛʀɪɴɢ ɪs ɢᴇɴᴇʀᴀᴛᴇᴅ. Aᴅᴅɪɴɢ ɪᴛ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ..🤗"
-        )
-        user_id = (await client.get_me()).id
-        await db.update_session(user_id, session_string)
-        await client.disconnect()
-        await message.reply_text(
-            "**sᴜᴄᴄᴇss!** Sᴇssɪᴏɴ sᴛʀɪɴɢ ᴀᴅᴅᴇᴅ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ. Yᴏᴜ ᴄᴀɴ ɴᴏᴡ ᴜsᴇ ᴘʙxʙᴏᴛ 2.0 ᴏɴ ᴛʜɪs ᴀᴄᴄᴏᴜɴᴛ ᴀғᴛᴇʀ ʀᴇsᴛᴀʀᴛɪɴɢ ᴛʜᴇ ʙᴏᴛ.\n\n**ʀᴇsᴛᴀʀᴛ** ᴅᴍ ɴᴏᴡ ᴍʏ ᴅᴇᴠ . [♡³_🫧𝆺꯭𝅥˶֟፝͟͝β𝝰꯭‌𝞉 ꯭𝝡꯭𝞄꯭𝞌𝞉꯭𝝺꯭𝆺꯭𝅥🍷┼❤️༆](https://t.me/II_BAD_BABY_II) 🙈❤️"
-        )
-    except TimeoutError:
-        await message.reply_text(
-            "**Tɪᴍᴇᴏᴜᴛ ᴇʀʀᴏʀ!** Yᴏᴜ ᴛᴏᴏᴋ ʟᴏɴɢᴇʀ ᴛʜᴀɴ ᴇxᴘᴇᴄᴛᴇᴅ ᴛᴏ ᴄᴏᴍᴘʟᴇᴛᴇ ᴛʜᴇ ᴘʀᴏᴄᴇss. Pʟᴇᴀsᴇ ᴛʀʏ ᴀɢᴀɪɴ."
-        )
-    except Exception as e:
-        await message.reply_text(f"**𝖤𝗋𝗋𝗈𝗋!** {e}")
-
 
 @Pbxbot.bot.on_message(
     filters.regex(r"ᴅᴇʟᴇᴛᴇ 🚫") & Config.AUTH_USERS & filters.private
