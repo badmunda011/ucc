@@ -2,6 +2,13 @@ from pyrogram import Client, filters
 from pyrogram.errors import SessionPasswordNeeded
 from pyrogram.types import Message, ReplyKeyboardRemove
 import asyncio
+from pyrogram.types import (
+    CallbackQuery,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ReplyKeyboardRemove,
+)
 
 from ..btnsG import gen_inline_keyboard, start_button
 from ..btnsK import session_keyboard
