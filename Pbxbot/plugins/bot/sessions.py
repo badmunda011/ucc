@@ -157,6 +157,9 @@ async def go_home(_, message: Message):
         reply_markup=InlineKeyboardMarkup(start_button()),
     )
 
+@Pbxbot.bot.on_message(filters.regex(r"ᴀᴅᴅ sᴇssɪᴏɴ 🥳") & Config.AUTH_USERS & filters.private)
+async def session_add(_, message: Message):
+  
 
 BotHelp("Sessions").add(
     "session", "This command is packed with tools to manage userbot sessions."
