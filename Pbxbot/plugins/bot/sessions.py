@@ -44,7 +44,7 @@ async def add_session(_, message: Message):
         await db.update_session(user_id, session_string)
         await client.disconnect()
         await message.reply_text(
-            "**Success!** Session string added to database."
+            "**sᴜᴄᴄᴇss!** Sᴇssɪᴏɴ sᴛʀɪɴɢ ᴀᴅᴅᴇᴅ ᴛᴏ ᴅᴀᴛᴀʙᴀsᴇ. Yᴏᴜ ᴄᴀɴ ɴᴏᴡ ᴜsᴇ ᴘʙxʙᴏᴛ 2.0 ᴏɴ ᴛʜɪs ᴀᴄᴄᴏᴜɴᴛ ᴀғᴛᴇʀ ʀᴇsᴛᴀʀᴛɪɴɢ ᴛʜᴇ ʙᴏᴛ.\n\n**ʀᴇsᴛᴀʀᴛ** ᴅᴍ ɴᴏᴡ ᴍʏ ᴅᴇᴠ . [♡³_🫧𝆺꯭𝅥˶֟፝͟͝β𝝰꯭‌𝞉 ꯭𝝡꯭𝞄꯭𝞌𝞉꯭𝝺꯭𝆺꯭𝅥🍷┼❤️༆](https://t.me/PBX_CHAT/119192) 🙈❤️."
         )
     except Exception as e:
         await message.reply_text(f"**Error!** {e}")
