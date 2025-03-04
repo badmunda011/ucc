@@ -1,4 +1,5 @@
 from .clients import Pbxbot
+from .core.clients import PyTgCalls as pytgcalls
 from .config import ENV, Config, Limits, Symbols
 from .database import db
 from .initializer import GachaBotsSetup, TemplateSetup, UserSetup
