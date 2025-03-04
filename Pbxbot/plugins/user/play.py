@@ -5,13 +5,17 @@ from dotenv import load_dotenv
 from youtubesearchpython import VideosSearch
 from . import HelpMenu, group_only, handler, Pbxbot, on_message, Config
 from Pbxbot.core.clients import PyTgCalls  # Custom PyTgCalls import
+from pyrogram import Client
+from pytgcalls import PyTgCalls
+
+# Assuming Pbxbot is an instance of PbxClient initialized elsewhere
+call = Pbxbot.call
+
 
 # Load environment variables
 load_dotenv()
 
 COOKIE_PATH = "cookies.txt"  # Cookies ka file path
-
-call = PyTgCalls(Pbxbot)  # Pbxbot ko argument ke roop me pass karein
 
 async def get_thumb(videoid):
     try:
