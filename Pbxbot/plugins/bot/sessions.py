@@ -159,7 +159,7 @@ async def go_home(_, message: Message):
 
 @Pbxbot.bot.on_message(filters.regex(r"ᴀᴅᴅ sᴇssɪᴏɴ 🥳") & Config.AUTH_USERS & filters.private)
 async def session_add(_, message: Message):
-  
+    await message.reply_text("/add {ᴘᴀsᴛᴇ ʏᴏᴜʀ ᴘʙx 2.0 sᴇssɪᴏɴ} ✓ ❤️")  
 
 BotHelp("Sessions").add(
     "session", "This command is packed with tools to manage userbot sessions."
