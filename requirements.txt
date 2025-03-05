@@ -27,7 +27,6 @@ httpx==0.25.0
 lottie
 lyricsgenius
 motor==3.6.0
-ntgcalls==1.3.0b3
 pillow==9.5.0
 psutil
 pyroaddon
