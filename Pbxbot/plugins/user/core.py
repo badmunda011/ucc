@@ -6,6 +6,7 @@ from pathlib import Path
 from pyrogram import Client, filters
 from pyrogram.enums import MessagesFilter, ParseMode
 from pyrogram.types import Message
+from pyrogram.types import InlineKeyboardButton
 
 from Pbxbot.core import ENV, Config, Symbols
 
