@@ -15,6 +15,8 @@ from Pbxbot.functions.tools import progress
 
 from . import HelpMenu, Symbols, db, Pbxbot, on_message
 
+# Path to the cookies file
+COOKIES_FILE_PATH = "cookies.txt"
 
 @on_message("song", allow_stan=True)
 async def dwlSong(_, message: Message):
@@ -25,11 +27,15 @@ async def dwlSong(_, message: Message):
     Pbx = await Pbxbot.edit(message, f"🔎 __𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽𝗂𝗇𝗀 𝖲𝗈𝗇𝗀__ `{query}`...")
 
     ytSearch = YoutubeDriver(query, 1).to_dict()[0]
-    upload_text = f"**⬆️ 𝖴𝗉𝗅𝗈𝖺𝖽𝗂𝗇𝗀 𝖲𝗈𝗇𝗀 ...** \n\n**{Symbols.anchor} 𝖳𝗂𝗍𝗅𝖾:** `{ytSearch['title'][:50]}`\n**{Symbols.anchor} 𝖢𝗁𝖺𝗇𝗇𝖾𝗅:** `{ytSearch['channel']}`"
+    upload_text = f"**⬆️ 𝖴𝗉𝗅𝗈𝖺𝖽𝗂𝗇𝗀 𝖲𝗈𝗇𝗀 ...** \n\n**{Symbols.anchor} 𝖳𝗂𝗍𝗅𝖾:** `{ytSearch['title'][:50]}`\n**{Symbols.anchor} 𝖢𝗁𝖺𝗇𝗇𝖾𝗅:** `{ytSearch['channel']}`\n**{Symbols.anchor} 𝖣𝗎𝗋𝖺𝗍𝗂𝗈𝗇:** `{ytSearch['duration']}`"
 
     try:
         url = f"https://www.youtube.com{ytSearch['url_suffix']}"
-        with YoutubeDL(YoutubeDriver.song_options()) as ytdl:
+        ydl_opts = {
+            'cookiefile': COOKIES_FILE_PATH,
+            **YoutubeDriver.song_options(),
+        }
+        with YoutubeDL(ydl_opts) as ytdl:
             yt_data = ytdl.extract_info(url, False)
             yt_file = ytdl.prepare_filename(yt_data)
             ytdl.process_info(yt_data)
@@ -66,7 +72,7 @@ async def dwlSong(_, message: Message):
 
 
 @on_message("video", allow_stan=True)
-async def dwlSong(_, message: Message):
+async def dwlVideo(_, message: Message):
     if len(message.command) < 2:
         return await Pbxbot.delete(message, "Provide a song name to download.")
 
@@ -74,11 +80,15 @@ async def dwlSong(_, message: Message):
     Pbx = await Pbxbot.edit(message, f"🔎 __𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽𝗂𝗇𝗀 𝖵𝗂𝖽𝖾𝗈 𝖲𝗈𝗇𝗀__ `{query}`...")
 
     ytSearch = YoutubeDriver(query, 1).to_dict()[0]
-    upload_text = f"**⬆️ 𝖴𝗉𝗅𝗈𝖺𝖽𝗂𝗇𝗀 𝖵𝗂𝖽𝖾𝗈 𝖲𝗈𝗇𝗀 ...** \n\n**{Symbols.anchor} 𝖳𝗂𝗍𝗅𝖾:** `{ytSearch['title'][:50]}`\n**{Symbols.anchor} 𝖢𝗁𝖺𝗇𝗇𝖾𝗅:** `{ytSearch['channel']}`"
+    upload_text = f"**⬆️ 𝖴𝗉𝗅𝗈𝖺𝖽𝗂𝗇𝗀 𝖵𝗂𝖽𝖾𝗈 𝖲𝗈𝗇𝗀 ...** \n\n**{Symbols.anchor} 𝖳𝗂𝗍𝗅𝖾:** `{ytSearch['title'][:50]}`\n**{Symbols.anchor} 𝖢𝗁𝖺𝗇𝗇𝖾𝗅:** `{ytSearch['channel']}`\n**{Symbols.anchor} 𝖣𝗎𝗋𝖺𝗍𝗂𝗈𝗇:** `{ytSearch['duration']}`"
 
     try:
         url = f"https://www.youtube.com{ytSearch['url_suffix']}"
-        with YoutubeDL(YoutubeDriver.video_options()) as ytdl:
+        ydl_opts = {
+            'cookiefile': COOKIES_FILE_PATH,
+            **YoutubeDriver.video_options(),
+        }
+        with YoutubeDL(ydl_opts) as ytdl:
             yt_data = ytdl.extract_info(url, True)
             yt_file = yt_data["id"]
 
@@ -102,7 +112,7 @@ async def dwlSong(_, message: Message):
         )
         await Pbx.delete()
     except Exception as e:
-        return await Pbxbot.delete(Pbx, f"**🍀 𝖵𝗂𝖽𝖾𝗈 𝖲𝗈𝗇𝗀 𝖭𝗈𝗍 𝖣𝗈𝗐𝗇𝗅𝗈𝖺𝖽𝖾𝖽:** `{e}`")
+        return await Pbxbot.delete(Pbx, f"**🍀 𝖵𝗂𝖽𝗂𝗈 𝖲𝗈𝗇𝗀 𝖭𝗈𝗍 𝖣𝗈𝗐𝗓𝗇𝗅𝗈𝖺𝖽𝖾𝖽:** `{e}`")
 
     try:
         os.remove(f"{yt_file}.mp4")
@@ -155,7 +165,6 @@ async def getlyrics(_, message: Message):
             f"**{Symbols.anchor} Title:** `{title}`\n**{Symbols.anchor} Artist:** `{artist}`\n\n**{Symbols.anchor} Lyrics:** [Click Here]({url})",
             disable_web_page_preview=True,
         )
-
 
 HelpMenu("songs").add(
     "song",
