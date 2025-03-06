@@ -71,8 +71,8 @@ async def inline_repo(client: Client, inline_query):
     buttons = [
         [
             InlineKeyboardButton("Repo", url="https://github.com/Badhacker98/PBX_2.0/fork"),
-            InlineKeyboardButton("Updates", url="https://t.me/PBX_NETWORK"),
-            InlineKeyboardButton("Support", url="https://t.me/ll_THE_BAD_BOT_ll")
+            InlineKeyboardButton("Updates", url="https://t.me/HEROKUBIN_01"),
+            InlineKeyboardButton("Support", url="https://t.me/PBX_CHAT")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
