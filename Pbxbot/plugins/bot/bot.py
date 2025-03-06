@@ -22,7 +22,7 @@ async def go_home(_, message: Message):
 @Pbxbot.bot.on_message(filters.regex("restart"))
 async def go_home(_, message: Message):
     await message.reply_text(
-        "** ᴛʏᴘᴇ  /add {paste your py session} ✓ ❤️**",
+        "**ʀᴇsᴛᴀʀᴛ** ᴅᴍ ɴᴏᴡ ᴍʏ ᴅᴇᴠ . [♡³_🫧𝆺꯭𝅥˶֟፝͟͝β𝝰꯭‌𝞉 ꯭𝝡꯭𝞄꯭𝞌𝞉꯭𝝺꯭𝆺꯭𝅥🍷┼❤️༆](https://t.me/PBX_CHAT/119192) 🙈❤️.",
     )
     await message.reply_text(
         CLONE_MSG.format(message.from_user.mention),
