@@ -51,7 +51,7 @@ async def help(client: Client, message: Message):
 
 @on_message("repo", allow_stan=True)
 async def repo(client: Client, message: Message):
-    Pbx = await Pbxbot.edit(message, "**Processing...**")
+    Pbx = await Pbxbot.edit(message, "**Repo...**")
     try:
         result = await client.get_inline_bot_results(bot.me.username, "repo_menu")
         await client.send_inline_bot_result(
