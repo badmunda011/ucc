@@ -3,7 +3,7 @@ import os
 import sys
 from pathlib import Path
 
-from pyrogram import Client
+from pyrogram import Client, filters
 from pyrogram.enums import MessagesFilter, ParseMode
 from pyrogram.types import Message
 
