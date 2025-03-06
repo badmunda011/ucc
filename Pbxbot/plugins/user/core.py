@@ -5,13 +5,11 @@ from pathlib import Path
 
 from pyrogram import Client, filters
 from pyrogram.enums import MessagesFilter, ParseMode
-from pyrogram.types import Message
-from pyrogram.types import InlineKeyboardButton
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
 from Pbxbot.core import ENV, Config, Symbols
 
 from . import HelpMenu, bot, db, handler, Pbxbot, on_message
-
 
 @on_message("help", allow_stan=True)
 async def help(client: Client, message: Message):
