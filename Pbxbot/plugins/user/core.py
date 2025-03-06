@@ -81,10 +81,7 @@ async def inline_repo(client: Client, inline_query):
             id="repo",
             title="Repository Information",
             input_message_content=InputTextMessageContent(
-                "__🍀 𝖱𝖾𝗉𝗈:__ [Github](https://github.com/Badhacker98/PBX_2.0/fork)\n\n"
-                "__🍀 Updates:__ @PBX_NETWORK\n"
-                "__🍀 Support:__ @ll_THE_BAD_BOT_ll\n\n"
-                "**By ©️ @ll_THE_BAD_BOT_ll**",
+                "__📌 ʀᴇᴘᴏ:__",
                 disable_web_page_preview=True
             ),
             reply_markup=reply_markup
