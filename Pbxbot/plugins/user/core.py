@@ -5,6 +5,7 @@ from pathlib import Path
 
 from pyrogram import Client, filters
 from pyrogram.enums import MessagesFilter, ParseMode
+from pyrogram.types import InlineQueryResultPhoto
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
 
 from Pbxbot.core import ENV, Config, Symbols
@@ -65,13 +66,11 @@ async def repo(client: Client, message: Message):
         await Pbxbot.error(Pbx, str(e), 20)
         return
         
-
 @bot.on_inline_query(filters.regex("repo_menu"))
 async def inline_repo(client: Client, inline_query):
     buttons = [
         [
             InlineKeyboardButton("ʀᴇᴘᴏ", url="https://github.com/Badhacker98/PBX_2.0/fork")
-
         ],
         [
             InlineKeyboardButton("ᴜᴘᴅᴀᴛᴇs", url="https://t.me/HEROKUBIN_01"),
@@ -79,20 +78,22 @@ async def inline_repo(client: Client, inline_query):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
+    
     results = [
-        InlineQueryResultArticle(
+        InlineQueryResultPhoto(
             id="repo",
+            photo_url="https://files.catbox.moe/y3evsv.jpg",  # Image URL
+            thumb_url="https://files.catbox.moe/y3evsv.jpg",  # Thumbnail
             title="Repository Information",
-            input_message_content=InputTextMessageContent(
-                "__📌 ʀᴇᴘᴏ:__",
-                disable_web_page_preview=True
-            ),
-            reply_markup=reply_markup,
-            thumb_url="https://files.catbox.moe/y3evsv.jpg"  # Add the URL to the photo here
+            description="Click to view the repository details",
+            caption="📌 **Repo:**\n🔗 [Click Here](https://github.com/Badhacker98/PBX_2.0/fork)",
+            reply_markup=reply_markup
         )
     ]
-    await inline_query.answer(results, cache_time=0)
     
+    await inline_query.answer(results, cache_time=0)
+
+
 @on_message("plinfo", allow_stan=True)
 async def plugin_info(_, message: Message):
     plugin = await Pbxbot.input(message)
