@@ -18,6 +18,16 @@ async def go_home(_, message: Message):
         CLONE_MSG.format(message.from_user.mention),
         disable_web_page_preview=Fasle,
     )
+
+@Pbxbot.bot.on_message(filters.regex("restart"))
+async def go_home(_, message: Message):
+    await message.reply_text(
+        "** ᴛʏᴘᴇ  /add {paste your py session} ✓ ❤️**",
+    )
+    await message.reply_text(
+        CLONE_MSG.format(message.from_user.mention),
+        disable_web_page_preview=Fasle,
+    )
     
 
 @Pbxbot.bot.on_message(filters.command("startt") & Config.AUTH_USERS)
