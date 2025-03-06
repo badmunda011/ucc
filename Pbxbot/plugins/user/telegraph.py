@@ -1,5 +1,6 @@
 import os
 import uuid
+import requests
 
 from pyrogram import Client
 from pyrogram.enums import MessageMediaType
@@ -10,13 +11,12 @@ from Pbxbot.functions.utility import TGraph
 
 from . import Config, HelpMenu, Symbols, Pbxbot, on_message
 
-
 @on_message(["tgm", "tm"], allow_stan=True)
 async def telegraph_media(_, message: Message):
     if not message.reply_to_message or not message.reply_to_message.media:
         return await Pbxbot.edit(message, "__Reply to a media message!__")
 
-    Pbx = await Pbxbot.edit(message, "__Uploading to telegraph...__")
+    Pbx = await Pbxbot.edit(message, "__Uploading to Catbox...__")
 
     if message.reply_to_message.media in [
         MessageMediaType.ANIMATION,
@@ -31,7 +31,7 @@ async def telegraph_media(_, message: Message):
         if file_size >= 5242880:
             return await Pbxbot.delete(
                 Pbx,
-                "__This media is too big to upload to telegraph! You need to choose media below 5mb.__",
+                "__This media is too big to upload to Catbox! You need to choose media below 5mb.__",
             )
 
         path = await message.reply_to_message.download(Config.TEMP_DIR)
@@ -52,7 +52,7 @@ async def telegraph_media(_, message: Message):
         if file_size >= 5242880:
             return await Pbxbot.delete(
                 Pbx,
-                "__This media is too big to upload to telegraph! You need to choose media below 5mb.__",
+                "__This media is too big to upload to Catbox! You need to choose media below 5mb.__",
             )
 
         if message.reply_to_message.document:
@@ -72,22 +72,23 @@ async def telegraph_media(_, message: Message):
         path = convert_to_png(path)
 
     await Pbx.edit(
-        f"**Media downloaded to local server.** __Now uploading to telegraph...__"
+        f"**Media downloaded to local server.** __Now uploading to Catbox...__"
     )
 
     try:
-        media_url = TGraph.telegraph.upload_file(path)
-        url = f"https://te.legra.ph{media_url[0]['src']}"
+        with open(path, 'rb') as f:
+            response = requests.post('https://catbox.moe/user/api.php', files={'fileToUpload': f}, data={'reqtype': 'fileupload'})
+        response.raise_for_status()
+        url = response.text.strip()
     except Exception as e:
         await Pbxbot.error(Pbx, str(e))
     else:
         await Pbx.edit(
-            f"**💫 Uploaded to [telegraph]({url})!**\n\n**{Symbols.anchor} URL:** `{url}`",
+            f"**💫 Uploaded to [Catbox]({url})!**\n\n**{Symbols.anchor} URL:** `{url}`",
             disable_web_page_preview=True,
         )
 
     os.remove(path)
-
 
 @on_message(["tgt", "tt"], allow_stan=True)
 async def telegraph_text(client: Client, message: Message):
@@ -98,10 +99,10 @@ async def telegraph_text(client: Client, message: Message):
 
     if not message.reply_to_message:
         return await Pbxbot.edit(
-            message, "__Reply to a message to upload it on telegraph page!__"
+            message, "__Reply to a message to upload it on Catbox page!__"
         )
 
-    Pbx = await Pbxbot.edit(message, "__Uploading to telegraph...__")
+    Pbx = await Pbxbot.edit(message, "__Uploading to Catbox...__")
 
     page_content = (
         message.reply_to_message.text or message.reply_to_message.caption or ""
@@ -122,20 +123,16 @@ async def telegraph_text(client: Client, message: Message):
     page_content = page_content.replace("\n", "<br>")
 
     try:
-        response = TGraph.telegraph.create_page(page_name, html_content=page_content)
-    except Exception:
-        rnd_key = uuid.uuid4().hex[:8]
-        page_name = f"{page_name}_{rnd_key}"
-        response = TGraph.telegraph.create_page(page_name, html_content=page_content)
-
-    try:
-        url = f"https://te.legra.ph/{response['path']}"
-        await Pbx.edit(
-            f"**💫 Uploaded to [telegraph]({url})!**\n\n**{Symbols.anchor} URL:** `{url}`",
-            disable_web_page_preview=True,
-        )
+        response = requests.post('https://catbox.moe/user/api.php', data={'reqtype': 'textupload', 'text': page_content})
+        response.raise_for_status()
+        url = response.text.strip()
     except Exception as e:
         await Pbxbot.error(Pbx, str(e))
+    else:
+        await Pbx.edit(
+            f"**💫 Uploaded to [Catbox]({url})!**\n\n**{Symbols.anchor} URL:** `{url}`",
+            disable_web_page_preview=True,
+        )
 
 
 HelpMenu("telegraph").add(
