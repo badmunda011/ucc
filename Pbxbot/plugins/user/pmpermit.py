@@ -196,16 +196,10 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖬𝗒 𝖣𝖬.**",
+            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝗆𝖾𝗌𝗌𝖺𝗀𝗂𝗇𝗀!**"
         )
 
-    pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
-    custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
-
-    if custom_pmmsg:
-        pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
-    else:
-        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
+    pm_msg = f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
 
     buttons = [
         [InlineKeyboardButton("Allow", callback_data=f"allow_{message.from_user.id}")],
@@ -262,6 +256,28 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         await client.block_user(user_id)
         await callback_query.answer("User blocked.")
 
+
+@bot.on_inline_query(filters.regex("pmpermit_menu"))
+async def inline_pmpermit(client: Client, inline_query):
+    buttons = [
+        [InlineKeyboardButton("Allow", callback_data=f"allow_{inline_query.from_user.id}")],
+        [InlineKeyboardButton("Disallow", callback_data=f"disallow_{inline_query.from_user.id}")],
+        [InlineKeyboardButton("Block", callback_data=f"block_{inline_query.from_user.id}")]
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    
+    results = [
+        InlineQueryResultArticle(
+            id="pmpermit",
+            input_message_content=InputTextMessageContent(
+                message_text="Choose an option:",
+            ),
+            reply_markup=reply_markup
+        )
+    ]
+    
+    await inline_query.answer(results, cache_time=0)
+
 HelpMenu("pmpermit").add(
     "block",
     "<reply to user>/<userid/username>",
@@ -294,25 +310,3 @@ HelpMenu("pmpermit").add(
     "Manage who can pm you."
 ).done()
 
-@bot.on_inline_query(filters.regex("pmpermit_menu"))
-async def inline_pmpermit(client: Client, inline_query):
-    buttons = [
-        [InlineKeyboardButton("Allow", callback_data=f"allow_{inline_query.from_user.id}")],
-        [InlineKeyboardButton("Disallow", callback_data=f"disallow_{inline_query.from_user.id}")],
-        [InlineKeyboardButton("Block", callback_data=f"block_{inline_query.from_user.id}")]
-    ]
-    reply_markup = InlineKeyboardMarkup(buttons)
-    
-    results = [
-        InlineQueryResultArticle(
-            id="pmpermit",
-            title="PM Permit Options",
-            description="Manage PM permissions",
-            input_message_content=InputTextMessageContent(
-                message_text="Choose an option:",
-            ),
-            reply_markup=reply_markup
-        )
-    ]
-    
-    await inline_query.answer(results, cache_time=0)
