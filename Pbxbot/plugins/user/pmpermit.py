@@ -1,8 +1,7 @@
 import random
-
 from pyrogram import Client, filters
 from pyrogram.enums import ChatType
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent, CallbackQuery
 
 from Pbxbot.core import ENV
 from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message
@@ -197,7 +196,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬 𝗎𝗇𝗍𝗂𝗅 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝗇𝗈𝗍𝗂𝖼𝖾.**",
+            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖬𝗒 𝖣𝖬.**",
         )
 
     pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
@@ -208,6 +207,13 @@ async def handle_incoming_pm(client: Client, message: Message):
     else:
         pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
 
+    buttons = [
+        [InlineKeyboardButton("Allow", callback_data=f"allow_{message.from_user.id}")],
+        [InlineKeyboardButton("Disallow", callback_data=f"disallow_{message.from_user.id}")],
+        [InlineKeyboardButton("Block", callback_data=f"block_{message.from_user.id}")]
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+
     try:
         pm_pic = await db.get_env(ENV.pmpermit_pic)
         if pm_pic:
@@ -216,18 +222,21 @@ async def handle_incoming_pm(client: Client, message: Message):
                 pm_pic,
                 pm_msg,
                 force_document=False,
+                reply_markup=reply_markup,
             )
         else:
             msg = await client.send_message(
                 message.from_user.id,
                 pm_msg,
                 disable_web_page_preview=True,
+                reply_markup=reply_markup,
             )
     except:
         msg = await client.send_message(
             message.from_user.id,
             pm_msg,
             disable_web_page_preview=True,
+            reply_markup=reply_markup,
         )
 
     prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
@@ -237,6 +246,21 @@ async def handle_incoming_pm(client: Client, message: Message):
     PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
     WARNS[client.me.id] = {message.from_user.id: warns - 1}
 
+
+@Client.on_callback_query()
+async def handle_callback_query(client: Client, callback_query: CallbackQuery):
+    data = callback_query.data
+    user_id = int(data.split('_')[1])
+    
+    if data.startswith("allow_"):
+        await db.add_pmpermit(client.me.id, user_id)
+        await callback_query.answer("User allowed to PM.")
+    elif data.startswith("disallow_"):
+        await db.rm_pmpermit(client.me.id, user_id)
+        await callback_query.answer("User disallowed to PM.")
+    elif data.startswith("block_"):
+        await client.block_user(user_id)
+        await callback_query.answer("User blocked.")
 
 HelpMenu("pmpermit").add(
     "block",
@@ -269,3 +293,26 @@ HelpMenu("pmpermit").add(
 ).info(
     "Manage who can pm you."
 ).done()
+
+@bot.on_inline_query(filters.regex("pmpermit_menu"))
+async def inline_pmpermit(client: Client, inline_query):
+    buttons = [
+        [InlineKeyboardButton("Allow", callback_data=f"allow_{inline_query.from_user.id}")],
+        [InlineKeyboardButton("Disallow", callback_data=f"disallow_{inline_query.from_user.id}")],
+        [InlineKeyboardButton("Block", callback_data=f"block_{inline_query.from_user.id}")]
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    
+    results = [
+        InlineQueryResultArticle(
+            id="pmpermit",
+            title="PM Permit Options",
+            description="Manage PM permissions",
+            input_message_content=InputTextMessageContent(
+                message_text="Choose an option:",
+            ),
+            reply_markup=reply_markup
+        )
+    ]
+    
+    await inline_query.answer(results, cache_time=0)
