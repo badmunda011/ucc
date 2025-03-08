@@ -110,6 +110,8 @@ async def inline_ping(client: Client, inline_query):
         img = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"  # Default image
 
     uptime = readable_time(time.time() - START_TIME)
+    speed = round(time.time() - inline_query.query_id % 1_000_000, 3)  # Rough estimate
+
     caption = await ping_template(speed, uptime, client.me.mention)
 
     buttons = [
@@ -131,6 +133,7 @@ async def inline_ping(client: Client, inline_query):
 
     await inline_query.answer(results, cache_time=0)
 
+    
 @on_message("history", allow_stan=True)
 async def history(client: Client, message: Message):
     if not message.reply_to_message:
