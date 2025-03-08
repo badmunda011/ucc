@@ -13,14 +13,13 @@ from Pbxbot.functions.templates import alive_template, ping_template
 
 from . import Config, HelpMenu, db, Pbxbot, on_message, bot
 
-from pyrogram.types import InlineQueryResultPhoto
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
-
 from pyrogram import Client, filters
 from pyrogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InlineQueryResultPhoto,
+    InlineQueryResultArticle,
+    InputTextMessageContent,
     Message,
 )
 
