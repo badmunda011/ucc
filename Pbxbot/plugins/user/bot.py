@@ -24,7 +24,6 @@ from pyrogram.types import (
     Message,
 )
 
-
 @on_message("alive", allow_stan=True)
 async def alive(client: Client, message: Message):
     Pbx = await Pbxbot.edit(message, "ʀᴜᴋᴏ ʙᴀʙʏ ☹️✨❤️")
@@ -34,7 +33,7 @@ async def alive(client: Client, message: Message):
         img = "./Pbxbot/resources/images/Pbxbot_logo.png"  # Default image
 
     uptime = readable_time(time.time() - START_TIME)
-    caption = await alive_template(client.me.first_name, uptime)
+    caption = await alive_template(message.from_user.first_name, uptime)
 
     try:
         result = await client.get_inline_bot_results(bot.me.username, "alive_menu")
@@ -49,7 +48,6 @@ async def alive(client: Client, message: Message):
         await Pbxbot.error(Pbx, str(e), 20)
         return
 
-
 @bot.on_inline_query(filters.regex("alive_menu"))
 async def inline_alive(client: Client, inline_query):
     img = await db.get_env(ENV.alive_pic)
@@ -57,7 +55,7 @@ async def inline_alive(client: Client, inline_query):
         img = "./Pbxbot/resources/images/Pbxbot_logo.png"  # Default image
 
     uptime = readable_time(time.time() - START_TIME)
-    caption = await alive_template(client.me.first_name, uptime)
+    caption = await alive_template(inline_query.from_user.first_name, uptime)
 
     buttons = [
         [
@@ -78,7 +76,6 @@ async def inline_alive(client: Client, inline_query):
 
     await inline_query.answer(results, cache_time=0)
 
-
 @on_message("ping", allow_stan=True)
 async def ping(client: Client, message: Message):
     start_time = time.time()
@@ -88,7 +85,7 @@ async def ping(client: Client, message: Message):
     end_time = time.time()
     speed = end_time - start_time
     
-    caption = await ping_template(round(speed, 3), uptime, client.me.mention)
+    caption = await ping_template(round(speed, 3), uptime, message.from_user.mention)
 
     try:
         result = await client.get_inline_bot_results(bot.me.username, "ping_menu")
@@ -115,7 +112,7 @@ async def inline_ping(client: Client, inline_query):
     start_time = time.time()
     speed = round(time.time() - start_time, 3)
 
-    caption = await ping_template(speed, uptime, client.me.mention)
+    caption = await ping_template(speed, uptime, inline_query.from_user.mention)
 
     buttons = [
         [
@@ -193,3 +190,4 @@ HelpMenu("bot").add(
 ).info(
     "Alive Menu"
 ).done()
+    
