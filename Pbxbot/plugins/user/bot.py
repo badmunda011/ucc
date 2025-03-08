@@ -110,7 +110,10 @@ async def inline_ping(client: Client, inline_query):
         img = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"  # Default image
 
     uptime = readable_time(time.time() - START_TIME)
-    speed = round(time.time() - inline_query.query_id % 1_000_000, 3)  # Rough estimate
+    
+    # Speed calculation ka seedha tareeka, bas inline query receive hone ka time le rahe hain
+    start_time = time.time()
+    speed = round(time.time() - start_time, 3)
 
     caption = await ping_template(speed, uptime, client.me.mention)
 
@@ -132,7 +135,6 @@ async def inline_ping(client: Client, inline_query):
     ]
 
     await inline_query.answer(results, cache_time=0)
-
     
 @on_message("history", allow_stan=True)
 async def history(client: Client, message: Message):
