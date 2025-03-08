@@ -205,7 +205,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬 𝗎𝗇𝗍𝗂𝗅 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝗇𝗈𝗍𝗂𝖼𝖾.**",
+            f"**{Symbols.cross_mark} Enough of your spamming here! Blocking you from sending PMs!**",
         )
 
     owner_name = client.me.first_name  # Bot Owner ka Naam Fetch Kiya
@@ -214,9 +214,9 @@ async def handle_incoming_pm(client: Client, message: Message):
     custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
 
     if custom_pmmsg:
-        pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
+        pm_msg += f"{custom_pmmsg}\n**You have {warns} warnings left!**"
     else:
-        pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ 🌪️\n⚡ 𝐈ϝ 𝐘συ 𝐒ραɱ, 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢αℓℓу.\n\n⏳ **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_name} ❤️** \n\n☠ 𝐘συ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ! ☠"
+        pm_msg += f"**👋🏻 Hi {message.from_user.mention}!**\n❤️ The owner is offline, please don't spam 🌪️\n⚡ If you spam, you will be blocked.\n**You have {warns} warnings left!**"
 
     try:
         pm_pic = await db.get_env(ENV.pmpermit_pic)
@@ -313,3 +313,4 @@ HelpMenu("pmpermit").add(
 ).info(
     "Manage who can pm you."
 ).done()
+    
