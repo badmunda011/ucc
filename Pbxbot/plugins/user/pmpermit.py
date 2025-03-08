@@ -200,23 +200,27 @@ async def handle_incoming_pm(client: Client, message: Message):
             f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬 𝗎𝗇𝗍𝗂𝗅 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝗇𝗈𝗍𝗂𝖼𝖾.**",
         )
 
+    owner_name = client.me.first_name  # Bot Owner ka Naam Fetch Kiya
+
     pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
     custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
 
     if custom_pmmsg:
         pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
     else:
-        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
+        pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ 🌪️\n⚡ 𝐈ϝ 𝐘συ 𝐒ραɱ, 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢αℓℓу.\n\n⏳ **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_name} ❤️** \n\n☠ 𝐘συ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ! ☠"
 
     try:
         pm_pic = await db.get_env(ENV.pmpermit_pic)
         if pm_pic:
-            msg = await client.send_document(
-                message.from_user.id,
-                pm_pic,
-                pm_msg,
-                force_document=False,
+            result = await client.get_inline_bot_results(bot.me.username, "pmpermit_menu")
+            await client.send_inline_bot_result(
+                message.chat.id,
+                result.query_id,
+                result.results[0].id,
+                True,
             )
+            return
         else:
             msg = await client.send_message(
                 message.from_user.id,
@@ -236,6 +240,33 @@ async def handle_incoming_pm(client: Client, message: Message):
 
     PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
     WARNS[client.me.id] = {message.from_user.id: warns - 1}
+
+
+@bot.on_inline_query(filters.regex("pmpermit_menu"))
+async def inline_pmpermit(client: Client, inline_query):
+    pm_pic = await db.get_env(ENV.pmpermit_pic)
+    if not pm_pic:
+        pm_pic = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"  # Default image
+
+    buttons = [
+        [
+            InlineKeyboardButton("✅ Allow", callback_data="pm_allow"),
+            InlineKeyboardButton("❌ Disallow", callback_data="pm_disallow"),
+            InlineKeyboardButton("🚫 Block", callback_data="pm_block"),
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    results = [
+        InlineQueryResultPhoto(
+            photo_url=pm_pic,
+            thumb_url=pm_pic,
+            caption="",
+            reply_markup=reply_markup,
+        )
+    ]
+
+    await inline_query.answer(results, cache_time=0)      
 
 
 HelpMenu("pmpermit").add(
