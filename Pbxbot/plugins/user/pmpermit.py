@@ -276,6 +276,11 @@ async def inline_pmpermit(client: Client, inline_query):
 
     await inline_query.answer(results, cache_time=0)      
 
+@bot.on_callback_query(filters.regex("pm_allow"))
+async def callback_allow(client, callback_query):
+    user_id = callback_query.from_user.id
+    await db.add_pmpermit(client.me.id, user_id)
+    await callback_query.answer("User allowed!", show_alert=True)
 
 HelpMenu("pmpermit").add(
     "block",
