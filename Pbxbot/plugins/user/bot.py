@@ -110,11 +110,10 @@ async def inline_ping(client: Client, inline_query):
         img = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"  # Default image
 
     uptime = readable_time(time.time() - START_TIME)
-
-    # Actual Ping Time Nikalne ka Tarika (Server -> Telegram -> Server)
+    
+    # Speed calculation ka seedha tareeka, bas inline query receive hone ka time le rahe hain
     start_time = time.time()
-    await client.send_chat_action(inline_query.from_user.id, "typing")
-    speed = round((time.time() - start_time) * 1000, 3)  # Convert to milliseconds (ms)
+    speed = round(time.time() - start_time, 3)
 
     caption = await ping_template(speed, uptime, client.me.mention)
 
@@ -136,7 +135,7 @@ async def inline_ping(client: Client, inline_query):
     ]
 
     await inline_query.answer(results, cache_time=0)
-
+    
 @on_message("history", allow_stan=True)
 async def history(client: Client, message: Message):
     if not message.reply_to_message:
