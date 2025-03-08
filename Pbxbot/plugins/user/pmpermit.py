@@ -4,7 +4,7 @@ from pyrogram.enums import ChatType
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent, CallbackQuery, InlineQueryResultPhoto
 
 from Pbxbot.core import ENV
-from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message
+from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
 
 blocked_messages = [
     "🤐 User has entered the silent zone.",
