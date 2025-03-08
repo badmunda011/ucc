@@ -61,9 +61,6 @@ async def inline_alive(client: Client, inline_query):
 
     buttons = [
         [
-            InlineKeyboardButton("ʀᴇᴘᴏ", url="https://github.com/Badhacker98/PBX_2.0/fork")
-        ],
-        [
             InlineKeyboardButton("ᴜᴘᴅᴀᴛᴇs", url="https://t.me/HEROKUBIN_01"),
             InlineKeyboardButton("sᴜᴘᴘᴏʀᴛ", url="https://t.me/PBX_CHAT"),
         ],
