@@ -83,27 +83,55 @@ async def inline_alive(client: Client, inline_query):
 async def ping(client: Client, message: Message):
     start_time = time.time()
     Pbx = await Pbxbot.edit(message, "`·.·★ ᴘʙx 2.0 ★·.·´")
+    
     uptime = readable_time(time.time() - START_TIME)
-    img = await db.get_env(ENV.ping_pic)
     end_time = time.time()
     speed = end_time - start_time
+    
     caption = await ping_template(round(speed, 3), uptime, client.me.mention)
-    if img:
-        PIC = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"
-        img = random.choice(img.split(" "))
-        if img.endswith(".mp4"):
-            await message.reply_video(
-                img,
-                caption=caption,
-            )
-        else:
-            await message.reply_photo(
-                img,
-                caption=caption,
-            )
-        return
-    await Pbxbot.edit(Pbx, caption, no_link_preview=True)
 
+    try:
+        result = await client.get_inline_bot_results(bot.me.username, "ping_menu")
+        await client.send_inline_bot_result(
+            message.chat.id,
+            result.query_id,
+            result.results[0].id,
+            True,
+        )
+        return await Pbx.delete()
+    except Exception as e:
+        await Pbxbot.error(Pbx, str(e), 20)
+        return
+
+
+@bot.on_inline_query(filters.regex("ping_menu"))
+async def inline_ping(client: Client, inline_query):
+    img = await db.get_env(ENV.ping_pic)
+    if not img:
+        img = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"  # Default image
+
+    uptime = readable_time(time.time() - START_TIME)
+    speed = round(time.time() - inline_query.date.timestamp(), 3)
+    caption = await ping_template(speed, uptime, client.me.mention)
+
+    buttons = [
+        [
+            InlineKeyboardButton("sᴜᴘᴘᴏʀᴛ", url="https://t.me/PBX_CHAT"),
+            InlineKeyboardButton("ᴜᴘᴅᴀᴛᴇs", url="https://t.me/HEROKUBIN_01"),
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    results = [
+        InlineQueryResultPhoto(
+            photo_url=img,
+            thumb_url=img,
+            caption=caption,
+            reply_markup=reply_markup,
+        )
+    ]
+
+    await inline_query.answer(results, cache_time=0)
 
 @on_message("history", allow_stan=True)
 async def history(client: Client, message: Message):
