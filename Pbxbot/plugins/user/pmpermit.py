@@ -205,56 +205,24 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} Enough of your spamming here! Blocking you from sending PMs!**",
+            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬.**",
         )
 
-    owner_name = client.me.first_name  # Bot Owner ka Naam Fetch Kiya
+    owner_name = client.me.first_name  # ✅ Owner Ka Name Fetch Kiya
+    pm_pic = await db.get_env(ENV.pmpermit_pic) or "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"
 
-    pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
-    custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
+    pm_msg = f"👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0 - 𝐏ᴍ 𝐒ᴇᴄᴜʀɪ𝐭ʏ** 👻\n\n"
+    pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ 🌪️\n"
+    pm_msg += f"⚡ **𝐖αιт 𝐅σя  𝐌у 𝐂υтє [{owner_name}](tg://settings) ❤️**\n\n☠ 𝐘συ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ! ☠"
 
-    if custom_pmmsg:
-        pm_msg += f"{custom_pmmsg}\n**You have {warns} warnings left!**"
-    else:
-        pm_msg += f"**👋🏻 Hi {message.from_user.mention}!**\n❤️ The owner is offline, please don't spam 🌪️\n⚡ If you spam, you will be blocked.\n**You have {warns} warnings left!**"
-
-    try:
-        pm_pic = await db.get_env(ENV.pmpermit_pic)
-        if pm_pic:
-            result = await client.get_inline_bot_results(bot.me.username, "pmpermit_menu")
-            await client.send_inline_bot_result(
-                message.chat.id,
-                result.query_id,
-                result.results[0].id,
-                True,
-            )
-            return
-        else:
-            msg = await client.send_message(
-                message.from_user.id,
-                pm_msg,
-                disable_web_page_preview=True,
-            )
-    except:
-        msg = await client.send_message(
-            message.from_user.id,
-            pm_msg,
-            disable_web_page_preview=True,
-        )
-
-    prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
-    if prev_msg:
-        await prev_msg.delete()
-
-    PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
-    WARNS[client.me.id] = {message.from_user.id: warns - 1}
+    # ✅ Inline Query Send Karna (Jaisa Ping & Alive Me Hai)
+    results = await client.get_inline_bot_results(client.me.username, "pmpermit_menu")
+    await client.send_inline_bot_result(message.chat.id, results.query_id, results.results[0].id, True)
 
 
 @bot.on_inline_query(filters.regex("pmpermit_menu"))
 async def inline_pmpermit(client: Client, inline_query):
-    pm_pic = await db.get_env(ENV.pmpermit_pic)
-    if not pm_pic:
-        pm_pic = "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"  # Default image
+    pm_pic = await db.get_env(ENV.pmpermit_pic) or "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"
 
     buttons = [
         [
@@ -269,48 +237,9 @@ async def inline_pmpermit(client: Client, inline_query):
         InlineQueryResultPhoto(
             photo_url=pm_pic,
             thumb_url=pm_pic,
-            caption="",
+            caption="👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0 - 𝐏ᴍ 𝐒ᴇᴄᴜʀɪ𝐭ʏ** 👻\n\n⚠ **𝐘𝐨𝐮 𝐡𝐚𝐯𝐞 𝐥𝐢𝐦𝐢𝐭𝐞𝐝 𝐚𝐭𝐭𝐞𝐦𝐩𝐭𝐬 𝐭𝐨 𝐬𝐞𝐧𝐝 𝐦𝐞𝐬𝐬𝐚𝐠𝐞𝐬!**\n👮‍♂️ **𝐂𝐡𝐨𝐨𝐬𝐞 𝐚𝐧 𝐨𝐩𝐭𝐢𝐨𝐧:**",
             reply_markup=reply_markup,
         )
     ]
 
-    await inline_query.answer(results, cache_time=0)      
-
-@bot.on_callback_query(filters.regex("pm_allow"))
-async def callback_allow(client, callback_query):
-    user_id = callback_query.from_user.id
-    await db.add_pmpermit(client.me.id, user_id)
-    await callback_query.answer("User allowed!", show_alert=True)
-
-HelpMenu("pmpermit").add(
-    "block",
-    "<reply to user>/<userid/username>",
-    "Block a user from pm-ing you.",
-    "block @ll_THE_BAD_BOT_ll",
-).add(
-    "unblock",
-    "<reply to user>/<userid/username>",
-    "Unblock a user from pm-ing you.",
-    "unblock @ll_THE_BAD_BOT_ll",
-).add(
-    "allow",
-    "<reply to user>/<userid/username>",
-    "Allow a user to pm you.",
-    "allow @ll_THE_BAD_BOT_ll",
-    "An alias of 'approve' is also available.",
-).add(
-    "disallow",
-    "<reply to user>/<userid/username>",
-    "Disallow a user to pm you.",
-    "disallow @ll_THE_BAD_BOT_ll",
-    "An alias of 'disapprove' is also available.",
-).add(
-    "allowlist",
-    None,
-    "List all users allowed to pm you.",
-    "allowlist",
-    "An alias of 'approvelist' is also available.",
-).info(
-    "Manage who can pm you."
-).done()
-    
+    await inline_query.answer(results, cache_time=0)
