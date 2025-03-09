@@ -1,6 +1,11 @@
+# G: Glass Buttons
+
 from math import ceil
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultPhoto
+
+from pyrogram.types import InlineKeyboardButton
+
 from Pbxbot.core import ENV, Symbols, db, Config
+
 
 def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeyboardButton]]:
     keyboard = []
@@ -12,12 +17,13 @@ def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeybo
         keyboard.append(kyb)
     return keyboard
 
+
 def btn(text, value, type="callback_data") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, **{type: value})
 
+
 async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
     buttons = []
-    photo_url = "https://files.catbox.moe/xduruw.jpg"  # Yaha apni image ka URL daalein
     column = await db.get_env(ENV.btn_in_help) or 5
     column = int(column)
     emoji = await db.get_env(ENV.help_emoji) or "✧"
@@ -56,14 +62,8 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
         ]
     )
 
-    return [
-        InlineQueryResultPhoto(
-            photo_url=photo_url,
-            thumb_url=photo_url,
-            caption="📌 **Help Menu**",
-            reply_markup=InlineKeyboardMarkup(buttons),
-        )
-    ], max_pages
+    return buttons, max_pages
+
 
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     buttons = []
@@ -96,16 +96,17 @@ async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
 
     return buttons
 
+
 def start_button() -> list[list[InlineKeyboardButton]]:
     return [
         [
             InlineKeyboardButton("📝 ʜᴇʟᴘ 📝", "help_data:bothelp"),
             InlineKeyboardButton("🗡️ sᴏᴜʀᴄᴇ 🗡️", "help_data:source"),
-        ],
+            ],
         [
             InlineKeyboardButton("📌 DEPLOY 📌", url="https://t.me/PBX_NETWORK/6"),
         ],
         [
-            InlineKeyboardButton("🕊️⃝‌ᴘʙx ❤️ᥫ᭡፝֟፝֟", url="https://t.me/ll_THE_BAD_BOT_ll"),
-        ]
+        InlineKeyboardButton("🕊️⃝‌ᴘʙx ❤️ᥫ᭡፝֟፝֟" ,  url="https://t.me/ll_THE_BAD_BOT_ll"),
+    ]
     ]
