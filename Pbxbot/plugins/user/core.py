@@ -18,26 +18,12 @@ async def help(client: Client, message: Message):
     if len(message.command) == 1:
         try:
             result = await client.get_inline_bot_results(bot.me.username, "help_menu")
-            photo_url = "https://files.catbox.moe/xduruw.jpg"  # Replace with your photo URL
-            
-            # Ensure that result.results[0] has the reply_markup attribute
-            if hasattr(result.results[0], 'reply_markup'):
-                reply_markup = InlineKeyboardMarkup(result.results[0].reply_markup.inline_keyboard)
-            else:
-                reply_markup = InlineKeyboardMarkup([])  # Fallback to an empty markup if not present
-            
-            results = [
-                InlineQueryResultPhoto(
-                    id="help_photo",
-                    photo_url=photo_url,
-                    thumb_url=photo_url,
-                    title="Help Menu",
-                    description="Click to view the help menu",
-                    caption="📌 **Help Menu**",
-                    reply_markup=reply_markup,
-                )
-            ]
-            await client.answer_inline_query(result.query_id, results)
+            await client.send_inline_bot_result(
+                message.chat.id,
+                result.query_id,
+                result.results[0].id,
+                True,
+            )
             return await Pbx.delete()
         except Exception as e:
             await Pbxbot.error(Pbx, str(e), 20)
@@ -365,4 +351,4 @@ HelpMenu("help").add(
     "Load the mentioned plugin.",
     "load alive",
     "This will load all the commands of that plugin to the bot that was previously unloaded permanently.",
-)
+        )
