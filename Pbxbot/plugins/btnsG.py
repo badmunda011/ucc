@@ -1,5 +1,5 @@
 from math import ceil
-from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultPhoto
 from Pbxbot.core import ENV, Symbols, db, Config
 
 def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeyboardButton]]:
@@ -15,9 +15,9 @@ def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeybo
 def btn(text, value, type="callback_data") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, **{type: value})
 
-async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[InlineQueryResultPhoto], int]:
+async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
     buttons = []
-    photo_url = "https://files.catbox.moe/xduruw.jpg"  # Replace with your photo URL
+    photo_url = "https://files.catbox.moe/xduruw.jpg"  # Yaha apni image ka URL daalein
     column = await db.get_env(ENV.btn_in_help) or 5
     column = int(column)
     emoji = await db.get_env(ENV.help_emoji) or "✧"
@@ -32,32 +32,38 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[Inline
     for pair in pairs[page]:
         btn_pair = []
         for i, plugin in enumerate(pair):
-            btn_pair.append(
-                InlineKeyboardButton(f"{emoji} {plugin}", f"help_menu:{page}:{plugin}")
-                if i % 2 == 0 else 
-                InlineKeyboardButton(f"{plugin} {emoji}", f"help_menu:{page}:{plugin}")
-            )
+            if i % 2 == 0:
+                btn_pair.append(
+                    InlineKeyboardButton(f"{emoji} {plugin}", f"help_menu:{page}:{plugin}")
+                )
+            else:
+                btn_pair.append(
+                    InlineKeyboardButton(f"{plugin} {emoji}", f"help_menu:{page}:{plugin}")
+                )
         buttons.append(btn_pair)
 
     buttons.append(
         [
-            InlineKeyboardButton(Symbols.previous, f"help_page:{(max_pages - 1) if page == 0 else (page - 1)}"),
-            InlineKeyboardButton(Symbols.close, "help_data:c"),
-            InlineKeyboardButton(Symbols.next, f"help_page:{0 if page == (max_pages - 1) else (page + 1)}"),
+            InlineKeyboardButton(
+                Symbols.previous, f"help_page:{(max_pages - 1) if page == 0 else (page - 1)}",
+            ),
+            InlineKeyboardButton(
+                Symbols.close, "help_data:c"
+            ),
+            InlineKeyboardButton(
+                Symbols.next, f"help_page:{0 if page == (max_pages - 1) else (page + 1)}",
+            ),
         ]
     )
 
-    # ✅ FIX: Wrap `InlineQueryResultPhoto` in a list
-    results = [
+    return [
         InlineQueryResultPhoto(
             photo_url=photo_url,
             thumb_url=photo_url,
-            caption="Help Menu",
-            reply_markup=InlineKeyboardMarkup(buttons)
+            caption="📌 **Help Menu**",
+            reply_markup=InlineKeyboardMarkup(buttons),
         )
-    ]
-
-    return results, max_pages  # ✅ Tuple return correctly
+    ], max_pages
 
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     buttons = []
@@ -71,11 +77,14 @@ async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     for pair in pairs:
         btn_pair = []
         for i, plugin in enumerate(pair):
-            btn_pair.append(
-                InlineKeyboardButton(f"{emoji} {plugin}", f"bot_help_menu:{plugin}")
-                if i % 2 == 0 else 
-                InlineKeyboardButton(f"{plugin} {emoji}", f"bot_help_menu:{plugin}")
-            )
+            if i % 2 == 0:
+                btn_pair.append(
+                    InlineKeyboardButton(f"{emoji} {plugin}", f"bot_help_menu:{plugin}")
+                )
+            else:
+                btn_pair.append(
+                    InlineKeyboardButton(f"{plugin} {emoji}", f"bot_help_menu:{plugin}")
+                )
         buttons.append(btn_pair)
 
     buttons.append(
