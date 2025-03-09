@@ -1,9 +1,6 @@
-# G: Glass Buttons
-
 from math import ceil
 
-from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto
-
+from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto, InlineKeyboardMarkup
 
 from Pbxbot.core import ENV, Symbols, db, Config
 
@@ -113,7 +110,7 @@ def start_button() -> list[list[InlineKeyboardButton]]:
         [
             InlineKeyboardButton("📝 ʜᴇʟᴘ 📝", "help_data:bothelp"),
             InlineKeyboardButton("🗡️ sᴏᴜʀᴄᴇ 🗡️", "help_data:source"),
-            ],
+        ],
         [
             InlineKeyboardButton("📌 DEPLOY 📌", url="https://t.me/PBX_NETWORK/6"),
         ],
