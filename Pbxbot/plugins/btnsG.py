@@ -1,9 +1,6 @@
 from math import ceil
-
 from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto, InlineKeyboardMarkup
-
 from Pbxbot.core import ENV, Symbols, db, Config
-
 
 def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeyboardButton]]:
     keyboard = []
@@ -15,10 +12,8 @@ def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeybo
         keyboard.append(kyb)
     return keyboard
 
-
 def btn(text, value, type="callback_data") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, **{type: value})
-
 
 async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[InlineQueryResultPhoto], int]:
     buttons = []
@@ -37,30 +32,22 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[Inline
     for pair in pairs[page]:
         btn_pair = []
         for i, plugin in enumerate(pair):
-            if i % 2 == 0:
-                btn_pair.append(
-                    InlineKeyboardButton(f"{emoji} {plugin}", f"help_menu:{page}:{plugin}")
-                )
-            else:
-                btn_pair.append(
-                    InlineKeyboardButton(f"{plugin} {emoji}", f"help_menu:{page}:{plugin}")
-                )
+            btn_pair.append(
+                InlineKeyboardButton(f"{emoji} {plugin}", f"help_menu:{page}:{plugin}")
+                if i % 2 == 0 else 
+                InlineKeyboardButton(f"{plugin} {emoji}", f"help_menu:{page}:{plugin}")
+            )
         buttons.append(btn_pair)
 
     buttons.append(
         [
-            InlineKeyboardButton(
-                Symbols.previous, f"help_page:{(max_pages - 1) if page == 0 else (page - 1)}",
-            ),
-            InlineKeyboardButton(
-                Symbols.close, "help_data:c"
-            ),
-            InlineKeyboardButton(
-                Symbols.next, f"help_page:{0 if page == (max_pages - 1) else (page + 1)}",
-            ),
+            InlineKeyboardButton(Symbols.previous, f"help_page:{(max_pages - 1) if page == 0 else (page - 1)}"),
+            InlineKeyboardButton(Symbols.close, "help_data:c"),
+            InlineKeyboardButton(Symbols.next, f"help_page:{0 if page == (max_pages - 1) else (page + 1)}"),
         ]
     )
 
+    # ✅ FIX: Wrap `InlineQueryResultPhoto` in a list
     results = [
         InlineQueryResultPhoto(
             photo_url=photo_url,
@@ -70,8 +57,7 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[Inline
         )
     ]
 
-    return results, max_pages
-
+    return results, max_pages  # ✅ Tuple return correctly
 
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     buttons = []
@@ -85,14 +71,11 @@ async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     for pair in pairs:
         btn_pair = []
         for i, plugin in enumerate(pair):
-            if i % 2 == 0:
-                btn_pair.append(
-                    InlineKeyboardButton(f"{emoji} {plugin}", f"bot_help_menu:{plugin}")
-                )
-            else:
-                btn_pair.append(
-                    InlineKeyboardButton(f"{plugin} {emoji}", f"bot_help_menu:{plugin}")
-                )
+            btn_pair.append(
+                InlineKeyboardButton(f"{emoji} {plugin}", f"bot_help_menu:{plugin}")
+                if i % 2 == 0 else 
+                InlineKeyboardButton(f"{plugin} {emoji}", f"bot_help_menu:{plugin}")
+            )
         buttons.append(btn_pair)
 
     buttons.append(
@@ -104,7 +87,6 @@ async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
 
     return buttons
 
-
 def start_button() -> list[list[InlineKeyboardButton]]:
     return [
         [
@@ -115,6 +97,6 @@ def start_button() -> list[list[InlineKeyboardButton]]:
             InlineKeyboardButton("📌 DEPLOY 📌", url="https://t.me/PBX_NETWORK/6"),
         ],
         [
-        InlineKeyboardButton("🕊️⃝‌ᴘʙx ❤️ᥫ᭡፝֟፝֟" ,  url="https://t.me/ll_THE_BAD_BOT_ll"),
-    ]
+            InlineKeyboardButton("🕊️⃝‌ᴘʙx ❤️ᥫ᭡፝֟፝֟", url="https://t.me/ll_THE_BAD_BOT_ll"),
+        ]
     ]
