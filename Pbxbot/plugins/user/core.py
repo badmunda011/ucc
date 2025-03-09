@@ -1,36 +1,29 @@
-import importlib
-import os
-import sys
-from pathlib import Path
+from pyrogram.types import InlineQueryResultPhoto
 
-from pyrogram import Client, filters
-from pyrogram.enums import MessagesFilter, ParseMode
-from pyrogram.types import InlineQueryResultPhoto, Message, InlineKeyboardButton, InlineKeyboardMarkup
-
-from Pbxbot.core import ENV, Config, Symbols
-
-from . import HelpMenu, bot, db, handler, Pbxbot, on_message
-
-HELP_IMAGE_URL = "https://files.catbox.moe/xduruw.jpg"  # Apni image ka URL yahan daalo
+from Pbxbot.plugins.btnsG import gen_inline_help_buttons
 
 @on_message("help", allow_stan=True)
 async def help(client: Client, message: Message):
     Pbx = await Pbxbot.edit(message, "**Processing...**")
-    
     if len(message.command) == 1:
         try:
-            result = await client.get_inline_bot_results(bot.me.username, "help_menu")
-            await client.send_photo(
-                message.chat.id,
-                HELP_IMAGE_URL,
-                caption="📌 **Help Menu**",
-            )
-            await client.send_inline_bot_result(
-                message.chat.id,
-                result.query_id,
-                result.results[0].id,
-                True,
-            )
+            page = 0  # Assuming we want to start with the first page
+            plugins = list(Config.CMD_MENU.keys())
+            buttons, _ = await gen_inline_help_buttons(page, plugins)
+            photo_url = "https://files.catbox.moe/xduruw.jpg"  # Replace with your photo URL
+
+            results = [
+                InlineQueryResultPhoto(
+                    id="help_photo",
+                    photo_url=photo_url,
+                    thumb_url=photo_url,
+                    title="Help Menu",
+                    description="Click to view the help menu",
+                    caption="📌 **Help Menu**",
+                    reply_markup=InlineKeyboardMarkup(buttons),
+                )
+            ]
+            await client.answer_inline_query(result.query_id, results)
             return await Pbx.delete()
         except Exception as e:
             await Pbxbot.error(Pbx, str(e), 20)
@@ -39,13 +32,10 @@ async def help(client: Client, message: Message):
     plugin = await Pbxbot.input(message)
     if plugin.lower() in Config.CMD_MENU:
         try:
-            await client.send_photo(
-                message.chat.id,
-                HELP_IMAGE_URL,
-                caption=Config.CMD_MENU[plugin.lower()],
-                parse_mode=ParseMode.MARKDOWN,
+            await Pbxbot.edit(
+                Pbx, Config.CMD_MENU[plugin.lower()], ParseMode.MARKDOWN
             )
-            return await Pbx.delete()
+            return
         except Exception as e:
             await Pbxbot.error(Pbx, str(e), 20)
             return
@@ -57,11 +47,4 @@ async def help(client: Client, message: Message):
     available_plugins += (
         f"\n\n𝖣𝗈 `{handler}help <plugin name>` 𝗍𝗈 𝗀𝖾𝗍 𝖽𝖾𝗍𝖺𝗂𝗅𝖾𝖽 𝗂𝗇𝖿𝗈 𝗈𝖿 𝗍𝗁𝖺𝗍 𝗉𝗅𝗎𝗀𝗂𝗇."
     )
-    
-    await client.send_photo(
-        message.chat.id,
-        HELP_IMAGE_URL,
-        caption=available_plugins,
-        parse_mode=ParseMode.MARKDOWN,
-    )
-    await Pbx.delete()
+    await Pbxbot.edit(Pbx, available_plugins, ParseMode.MARKDOWN)
