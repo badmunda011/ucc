@@ -8,21 +8,6 @@ from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto
 from Pbxbot.core import ENV, Symbols, db, Config
 
 
-def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeyboardButton]]:
-    keyboard = []
-    for i in range(0, len(collection), row):
-        kyb = []
-        for x in collection[i : i + row]:
-            button = btn(*x)
-            kyb.append(button)
-        keyboard.append(kyb)
-    return keyboard
-
-
-def btn(text, value, type="callback_data") -> InlineKeyboardButton:
-    return InlineKeyboardButton(text, **{type: value})
-
-
 async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[InlineQueryResultPhoto], int]:
     buttons = []
     photo_url = "https://files.catbox.moe/xduruw.jpg"  # Replace with your photo URL
@@ -69,11 +54,12 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[Inline
             photo_url=photo_url,
             thumb_url=photo_url,
             caption="Help Menu",
-            reply_markup=buttons
+            reply_markup=InlineKeyboardMarkup(buttons)
         )
     ]
 
     return results, max_pages
+
 
 
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
