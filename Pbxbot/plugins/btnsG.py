@@ -2,7 +2,8 @@
 
 from math import ceil
 
-from pyrogram.types import InlineKeyboardButton
+from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto
+
 
 from Pbxbot.core import ENV, Symbols, db, Config
 
@@ -22,8 +23,9 @@ def btn(text, value, type="callback_data") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, **{type: value})
 
 
-async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
+async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list[InlineQueryResultPhoto], int]:
     buttons = []
+    photo_url = "https://files.catbox.moe/xduruw.jpg"  # Replace with your photo URL
     column = await db.get_env(ENV.btn_in_help) or 5
     column = int(column)
     emoji = await db.get_env(ENV.help_emoji) or "✧"
@@ -62,7 +64,16 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
         ]
     )
 
-    return buttons, max_pages
+    results = [
+        InlineQueryResultPhoto(
+            photo_url=photo_url,
+            thumb_url=photo_url,
+            caption="Help Menu",
+            reply_markup=buttons
+        )
+    ]
+
+    return results, max_pages
 
 
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
