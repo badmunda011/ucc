@@ -19,6 +19,13 @@ async def help(client: Client, message: Message):
         try:
             result = await client.get_inline_bot_results(bot.me.username, "help_menu")
             photo_url = "https://files.catbox.moe/xduruw.jpg"  # Replace with your photo URL
+            
+            # Ensure that result.results[0] has the reply_markup attribute
+            if hasattr(result.results[0], 'reply_markup'):
+                reply_markup = InlineKeyboardMarkup(result.results[0].reply_markup.inline_keyboard)
+            else:
+                reply_markup = InlineKeyboardMarkup([])  # Fallback to an empty markup if not present
+            
             results = [
                 InlineQueryResultPhoto(
                     id="help_photo",
@@ -27,7 +34,7 @@ async def help(client: Client, message: Message):
                     title="Help Menu",
                     description="Click to view the help menu",
                     caption="📌 **Help Menu**",
-                    reply_markup=InlineKeyboardMarkup(result.results[0].reply_markup.inline_keyboard),
+                    reply_markup=reply_markup,
                 )
             ]
             await client.answer_inline_query(result.query_id, results)
