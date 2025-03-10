@@ -13,7 +13,7 @@ class HelpMenu:
         description: str = None,
         example: str = None,
         note: str = None,
-        image_url: str = None,  # Add image_url parameter
+        image_url: str = "https://files.catbox.moe/cv88iq.jpg",  # Add image_url parameter with the specified link
     ):
         self.command_dict[command] = {
             "command": command,
@@ -79,7 +79,7 @@ class BotHelp:
         self.command_dict = {}
         self.command_info = ""
 
-    def add(self, command: str, description: str, image_url: str = None):  # Add image_url parameter
+    def add(self, command: str, description: str, image_url: str = "https://files.catbox.moe/cv88iq.jpg"):  # Add image_url parameter with the specified link
         self.command_dict[command] = {
             "command": command,
             "description": description,
@@ -104,7 +104,7 @@ class BotHelp:
                     f"**{Symbols.arrow_right} 𝖣𝖾𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈𝗇:** __{command['description']}__\n"
                 )
             if command["image_url"]:
-                result += f"**{Symbols.arrow_right} 𝖯𝗂𝖼𝗍𝗎𝗋𝖾:** ![Image]({command['image_url']})\n"  # Add image display
+                result += f"**{Symbols.arrow_right} 𝖯𝗂𝗈𝗍𝗎𝗋𝖾:** ![Image]({command['image_url']})\n"  # Add image display
 
             result += "\n"
 
@@ -128,7 +128,7 @@ class BotHelp:
 # example usage of HelpMenu class
 """
 HelpMenu("example").add(
-    "example", "<text>", "description of command", "example of command", "note of command", "http://example.com/image.jpg"
+    "example", "<text>", "description of command", "example of command", "note of command", "https://files.catbox.moe/cv88iq.jpg"
 ).info(
     "information of plugin"
 ).done()
@@ -137,7 +137,7 @@ HelpMenu("example").add(
 # example usage of BotHelp class
 """
 BotHelp("example").add(
-    "example", "description of command", "http://example.com/image.jpg"
+    "example", "description of command", "https://files.catbox.moe/cv88iq.jpg"
 ).info(
     "information of category"
 ).done()
