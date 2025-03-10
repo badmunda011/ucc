@@ -68,6 +68,7 @@ async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
 
     return buttons, max_pages
 
+
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     buttons = []
     plugins = sorted(Config.BOT_CMD_MENU)
