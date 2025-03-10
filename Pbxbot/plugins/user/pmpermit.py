@@ -2,7 +2,7 @@ import random
 
 from pyrogram import Client, filters
 from pyrogram.enums import ChatType
-from pyrogram.types import Message
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultArticle, InputTextMessageContent
 
 from Pbxbot.core import ENV
 from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
@@ -174,8 +174,6 @@ async def allowlist(client: Client, message: Message):
     await Pbx.edit(text)
 
 
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS:
@@ -199,7 +197,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬 𝗎𝗇𝗍𝗂𝗅 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝗇𝗈𝗍𝗂𝖼𝖾.**",
+            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝖼𝗈𝗇𝗍𝖺𝖼𝗍𝖾𝗍𝗂𝗏𝗂𝗍𝗒!**"
         )
 
     pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
@@ -208,7 +206,7 @@ async def handle_incoming_pm(client: Client, message: Message):
     if custom_pmmsg:
         pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
     else:
-        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
+        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ, 𝐘συ 𝐖ιℓℓ 𝐁ε 𝐁ℓσ𝐜κεԃ!**"
 
     buttons = InlineKeyboardMarkup(
         [
@@ -254,7 +252,8 @@ async def handle_incoming_pm(client: Client, message: Message):
 
     PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
     WARNS[client.me.id] = {message.from_user.id: warns - 1}
-    
+
+
 @bot.on_callback_query(filters.regex(r"^(allow_pm|disallow_pm|block|unblock)_(\d+)$"))
 async def pmpermit_callback(client, query):
     action, user_id = query.data.split("_")
@@ -283,10 +282,7 @@ async def pmpermit_callback(client, query):
         await client.unblock_user(user_id)
         await query.answer("User unblocked!")
         await query.message.edit_text(f"🔓 {user_id} has been unblocked!")
-        
-        
-        
-from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent
+
 
 @bot.on_inline_query(filters.regex("pmpermit"))
 async def inline_pmpermit(client, inline_query):
