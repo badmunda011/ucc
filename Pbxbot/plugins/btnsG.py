@@ -123,8 +123,8 @@ async def inline_help(client: Client, inline_query):
     results = [
         InlineQueryResultPhoto(
             id="help_menu",
-            photo_url="https://files.catbox.moe/jmsnwk.jpg",
-            thumb_url="https://files.catbox.moe/jmsnwk.jpg",
+            photo_url="https://files.catbox.moe/paxel7.jpg",
+            thumb_url="https://files.catbox.moe/paxel7.jpg",
             caption=help_text,
             reply_markup=InlineKeyboardMarkup(buttons),
         )
