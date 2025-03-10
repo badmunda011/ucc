@@ -123,9 +123,6 @@ async def inline_help(client: Client, inline_query):
             id="help_menu",
             photo_url="https://files.catbox.moe/cv88iq.jpg",
             thumb_url="https://files.catbox.moe/cv88iq.jpg",
-            title="Help Menu",
-            description="Click to view the help menu",
-            caption="📌 **Help Menu:**",
             reply_markup=InlineKeyboardMarkup(buttons),
         )
     ]
