@@ -5,15 +5,7 @@ from pyrogram.enums import ChatType
 from pyrogram.types import Message
 
 from Pbxbot.core import ENV
-from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
-from pyrogram.types import (
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    InlineQueryResultPhoto,
-    InlineQueryResultArticle,
-    InputTextMessageContent,
-    Message,
-)
+from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message
 
 blocked_messages = [
     "🤐 User has entered the silent zone.",
@@ -205,41 +197,75 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬.**",
+            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖯𝖬 𝗎𝗇𝗍𝗂𝗅 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝗇𝗈𝗍𝗂𝖼𝖾.**",
         )
 
-    owner_name = client.me.first_name  # ✅ Owner Ka Name Fetch Kiya
-    pm_pic = await db.get_env(ENV.pmpermit_pic) or "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"
+    pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
+    custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
 
-    pm_msg = f"👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0 - 𝐏ᴍ 𝐒ᴇᴄᴜʀɪ𝐭ʏ** 👻\n\n"
-    pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ 🌪️\n"
-    pm_msg += f"⚡ **𝐖αιт 𝐅σя  𝐌у 𝐂υтє [{owner_name}](tg://settings) ❤️**\n\n☠ 𝐘συ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ! ☠"
+    if custom_pmmsg:
+        pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
+    else:
+        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
 
-    # ✅ Inline Query Send Karna (Jaisa Ping & Alive Me Hai)
-    results = await client.get_inline_bot_results(client.me.username, "pmpermit_menu")
-    await client.send_inline_bot_result(message.chat.id, results.query_id, results.results[0].id, True)
-
-
-@bot.on_inline_query(filters.regex("pmpermit_menu"))
-async def inline_pmpermit(client: Client, inline_query):
-    pm_pic = await db.get_env(ENV.pmpermit_pic) or "https://telegra.ph/file/14166208a7bf871cb0aca.jpg"
-
-    buttons = [
-        [
-            InlineKeyboardButton("✅ Allow", callback_data="pm_allow"),
-            InlineKeyboardButton("❌ Disallow", callback_data="pm_disallow"),
-            InlineKeyboardButton("🚫 Block", callback_data="pm_block"),
-        ],
-    ]
-    reply_markup = InlineKeyboardMarkup(buttons)
-
-    results = [
-        InlineQueryResultPhoto(
-            photo_url=pm_pic,
-            thumb_url=pm_pic,
-            caption="👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0 - 𝐏ᴍ 𝐒ᴇᴄᴜʀɪ𝐭ʏ** 👻\n\n⚠ **𝐘𝐨𝐮 𝐡𝐚𝐯𝐞 𝐥𝐢𝐦𝐢𝐭𝐞𝐝 𝐚𝐭𝐭𝐞𝐦𝐩𝐭𝐬 𝐭𝐨 𝐬𝐞𝐧𝐝 𝐦𝐞𝐬𝐬𝐚𝐠𝐞𝐬!**\n👮‍♂️ **𝐂𝐡𝐨𝐨𝐬𝐞 𝐚𝐧 𝐨𝐩𝐭𝐢𝐨𝐧:**",
-            reply_markup=reply_markup,
+    try:
+        pm_pic = await db.get_env(ENV.pmpermit_pic)
+        if pm_pic:
+            msg = await client.send_document(
+                message.from_user.id,
+                pm_pic,
+                pm_msg,
+                force_document=False,
+            )
+        else:
+            msg = await client.send_message(
+                message.from_user.id,
+                pm_msg,
+                disable_web_page_preview=True,
+            )
+    except:
+        msg = await client.send_message(
+            message.from_user.id,
+            pm_msg,
+            disable_web_page_preview=True,
         )
-    ]
 
-    await inline_query.answer(results, cache_time=0)
+    prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
+    if prev_msg:
+        await prev_msg.delete()
+
+    PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
+    WARNS[client.me.id] = {message.from_user.id: warns - 1}
+
+
+HelpMenu("pmpermit").add(
+    "block",
+    "<reply to user>/<userid/username>",
+    "Block a user from pm-ing you.",
+    "block @ll_THE_BAD_BOT_ll",
+).add(
+    "unblock",
+    "<reply to user>/<userid/username>",
+    "Unblock a user from pm-ing you.",
+    "unblock @ll_THE_BAD_BOT_ll",
+).add(
+    "allow",
+    "<reply to user>/<userid/username>",
+    "Allow a user to pm you.",
+    "allow @ll_THE_BAD_BOT_ll",
+    "An alias of 'approve' is also available.",
+).add(
+    "disallow",
+    "<reply to user>/<userid/username>",
+    "Disallow a user to pm you.",
+    "disallow @ll_THE_BAD_BOT_ll",
+    "An alias of 'disapprove' is also available.",
+).add(
+    "allowlist",
+    None,
+    "List all users allowed to pm you.",
+    "allowlist",
+    "An alias of 'approvelist' is also available.",
+).info(
+    "Manage who can pm you."
+).done()
