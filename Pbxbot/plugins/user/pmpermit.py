@@ -5,7 +5,7 @@ from pyrogram.enums import ChatType
 from pyrogram.types import Message
 
 from Pbxbot.core import ENV
-from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message
+from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
 
 blocked_messages = [
     "🤐 User has entered the silent zone.",
@@ -174,6 +174,8 @@ async def allowlist(client: Client, message: Message):
     await Pbx.edit(text)
 
 
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS:
@@ -206,7 +208,20 @@ async def handle_incoming_pm(client: Client, message: Message):
     if custom_pmmsg:
         pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
     else:
-        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
+        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸 🦋 𝐖αιт 𝐅σя  𝐌у 𝐂υтє [𝐎ωиєя](tg://settings) ❤️** \n\n**☠𝐘συ 𝐇αʋҽ {warns} 𝐖αɾɳιɳɠʂ 𝐋ҽϝƚ!☠**"
+
+    buttons = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("✅ Allow", callback_data=f"allow_pm_{message.from_user.id}"),
+                InlineKeyboardButton("🚫 Disallow", callback_data=f"disallow_pm_{message.from_user.id}")
+            ],
+            [
+                InlineKeyboardButton("🔒 Block", callback_data=f"block_{message.from_user.id}"),
+                InlineKeyboardButton("🔓 Unblock", callback_data=f"unblock_{message.from_user.id}")
+            ]
+        ]
+    )
 
     try:
         pm_pic = await db.get_env(ENV.pmpermit_pic)
@@ -214,19 +229,22 @@ async def handle_incoming_pm(client: Client, message: Message):
             msg = await client.send_document(
                 message.from_user.id,
                 pm_pic,
-                pm_msg,
+                caption=pm_msg,
+                reply_markup=buttons,
                 force_document=False,
             )
         else:
             msg = await client.send_message(
                 message.from_user.id,
                 pm_msg,
+                reply_markup=buttons,
                 disable_web_page_preview=True,
             )
     except:
         msg = await client.send_message(
             message.from_user.id,
             pm_msg,
+            reply_markup=buttons,
             disable_web_page_preview=True,
         )
 
@@ -236,36 +254,61 @@ async def handle_incoming_pm(client: Client, message: Message):
 
     PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
     WARNS[client.me.id] = {message.from_user.id: warns - 1}
+    
+@bot.on_callback_query(filters.regex(r"^(allow_pm|disallow_pm|block|unblock)_(\d+)$"))
+async def pmpermit_callback(client, query):
+    action, user_id = query.data.split("_")
+    user_id = int(user_id)
 
+    if action == "allow_pm":
+        if await db.is_pmpermit(client.me.id, user_id):
+            return await query.answer("User is already allowed!", show_alert=True)
+        await db.add_pmpermit(client.me.id, user_id)
+        await query.answer("User allowed to PM!")
+        await query.message.edit_text(f"✅ {user_id} is now allowed to PM!")
 
-HelpMenu("pmpermit").add(
-    "block",
-    "<reply to user>/<userid/username>",
-    "Block a user from pm-ing you.",
-    "block @ll_THE_BAD_BOT_ll",
-).add(
-    "unblock",
-    "<reply to user>/<userid/username>",
-    "Unblock a user from pm-ing you.",
-    "unblock @ll_THE_BAD_BOT_ll",
-).add(
-    "allow",
-    "<reply to user>/<userid/username>",
-    "Allow a user to pm you.",
-    "allow @ll_THE_BAD_BOT_ll",
-    "An alias of 'approve' is also available.",
-).add(
-    "disallow",
-    "<reply to user>/<userid/username>",
-    "Disallow a user to pm you.",
-    "disallow @ll_THE_BAD_BOT_ll",
-    "An alias of 'disapprove' is also available.",
-).add(
-    "allowlist",
-    None,
-    "List all users allowed to pm you.",
-    "allowlist",
-    "An alias of 'approvelist' is also available.",
-).info(
-    "Manage who can pm you."
-).done()
+    elif action == "disallow_pm":
+        if not await db.is_pmpermit(client.me.id, user_id):
+            return await query.answer("User is not allowed!", show_alert=True)
+        await db.rm_pmpermit(client.me.id, user_id)
+        await query.answer("User disallowed from PM!")
+        await query.message.edit_text(f"🚫 {user_id} is now disallowed from PM!")
+
+    elif action == "block":
+        await client.block_user(user_id)
+        await query.answer("User blocked!")
+        await query.message.edit_text(f"🔒 {user_id} has been blocked!")
+
+    elif action == "unblock":
+        await client.unblock_user(user_id)
+        await query.answer("User unblocked!")
+        await query.message.edit_text(f"🔓 {user_id} has been unblocked!")
+        
+        
+        
+from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent
+
+@bot.on_inline_query(filters.regex("pmpermit"))
+async def inline_pmpermit(client, inline_query):
+    buttons = InlineKeyboardMarkup(
+        [
+            [
+                InlineKeyboardButton("✅ Allow", callback_data="allow_pm"),
+                InlineKeyboardButton("🚫 Disallow", callback_data="disallow_pm")
+            ],
+            [
+                InlineKeyboardButton("🔒 Block", callback_data="block"),
+                InlineKeyboardButton("🔓 Unblock", callback_data="unblock")
+            ]
+        ]
+    )
+
+    result = [
+        InlineQueryResultArticle(
+            title="PM Permit Settings",
+            description="Manage PM permissions using inline mode.",
+            input_message_content=InputTextMessageContent("👻 PM Permit Settings"),
+            reply_markup=buttons,
+        )
+    ]
+    await inline_query.answer(result, cache_time=0)
