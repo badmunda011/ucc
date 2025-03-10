@@ -197,7 +197,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈𝗆 𝖿𝗎𝗋𝗍𝗁𝖾𝗋 𝖼𝗈𝗇𝗍𝖺𝖼𝗍𝖾𝗍𝗂𝗏𝗂𝗍𝗒!**"
+            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀 𝗁𝖾𝗋𝖾! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎 𝖿𝗋𝗈���"
         )
 
     pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
@@ -206,17 +206,17 @@ async def handle_incoming_pm(client: Client, message: Message):
     if custom_pmmsg:
         pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
     else:
-        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ραɱ, 𝐘συ 𝐖ιℓℓ 𝐁ε 𝐁ℓσ𝐜κεԃ!**"
-
+        pm_msg += f"**👋🏻𝐇ყ {message.from_user.mention}!**\n❤️𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡𝐈ϝ 𝐘συ 𝐒ρα�"
+        
     buttons = InlineKeyboardMarkup(
         [
             [
-                InlineKeyboardButton("✅ Allow", callback_data=f"allow_pm_{message.from_user.id}"),
-                InlineKeyboardButton("🚫 Disallow", callback_data=f"disallow_pm_{message.from_user.id}")
+                InlineKeyboardButton("✅ Allow", callback_data="allow_pm"),
+                InlineKeyboardButton("🚫 Disallow", callback_data="disallow_pm")
             ],
             [
-                InlineKeyboardButton("🔒 Block", callback_data=f"block_{message.from_user.id}"),
-                InlineKeyboardButton("🔓 Unblock", callback_data=f"unblock_{message.from_user.id}")
+                InlineKeyboardButton("🔒 Block", callback_data="block"),
+                InlineKeyboardButton("🔓 Unblock", callback_data="unblock")
             ]
         ]
     )
@@ -308,3 +308,4 @@ async def inline_pmpermit(client, inline_query):
         )
     ]
     await inline_query.answer(result, cache_time=0)
+    
