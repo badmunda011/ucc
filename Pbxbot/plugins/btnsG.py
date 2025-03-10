@@ -2,7 +2,7 @@
 
 from math import ceil
 
-from pyrogram.types import InlineKeyboardButton
+from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto
 
 from Pbxbot.core import ENV, Symbols, db, Config
 
@@ -110,3 +110,19 @@ def start_button() -> list[list[InlineKeyboardButton]]:
         InlineKeyboardButton("🕊️⃝‌ᴘʙx ❤️ᥫ᭡፝֟፝֟" ,  url="https://t.me/ll_THE_BAD_BOT_ll"),
     ]
     ]
+
+@bot.on_inline_query(filters.regex("help_menu"))
+async def inline_help(client: Client, inline_query):
+    buttons, _ = await gen_inline_help_buttons(0, sorted(Config.CMD_MENU.keys()))
+    results = [
+        InlineQueryResultPhoto(
+            id="help_menu",
+            photo_url="https://files.catbox.moe/cv88iq.jpg",
+            thumb_url="https://files.catbox.moe/cv88iq.jpg",
+            title="Help Menu",
+            description="Click to view the help menu",
+            caption="📌 **Help Menu:**",
+            reply_markup=InlineKeyboardMarkup(buttons),
+        )
+    ]
+    await inline_query.answer(results, cache_time=0)
