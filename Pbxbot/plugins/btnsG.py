@@ -2,7 +2,7 @@
 
 from math import ceil
 
-from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto
+from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto, InlineKeyboardMarkup
 
 from Pbxbot.core import ENV, Symbols, db, Config
 
