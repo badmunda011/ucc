@@ -1,6 +1,5 @@
 from Pbxbot.core.config import Config, Symbols
 
-
 class HelpMenu:
     def __init__(self, file: str) -> None:
         self.filename = file
@@ -14,6 +13,7 @@ class HelpMenu:
         description: str = None,
         example: str = None,
         note: str = None,
+        image_url: str = None,  # Add image_url parameter
     ):
         self.command_dict[command] = {
             "command": command,
@@ -21,6 +21,7 @@ class HelpMenu:
             "description": description,
             "example": example,
             "note": note,
+            "image_url": image_url,  # Store image_url
         }
         return self
 
@@ -48,6 +49,8 @@ class HelpMenu:
                 result += f"**{Symbols.arrow_right} 𝖤𝗑𝖺𝗆𝗉𝗅𝖾:** `{Config.HANDLERS[0]}{command['example']}`\n"
             if command["note"]:
                 result += f"**{Symbols.arrow_right} 𝖭𝗈𝗍𝖾:** __{command['note']}__\n"
+            if command["image_url"]:
+                result += f"**{Symbols.arrow_right} 𝖯𝗂𝖼𝗍𝗎𝗋𝖾:** ![Image]({command['image_url']})\n"  # Add image display
 
             result += "\n"
 
@@ -56,6 +59,7 @@ class HelpMenu:
                 "description": command["description"],
                 "example": command["example"],
                 "note": command["note"],
+                "image_url": command["image_url"],  # Store image_url in the config
                 "plugin": self.filename,
             }
 
@@ -75,8 +79,12 @@ class BotHelp:
         self.command_dict = {}
         self.command_info = ""
 
-    def add(self, command: str, description: str):
-        self.command_dict[command] = {"command": command, "description": description}
+    def add(self, command: str, description: str, image_url: str = None):  # Add image_url parameter
+        self.command_dict[command] = {
+            "command": command,
+            "description": description,
+            "image_url": image_url,  # Store image_url
+        }
         return self
 
     def info(self, command_info: str):
@@ -95,11 +103,15 @@ class BotHelp:
                 result += (
                     f"**{Symbols.arrow_right} 𝖣𝖾𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈𝗇:** __{command['description']}__\n"
                 )
+            if command["image_url"]:
+                result += f"**{Symbols.arrow_right} 𝖯𝗂𝖼𝗍𝗎𝗋𝖾:** ![Image]({command['image_url']})\n"  # Add image display
+
             result += "\n"
 
             Config.BOT_CMD_INFO[command["command"]] = {
                 "command": command["command"],
                 "description": command["description"],
+                "image_url": command["image_url"],  # Store image_url in the config
                 "category": self.category,
             }
 
@@ -116,7 +128,7 @@ class BotHelp:
 # example usage of HelpMenu class
 """
 HelpMenu("example").add(
-    "example", "<text>", "description of command", "example of command", "note of command"
+    "example", "<text>", "description of command", "example of command", "note of command", "http://example.com/image.jpg"
 ).info(
     "information of plugin"
 ).done()
@@ -125,7 +137,7 @@ HelpMenu("example").add(
 # example usage of BotHelp class
 """
 BotHelp("example").add(
-    "example", "description of command"
+    "example", "description of command", "http://example.com/image.jpg"
 ).info(
     "information of category"
 ).done()
