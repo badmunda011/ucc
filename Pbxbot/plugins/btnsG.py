@@ -1,6 +1,11 @@
+# G: Glass Buttons
+
 from math import ceil
-from pyrogram.types import InlineKeyboardButton, InputMediaPhoto, Message
+
+from pyrogram.types import InlineKeyboardButton
+
 from Pbxbot.core import ENV, Symbols, db, Config
+
 
 def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeyboardButton]]:
     keyboard = []
@@ -12,10 +17,12 @@ def gen_inline_keyboard(collection: list, row: int = 2) -> list[list[InlineKeybo
         keyboard.append(kyb)
     return keyboard
 
+
 def btn(text, value, type="callback_data") -> InlineKeyboardButton:
     return InlineKeyboardButton(text, **{type: value})
 
-async def gen_inline_help_buttons(page: int, plugins: list, message: Message) -> tuple[list, int]:
+
+async def gen_inline_help_buttons(page: int, plugins: list) -> tuple[list, int]:
     buttons = []
     column = await db.get_env(ENV.btn_in_help) or 5
     column = int(column)
@@ -55,13 +62,8 @@ async def gen_inline_help_buttons(page: int, plugins: list, message: Message) ->
         ]
     )
 
-    # Image URL
-    image_url = "https://files.catbox.moe/xduruw.jpg"
-
-    # Edit message to include image and text
-    await message.edit_media(InputMediaPhoto(media=image_url, caption=message.text))
-    
     return buttons, max_pages
+
 
 async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     buttons = []
@@ -93,6 +95,7 @@ async def gen_bot_help_buttons() -> list[list[InlineKeyboardButton]]:
     )
 
     return buttons
+
 
 def start_button() -> list[list[InlineKeyboardButton]]:
     return [
