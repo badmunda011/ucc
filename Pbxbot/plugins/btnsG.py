@@ -6,6 +6,7 @@ from pyrogram.types import InlineKeyboardButton, InlineQueryResultPhoto
 
 from Pbxbot.core import ENV, Symbols, db, Config
 
+from pyrogram import Client, filters
 from Pbxbot.core.clients import Pbxbot
 bot = Pbxbot.bot
 
