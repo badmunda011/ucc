@@ -3,6 +3,8 @@ import random
 from pyrogram import Client, filters
 from pyrogram.enums import ChatType
 from pyrogram.types import Message
+from pyrogram.types import InlineQueryResultPhoto
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
 
 from Pbxbot.core import ENV
 from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
