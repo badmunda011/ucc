@@ -1,7 +1,11 @@
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
-from . import Config, Symbols, db, Pbxbot, on_message, bot
+import random
 
+from pyrogram import Client, filters
+from pyrogram.enums import ChatType
+from pyrogram.types import Message
+
+from Pbxbot.core import ENV
+from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message
 # Existing imports and code...
 
 @bot.on_inline_query(filters.regex("pmpermit_menu"))
