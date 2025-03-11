@@ -1,5 +1,6 @@
 from Pbxbot.core.config import Config, Symbols
 
+
 class HelpMenu:
     def __init__(self, file: str) -> None:
         self.filename = file
@@ -13,7 +14,6 @@ class HelpMenu:
         description: str = None,
         example: str = None,
         note: str = None,
-        image_url: str = "https://files.catbox.moe/cv88iq.jpg",
     ):
         self.command_dict[command] = {
             "command": command,
@@ -21,7 +21,6 @@ class HelpMenu:
             "description": description,
             "example": example,
             "note": note,
-            "image_url": image_url,
         }
         return self
 
@@ -49,8 +48,6 @@ class HelpMenu:
                 result += f"**{Symbols.arrow_right} 𝖤𝗑𝖺𝗆𝗉𝗅𝖾:** `{Config.HANDLERS[0]}{command['example']}`\n"
             if command["note"]:
                 result += f"**{Symbols.arrow_right} 𝖭𝗈𝗍𝖾:** __{command['note']}__\n"
-            if command["image_url"]:
-                result += f"**{Symbols.arrow_right} 𝖯𝗂𝖼𝗍𝗎𝗋𝖾:** ![Image]({command['image_url']})\n"
 
             result += "\n"
 
@@ -59,7 +56,6 @@ class HelpMenu:
                 "description": command["description"],
                 "example": command["example"],
                 "note": command["note"],
-                "image_url": command["image_url"],
                 "plugin": self.filename,
             }
 
@@ -79,12 +75,8 @@ class BotHelp:
         self.command_dict = {}
         self.command_info = ""
 
-    def add(self, command: str, description: str, image_url: str = "https://files.catbox.moe/cv88iq.jpg"):
-        self.command_dict[command] = {
-            "command": command,
-            "description": description,
-            "image_url": image_url,
-        }
+    def add(self, command: str, description: str):
+        self.command_dict[command] = {"command": command, "description": description}
         return self
 
     def info(self, command_info: str):
@@ -101,17 +93,13 @@ class BotHelp:
             result += f"**{Symbols.radio_select} 𝖢𝗈𝗆𝗆𝖺𝗇𝖽:** `/{command['command']}`\n"
             if command["description"]:
                 result += (
-                    f"**{Symbols.arrow_right} 𝖣𝖾𝗌𝗌𝗋𝗂𝗉𝗍𝗂𝗈𝗇:** __{command['description']}__\n"
+                    f"**{Symbols.arrow_right} 𝖣𝖾𝗌𝖼𝗋𝗂𝗉𝗍𝗂𝗈𝗇:** __{command['description']}__\n"
                 )
-            if command["image_url"]:
-                result += f"**{Symbols.arrow_right} 𝖯𝗂𝖼𝗍𝗎𝗋𝖾:** ![Image]({command['image_url']})\n"
-
             result += "\n"
 
             Config.BOT_CMD_INFO[command["command"]] = {
                 "command": command["command"],
                 "description": command["description"],
-                "image_url": command["image_url"],
                 "category": self.category,
             }
 
@@ -124,10 +112,11 @@ class BotHelp:
         }
         Config.BOT_CMD_MENU[self.category] = self.get_menu()
 
+
 # example usage of HelpMenu class
 """
 HelpMenu("example").add(
-    "example", "<text>", "description of command", "example of command", "note of command", "https://files.catbox.moe/cv88iq.jpg"
+    "example", "<text>", "description of command", "example of command", "note of command"
 ).info(
     "information of plugin"
 ).done()
@@ -136,7 +125,7 @@ HelpMenu("example").add(
 # example usage of BotHelp class
 """
 BotHelp("example").add(
-    "example", "description of command", "https://files.catbox.moe/cv88iq.jpg"
+    "example", "description of command"
 ).info(
     "information of category"
 ).done()
