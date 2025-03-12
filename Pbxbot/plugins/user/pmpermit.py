@@ -7,6 +7,9 @@ from pyrogram.types import (
     InlineKeyboardMarkup,
 )
 
+from pyrogram.types import InlineQueryResultPhoto
+from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
+
 from Pbxbot.core import ENV
 from . import Config, db, custom_handler, Pbxbot, bot
 
