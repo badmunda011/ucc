@@ -1,16 +1,5 @@
 import random
 from pyrogram import Client, filters
-from pyrogram.enums import ChatType
-from pyrogram.types import (
-    Message, 
-    InlineKeyboardButton, 
-    InlineKeyboardMarkup, 
-    InlineQueryResultArticle, 
-    InputTextMessageContent
-)
-
-import random
-from pyrogram import Client, filters
 from pyrogram.types import (
     Message,
     InlineKeyboardButton,
@@ -24,16 +13,7 @@ from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message,
 WARNS = {}
 PREV_MESSAGE = {}
 
-# ✅ Function to Get PM Permit Buttons with Callback Data
-def get_pmpermit_buttons():
-    return [
-        [
-            InlineKeyboardButton("✅ Approve", callback_data="approve_user"),
-            InlineKeyboardButton("❌ Block", callback_data="block_user"),
-        ]
-    ]
-
-# ✅ PM Permit Handler
+# ✅ PM Permit Handler with Proper Buttons
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
@@ -54,60 +34,67 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} 𝖤𝗇𝗈𝗎𝗀𝗁 𝗈𝖿 𝗒𝗈𝗎𝗋 𝗌𝗉𝖺𝗆𝗆𝗂𝗇𝗀! 𝖡𝗅𝗈𝖼𝗄𝗂𝗇𝗀 𝗒𝗈𝗎.**"
+            f"**{Symbols.cross_mark} Enough of your spamming! Blocking you.**"
         )
 
     pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
     custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
 
     if custom_pmmsg:
-        pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
+        pm_msg += f"{custom_pmmsg}\n**You have {warns} warnings left!**"
     else:
-        pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡ 𝐈ϝ 𝐘συ 𝐒ρα�[...]"
+        pm_msg += f"**👋🏻 Hey {message.from_user.mention}!**\n❤️ My Owner is offline, please don't spam. \n⚡ If you spam, you will be blocked!"
 
-    buttons = get_pmpermit_buttons()  # Callback buttons use kar rahe hain
-    reply_markup = InlineKeyboardMarkup(buttons)
+    # ✅ Buttons with Callback Data
+    buttons = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("✅ Approve", callback_data=f"approve_{message.from_user.id}")],
+            [InlineKeyboardButton("❌ Block", callback_data=f"block_{message.from_user.id}")]
+        ]
+    )
 
     try:
         pm_pic = await db.get_env(ENV.pmpermit_pic)
         if pm_pic:
             msg = await client.send_photo(
-                message.from_user.id,
+                message.chat.id,
                 photo=pm_pic,
                 caption=pm_msg,
-                reply_markup=reply_markup,
+                reply_markup=buttons,
             )
         else:
             msg = await client.send_message(
-                message.from_user.id,
+                message.chat.id,
                 pm_msg,
                 disable_web_page_preview=True,
-                reply_markup=reply_markup,
+                reply_markup=buttons,  # ✅ Ensure this is properly added
             )
-    except:
+    except Exception as e:
+        print(f"Error in PM Permit: {e}")
         msg = await client.send_message(
-            message.from_user.id,
+            message.chat.id,
             pm_msg,
             disable_web_page_preview=True,
-            reply_markup=reply_markup,
+            reply_markup=buttons,  # ✅ Ensure this is properly added
         )
 
+    # ✅ Store previous message to delete if needed
     prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
     if prev_msg:
         await prev_msg.delete()
 
-    PREV_MESSAGE[client.me.id] = {message.from_user.id: msg}
-    WARNS[client.me.id] = {message.from_user.id: warns - 1}
+    PREV_MESSAGE.setdefault(client.me.id, {})[message.from_user.id] = msg
+    WARNS.setdefault(client.me.id, {})[message.from_user.id] = warns - 1
 
 # ✅ Callback Query Handler for PM Permit
-@bot.on_callback_query(filters.regex("approve_user"))
+@bot.on_callback_query(filters.regex(r"approve_(\d+)"))
 async def approve_user(client: Client, query: CallbackQuery):
-    user_id = query.from_user.id
+    user_id = int(query.matches[0].group(1))
     await db.approve_pmpermit(client.me.id, user_id)
     await query.message.edit_text("✅ User Approved!")
 
-@bot.on_callback_query(filters.regex("block_user"))
+@bot.on_callback_query(filters.regex(r"block_(\d+)"))
 async def block_user(client: Client, query: CallbackQuery):
-    user_id = query.from_user.id
+    user_id = int(query.matches[0].group(1))
     await client.block_user(user_id)
     await query.message.edit_text("❌ User Blocked!")
