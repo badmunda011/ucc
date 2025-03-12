@@ -8,7 +8,39 @@ from pyrogram.types import InputMediaPhoto, Message
 from Pbxbot.functions.templates import github_user_templates
 
 from . import Config, HelpMenu, Pbxbot, on_message
+import asyncio
 
+# Add this list of heart emojis
+heart_emojis = ["❤️", "💛", "💙", "💜", "🖤", "❤️", "💜", "💛"]
+autoname_active = False
+
+@on_message("autoname", allow_stan=True)
+async def autoname(client: Client, message: Message):
+    global autoname_active
+    if len(message.command) < 2:
+        return await Pbxbot.delete(message, "Use 'autoname on' or 'autoname off' to control autoname feature.")
+
+    command = message.command[1].lower()
+    if command == "on":
+        if autoname_active:
+            return await Pbxbot.delete(message, "Autoname is already active.")
+        autoname_active = True
+        Pbx = await Pbxbot.edit(message, "Autoname activated.")
+        while autoname_active:
+            for heart in heart_emojis:
+                if not autoname_active:
+                    break
+                try:
+                    await client.update_profile(first_name=heart)
+                except Exception as e:
+                    await Pbxbot.error(Pbx, f"`{str(e)}`")
+                await asyncio.sleep(5)
+        await Pbxbot.delete(Pbx, "Autoname deactivated.")
+    elif command == "off":
+        autoname_active = False
+        await Pbxbot.delete(message, "Autoname deactivated.")
+    else:
+        await Pbxbot.delete(message, "Invalid command. Use 'autoname on' or 'autoname off'.")
 
 @on_message("getpfp", allow_stan=True)
 async def getpfp(client: Client, message: Message):
