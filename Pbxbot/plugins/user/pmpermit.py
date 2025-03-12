@@ -5,43 +5,15 @@ from pyrogram.types import (
     Message,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
-    InlineQueryResultArticle,
-    InputTextMessageContent
 )
 
 from Pbxbot.core import ENV
-from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, bot
+from . import Config, db, custom_handler, Pbxbot, bot
 
 WARNS = {}
 PREV_MESSAGE = {}
 
-# ✅ Inline Query for PM Permit Buttons
-@bot.on_inline_query(filters.regex("pmpermit_menu"))
-async def inline_pmpermit(client: Client, inline_query):
-    bot_username = client.me.username  # Bot username dynamically fetch karenge
-
-    buttons = [
-        [
-            InlineKeyboardButton("✅ Approve", callback_data="approve"),
-            InlineKeyboardButton("❌ Block", callback_data="block"),
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(buttons)
-
-    results = [
-        InlineQueryResultArticle(
-            id="pmpermit",
-            title="PM Permit Options",
-            description="Block or Approve users",
-            input_message_content=InputTextMessageContent("Select an action for PM Permit:"),
-            reply_markup=reply_markup
-        )
-    ]
-
-    await inline_query.answer(results, cache_time=0)
-
-
-# ✅ PM Permit Handler Using Inline Buttons
+# ✅ PM Permit Handler (With Fixed Buttons)
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
@@ -62,23 +34,24 @@ async def handle_incoming_pm(client: Client, message: Message):
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
             message.from_user.id,
-            f"**{Symbols.cross_mark} Enough of your spamming! Blocking you.**"
+            "**🚨 Enough of your spamming! Blocking you.**"
         )
 
-    pm_msg = f"👻 𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ 👻\n\n"
-    custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
+    pm_msg = (
+        "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ** 👻\n\n"
+        f"👋🏻 **Hey {message.from_user.mention}!**\n"
+        "❤️ **My Owner is offline, please don't spam.**\n"
+        "⚡ **If you spam, you will be blocked!**\n\n"
+        "🔹 **Choose an option below:**"
+    )
 
-    if custom_pmmsg:
-        pm_msg += f"{custom_pmmsg}\n**You have {warns} warnings left!**"
-    else:
-        pm_msg += f"**👋🏻 Hey {message.from_user.mention}!**\n❤️ My Owner is offline, please don't spam. \n⚡ If you spam, you will be blocked!"
+    bot_username = client.me.username  # Bot username fetch
 
-    bot_username = client.me.username
-
-    # ✅ Use Inline Query to Generate Buttons
+    # ✅ Fixed Buttons (Using URL Instead of Callback)
     buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("⚙️ PM Permit Options", switch_inline_query_current_chat="pmpermit_menu")]
+            [InlineKeyboardButton("✅ Approve", url=f"https://t.me/{bot_username}?start=approve_{message.from_user.id}")],
+            [InlineKeyboardButton("❌ Block", url=f"https://t.me/{bot_username}?start=block_{message.from_user.id}")],
         ]
     )
 
