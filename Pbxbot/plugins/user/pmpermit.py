@@ -5,10 +5,8 @@ from pyrogram.types import (
     Message,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    InlineQueryResultPhoto
 )
-
-from pyrogram.types import InlineQueryResultPhoto
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, InlineQueryResultArticle, InputTextMessageContent
 
 from Pbxbot.core import ENV
 from . import Config, db, custom_handler, Pbxbot, bot
@@ -39,20 +37,34 @@ async def handle_incoming_pm(client: Client, message: Message):
             "**🚨 Enough of your spamming! Blocking you.**"
         )
 
-    pm_msg = (
-        "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒𝗲𝗰𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
-        f"👋🏻 **Hey {message.from_user.mention}!**\n"
-        "❤️ **My Owner is offline, please don't spam.**\n"
-        "⚡ **If you spam, you will be blocked!**\n\n"
-        "🔹 **Choose an option below:**"
-    )
+    # Get Bot Owner Info
+    bot_info = await client.get_me()
+    owner_name = bot_info.first_name
+    owner_mention = f"[{owner_name}](tg://user?id={bot_info.id})"
 
+    # Custom PM Message
+    pm_msg = "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄ𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
+    custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
+
+    if custom_pmmsg:
+        pm_msg += f"{custom_pmmsg}\n\n☠ 𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍! ☠"
+    else:
+        pm_msg += (
+            f"👋🏻 **𝐇ყ {message.from_user.mention}!**\n"
+            "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
+            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
+            f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_mention} ❤️**\n\n"
+            f"☠ **𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!** ☠"
+        )
+
+    # Send PM Message
     Pbx = await client.send_message(
         message.chat.id,
         pm_msg,
         disable_web_page_preview=True,
     )
 
+    # Send Inline Buttons
     try:
         result = await client.get_inline_bot_results(bot.me.username, "pmpermit_menu")
         await client.send_inline_bot_result(
@@ -82,10 +94,7 @@ async def inline_pmpermit(client: Client, inline_query):
             id="pmpermit",
             photo_url="https://files.catbox.moe/y3evsv.jpg",  # Image URL
             thumb_url="https://files.catbox.moe/y3evsv.jpg",  # Thumbnail
-            title="PM Permit Menu",
-            description="Approve or Block the user",
-            caption="🔹 **Choose an option below:**",
-            reply_markup=reply_markup
+            reply_markup=reply_markup  # Removed title, description, and caption
         )
     ]
     
