@@ -13,7 +13,6 @@ from . import Config, db, custom_handler, Pbxbot, bot
 WARNS = {}
 PREV_MESSAGE = {}
 
-# ✅ PM Permit Handler with Fixed Buttons
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
@@ -38,53 +37,53 @@ async def handle_incoming_pm(client: Client, message: Message):
         )
 
     pm_msg = (
-        "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇ𝗰𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
+        "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒𝗲𝗰𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
         f"👋🏻 **Hey {message.from_user.mention}!**\n"
         "❤️ **My Owner is offline, please don't spam.**\n"
         "⚡ **If you spam, you will be blocked!**\n\n"
         "🔹 **Choose an option below:**"
     )
 
-    bot_username = client.me.username  # ✅ Bot ka username dynamically fetch karenge
-
-    # ✅ Working Inline Buttons (Direct Approve/Block)
-    buttons = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton("✅ Approve", url=f"https://t.me/{bot_username}?start=approve_{message.from_user.id}"),
-                InlineKeyboardButton("❌ Block", url=f"https://t.me/{bot_username}?start=block_{message.from_user.id}"),
-            ],
-        ]
+    Pbx = await client.send_message(
+        message.chat.id,
+        pm_msg,
+        disable_web_page_preview=True,
     )
 
     try:
-        pm_pic = await db.get_env(ENV.pmpermit_pic)
-        if pm_pic:
-            msg = await client.send_photo(
-                message.chat.id,
-                photo=pm_pic,
-                caption=pm_msg,
-                reply_markup=buttons,
-            )
-        else:
-            msg = await client.send_message(
-                message.chat.id,
-                pm_msg,
-                disable_web_page_preview=True,
-                reply_markup=buttons,
-            )
-    except Exception as e:
-        print(f"Error in PM Permit: {e}")
-        msg = await client.send_message(
+        result = await client.get_inline_bot_results(bot.me.username, "pmpermit_menu")
+        await client.send_inline_bot_result(
             message.chat.id,
-            pm_msg,
-            disable_web_page_preview=True,
-            reply_markup=buttons,
+            result.query_id,
+            result.results[0].id,
+            True,
         )
+    except Exception as e:
+        print(f"Error in PM Permit Inline: {e}")
 
-    prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
-    if prev_msg:
-        await prev_msg.delete()
-
-    PREV_MESSAGE.setdefault(client.me.id, {})[message.from_user.id] = msg
+    PREV_MESSAGE.setdefault(client.me.id, {})[message.from_user.id] = Pbx
     WARNS.setdefault(client.me.id, {})[message.from_user.id] = warns - 1
+
+@bot.on_inline_query(filters.regex("pmpermit_menu"))
+async def inline_pmpermit(client: Client, inline_query):
+    buttons = [
+        [
+            InlineKeyboardButton("✅ Approve", callback_data=f"approve_{inline_query.from_user.id}"),
+            InlineKeyboardButton("❌ Block", callback_data=f"block_{inline_query.from_user.id}"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    
+    results = [
+        InlineQueryResultPhoto(
+            id="pmpermit",
+            photo_url="https://files.catbox.moe/y3evsv.jpg",  # Image URL
+            thumb_url="https://files.catbox.moe/y3evsv.jpg",  # Thumbnail
+            title="PM Permit Menu",
+            description="Approve or Block the user",
+            caption="🔹 **Choose an option below:**",
+            reply_markup=reply_markup
+        )
+    ]
+    
+    await inline_query.answer(results, cache_time=0)
