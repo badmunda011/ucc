@@ -108,8 +108,8 @@ async def inline_pmpermit(client: Client, inline_query):
     results = [
         InlineQueryResultPhoto(
             id=f"pmpermit_{user_id}",
-            photo_url="https://files.catbox.moe/y3evsv.jpg",  # Image URL
-            thumb_url="https://files.catbox.moe/y3evsv.jpg",  # Thumbnail
+            photo_url="https://files.catbox.moe/f7eemn.jpg",  # Image URL
+            thumb_url="https://files.catbox.moe/f7eemn.jpg",  # Thumbnail
             caption=pm_msg,  # Fixed Error: Now Caption is Defined
             reply_markup=reply_markup  # Buttons Below Image + Text
         )
