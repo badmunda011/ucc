@@ -1,8 +1,13 @@
 import random
 from pyrogram import Client, filters
 from pyrogram.enums import ChatType
-from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent
+from pyrogram.types import (
+    Message, 
+    InlineKeyboardButton, 
+    InlineKeyboardMarkup, 
+    InlineQueryResultArticle, 
+    InputTextMessageContent
+)
 
 from Pbxbot.core import ENV
 from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
@@ -10,18 +15,22 @@ from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message,
 WARNS = {}
 PREV_MESSAGE = {}
 
-
-@bot.on_inline_query(filters.regex("pmpermit_menu"))
-async def inline_pmpermit(client: Client, inline_query):
-    bot_username = client.me.username  # Bot ka username dynamically fetch karenge
-    
-    buttons = [
+# ✅ Function to get PM Permit Buttons
+def get_pmpermit_buttons(bot_username):
+    return [
         [
             InlineKeyboardButton("Block", url=f"https://t.me/{bot_username}?start=block_user"),
             InlineKeyboardButton("Unblock", url=f"https://t.me/{bot_username}?start=unblock_user"),
             InlineKeyboardButton("Approve", url=f"https://t.me/{bot_username}?start=approve_user"),
         ]
     ]
+
+# ✅ Inline Query Handler for PM Permit
+@bot.on_inline_query(filters.regex("pmpermit_menu"))
+async def inline_pmpermit(client: Client, inline_query):
+    bot_username = client.me.username  # Get bot username dynamically
+    buttons = get_pmpermit_buttons(bot_username)  # Use function to get buttons
+    
     reply_markup = InlineKeyboardMarkup(buttons)
     
     results = [
@@ -36,7 +45,7 @@ async def inline_pmpermit(client: Client, inline_query):
     
     await inline_query.answer(results, cache_time=0)
 
-
+# ✅ PM Permit Handler
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
@@ -66,28 +75,19 @@ async def handle_incoming_pm(client: Client, message: Message):
     if custom_pmmsg:
         pm_msg += f"{custom_pmmsg}\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
     else:
-        pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡ 𝐈ϝ 𝐘συ 𝐒ραɱ 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ𝖼ƙҽԃ.\n**𝖸𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!**"
+        pm_msg += f"**👋🏻 𝐇ყ {message.from_user.mention}!**\n❤️ 𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ, 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️ \n⚡ 𝐈ϝ 𝐘συ 𝐒ρα�[...]"
 
-    bot_username = client.me.username  # Bot ka username dynamically fetch karenge
-
-    buttons = [
-        [
-            InlineKeyboardButton("Block", url=f"https://t.me/{bot_username}?start=block_user"),
-            InlineKeyboardButton("Unblock", url=f"https://t.me/{bot_username}?start=unblock_user"),
-            InlineKeyboardButton("Approve", url=f"https://t.me/{bot_username}?start=approve_user"),
-        ]
-    ]
-    
+    bot_username = client.me.username  # Get bot username dynamically
+    buttons = get_pmpermit_buttons(bot_username)  # Use function to get buttons
     reply_markup = InlineKeyboardMarkup(buttons)
 
     try:
         pm_pic = await db.get_env(ENV.pmpermit_pic)
         if pm_pic:
-            msg = await client.send_document(
+            msg = await client.send_photo(
                 message.from_user.id,
-                pm_pic,
-                pm_msg,
-                force_document=False,
+                photo=pm_pic,
+                caption=pm_msg,
                 reply_markup=reply_markup,
             )
         else:
