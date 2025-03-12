@@ -13,7 +13,7 @@ from . import Config, db, custom_handler, Pbxbot, bot
 WARNS = {}
 PREV_MESSAGE = {}
 
-# ✅ PM Permit Handler (With Fixed Buttons)
+# ✅ PM Permit Handler with Fixed Buttons
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
@@ -33,25 +33,27 @@ async def handle_incoming_pm(client: Client, message: Message):
         await client.block_user(message.from_user.id)
         WARNS[client.me.id] = {message.from_user.id: max_spam}
         return await client.send_message(
-            message.from_user.id,
+            message.chat.id,
             "**🚨 Enough of your spamming! Blocking you.**"
         )
 
     pm_msg = (
-        "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄᴜʀɪᴛʏ** 👻\n\n"
+        "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇ𝗰𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
         f"👋🏻 **Hey {message.from_user.mention}!**\n"
         "❤️ **My Owner is offline, please don't spam.**\n"
         "⚡ **If you spam, you will be blocked!**\n\n"
         "🔹 **Choose an option below:**"
     )
 
-    bot_username = client.me.username  # Bot username fetch
+    bot_username = client.me.username  # ✅ Bot ka username dynamically fetch karenge
 
-    # ✅ Fixed Buttons (Using URL Instead of Callback)
+    # ✅ Working Inline Buttons (Direct Approve/Block)
     buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("✅ Approve", url=f"https://t.me/{bot_username}?start=approve_{message.from_user.id}")],
-            [InlineKeyboardButton("❌ Block", url=f"https://t.me/{bot_username}?start=block_{message.from_user.id}")],
+            [
+                InlineKeyboardButton("✅ Approve", url=f"https://t.me/{bot_username}?start=approve_{message.from_user.id}"),
+                InlineKeyboardButton("❌ Block", url=f"https://t.me/{bot_username}?start=block_{message.from_user.id}"),
+            ],
         ]
     )
 
