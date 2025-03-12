@@ -57,14 +57,6 @@ async def handle_incoming_pm(client: Client, message: Message):
             f"☠ **𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!** ☠"
         )
 
-    # Send PM Message
-    Pbx = await client.send_message(
-        message.chat.id,
-        pm_msg,
-        disable_web_page_preview=True,
-    )
-
-    # Send Inline Buttons
     try:
         result = await client.get_inline_bot_results(bot.me.username, "pmpermit_menu")
         await client.send_inline_bot_result(
@@ -76,7 +68,6 @@ async def handle_incoming_pm(client: Client, message: Message):
     except Exception as e:
         print(f"Error in PM Permit Inline: {e}")
 
-    PREV_MESSAGE.setdefault(client.me.id, {})[message.from_user.id] = Pbx
     WARNS.setdefault(client.me.id, {})[message.from_user.id] = warns - 1
 
 @bot.on_inline_query(filters.regex("pmpermit_menu"))
@@ -89,12 +80,14 @@ async def inline_pmpermit(client: Client, inline_query):
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
     
+    # Inline Query Result with Photo + Text + Button in One Message
     results = [
         InlineQueryResultPhoto(
             id="pmpermit",
             photo_url="https://files.catbox.moe/y3evsv.jpg",  # Image URL
             thumb_url="https://files.catbox.moe/y3evsv.jpg",  # Thumbnail
-            reply_markup=reply_markup  # Removed title, description, and caption
+            caption=pm_msg,  # Text Message Inside Inline Result
+            reply_markup=reply_markup  # Buttons Below Image + Text
         )
     ]
     
