@@ -1,19 +1,47 @@
 import random
+import time
 from pyrogram import Client, filters
 from pyrogram.types import (
     Message,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
-    CallbackQuery
+    InlineQueryResultArticle,
+    InputTextMessageContent
 )
 
 from Pbxbot.core import ENV
-from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
+from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, bot
 
 WARNS = {}
 PREV_MESSAGE = {}
 
-# ✅ PM Permit Handler with Proper Buttons
+# ✅ Inline Query for PM Permit Buttons
+@bot.on_inline_query(filters.regex("pmpermit_menu"))
+async def inline_pmpermit(client: Client, inline_query):
+    bot_username = client.me.username  # Bot username dynamically fetch karenge
+
+    buttons = [
+        [
+            InlineKeyboardButton("✅ Approve", callback_data="approve"),
+            InlineKeyboardButton("❌ Block", callback_data="block"),
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    results = [
+        InlineQueryResultArticle(
+            id="pmpermit",
+            title="PM Permit Options",
+            description="Block or Approve users",
+            input_message_content=InputTextMessageContent("Select an action for PM Permit:"),
+            reply_markup=reply_markup
+        )
+    ]
+
+    await inline_query.answer(results, cache_time=0)
+
+
+# ✅ PM Permit Handler Using Inline Buttons
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
@@ -45,11 +73,12 @@ async def handle_incoming_pm(client: Client, message: Message):
     else:
         pm_msg += f"**👋🏻 Hey {message.from_user.mention}!**\n❤️ My Owner is offline, please don't spam. \n⚡ If you spam, you will be blocked!"
 
-    # ✅ Buttons with Callback Data
+    bot_username = client.me.username
+
+    # ✅ Use Inline Query to Generate Buttons
     buttons = InlineKeyboardMarkup(
         [
-            [InlineKeyboardButton("✅ Approve", callback_data=f"approve_{message.from_user.id}")],
-            [InlineKeyboardButton("❌ Block", callback_data=f"block_{message.from_user.id}")]
+            [InlineKeyboardButton("⚙️ PM Permit Options", switch_inline_query_current_chat="pmpermit_menu")]
         ]
     )
 
@@ -67,7 +96,7 @@ async def handle_incoming_pm(client: Client, message: Message):
                 message.chat.id,
                 pm_msg,
                 disable_web_page_preview=True,
-                reply_markup=buttons,  # ✅ Ensure this is properly added
+                reply_markup=buttons,
             )
     except Exception as e:
         print(f"Error in PM Permit: {e}")
@@ -75,26 +104,12 @@ async def handle_incoming_pm(client: Client, message: Message):
             message.chat.id,
             pm_msg,
             disable_web_page_preview=True,
-            reply_markup=buttons,  # ✅ Ensure this is properly added
+            reply_markup=buttons,
         )
 
-    # ✅ Store previous message to delete if needed
     prev_msg = PREV_MESSAGE.get(client.me.id, {}).get(message.from_user.id, None)
     if prev_msg:
         await prev_msg.delete()
 
     PREV_MESSAGE.setdefault(client.me.id, {})[message.from_user.id] = msg
     WARNS.setdefault(client.me.id, {})[message.from_user.id] = warns - 1
-
-# ✅ Callback Query Handler for PM Permit
-@bot.on_callback_query(filters.regex(r"approve_(\d+)"))
-async def approve_user(client: Client, query: CallbackQuery):
-    user_id = int(query.matches[0].group(1))
-    await db.approve_pmpermit(client.me.id, user_id)
-    await query.message.edit_text("✅ User Approved!")
-
-@bot.on_callback_query(filters.regex(r"block_(\d+)"))
-async def block_user(client: Client, query: CallbackQuery):
-    user_id = int(query.matches[0].group(1))
-    await client.block_user(user_id)
-    await query.message.edit_text("❌ User Blocked!")
