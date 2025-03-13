@@ -299,40 +299,39 @@ async def handle_callback_query(client: Client, callback_query):
     # Allow only authorized users to click the button
     if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
-        return  
+        return  # Ignore without alerting
 
-    # Check if the callback message exists
+    # Debugging log
     if callback_query.message is None:
         print(f"Callback query message is None for callback_query: {callback_query}")
         await callback_query.answer("Error: Callback query message is missing.", show_alert=True)
         return
 
-    # Creating a mock message object for function call
-    try:
-        mock_message = Message(
-            client=client,
-            message_id=callback_query.message.message_id,
-            chat=callback_query.message.chat,
-            from_user=callback_query.from_user,
-            date=callback_query.message.date,
-            text=f"/{action} {user_id}",
-            command=[action, str(user_id)]
-        )
+    # Ensure message object is properly handled
+    chat = callback_query.message.chat
+    if not chat:
+        await callback_query.answer("Error: Chat information is missing.", show_alert=True)
+        return
 
-        if action == "approve":
-            await allow_pm(client, mock_message)
-            await callback_query.answer("✅ User approved to PM.", show_alert=True)
-        elif action == "block":
-            await block_user(client, mock_message)
-            await callback_query.answer("❌ User blocked.", show_alert=True)
-        elif action == "disallow":
-            await disallow_pm(client, mock_message)
-            await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
-        elif action == "unblock":
-            await unblock_user(client, mock_message)
-            await callback_query.answer("🔓 User unblocked.", show_alert=True)
+    mock_message = Message(
+        client=client,
+        message_id=callback_query.message.message_id,
+        chat=chat,
+        from_user=callback_query.from_user,
+        date=callback_query.message.date,
+        text=f"/{action} {user_id}",
+        command=[action, str(user_id)]
+    )
 
-    except Exception as e:
-        print(f"Error handling callback query: {e}")
-        await callback_query.answer("An error occurred. Try again.", show_alert=True)
-        
+    if action == "approve":
+        await allow_pm(client, mock_message)
+        await callback_query.answer("✅ User approved to PM.", show_alert=True)
+    elif action == "block":
+        await block_user(client, mock_message)
+        await callback_query.answer("❌ User blocked.", show_alert=True)
+    elif action == "disallow":
+        await disallow_pm(client, mock_message)
+        await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
+    elif action == "unblock":
+        await unblock_user(client, mock_message)
+        await callback_query.answer("🔓 User unblocked.", show_alert=True)
