@@ -294,22 +294,21 @@ async def handle_callback_query(client: Client, callback_query):
     user_id = int(user_id)
 
     # Check if the callback is triggered by the bot owner
-    if callback_query.from_user.id != client.me.id:
-        return await callback_query.answer("My owner is offline, please wait.", show_alert=True)
-
-    if action == "approve":
-        await db.add_pmpermit(client.me.id, user_id)
-        await callback_query.answer("User approved to PM.")
-    elif action == "block":
-        await client.block_user(user_id)
-        await callback_query.answer("User blocked.")
-    elif action == "disallow":
-        await db.rm_pmpermit(client.me.id, user_id)
-        await callback_query.answer("User disallowed to PM.")
-    elif action == "unblock":
-        await client.unblock_user(user_id)
-        await callback_query.answer("User unblocked.")
-    
+    if callback_query.from_user.id == client.me.id:
+        if action == "approve":
+            await db.add_pmpermit(client.me.id, user_id)
+            await callback_query.answer("User approved to PM.")
+        elif action == "block":
+            await client.block_user(user_id)
+            await callback_query.answer("User blocked.")
+        elif action == "disallow":
+            await db.rm_pmpermit(client.me.id, user_id)
+            await callback_query.answer("User disallowed to PM.")
+        elif action == "unblock":
+            await client.unblock_user(user_id)
+            await callback_query.answer("User unblocked.")
+    else:
+        await callback_query.answer("My owner is offline, please wait.", show_alert=True)
     
 HelpMenu("pmpermit").add(
     "block",
