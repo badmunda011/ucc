@@ -217,7 +217,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         pm_msg += (
             f"👋🏻 **𝐇ყ 𝐈 𝐀m {message.from_user.mention}!**\n"
             "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
-            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
+            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓү 🌸**\n"
             f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_mention} ❤️**\n\n"
             f"☠ **𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝐖𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝐋𝖾𝖿𝗍!** ☠"
         )
@@ -257,7 +257,7 @@ async def inline_pmpermit(client: Client, inline_query):
         pm_msg += (
             f"👋🏻 **𝐇ყ 𝐈 𝐀m {inline_query.from_user.mention}!**\n"
             "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
-            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
+            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓү 🌸**\n"
             f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {inline_query.from_user.mention} ❤️**\n\n"
             f"☠ **𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!** ☠"
         )
@@ -288,7 +288,6 @@ async def inline_pmpermit(client: Client, inline_query):
     await inline_query.answer(results, cache_time=0)
 
 # Handle the callback data
-# Handle the callback data
 @bot.on_callback_query(filters.regex(r"^(approve|block|disallow|unblock)_(\d+)$"))
 async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
@@ -296,8 +295,8 @@ async def handle_callback_query(client: Client, callback_query):
     
     bot_owner = client.me.id  # Bot owner's ID
 
-    # Only the owner can click the button
-    if callback_query.from_user.id != bot_owner:
+    # Allow only authorized users to click the button
+    if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
         return  # Ignore without alerting
 
