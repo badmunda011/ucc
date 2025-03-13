@@ -299,37 +299,30 @@ async def handle_callback_query(client: Client, callback_query):
     # Allow only authorized users to click the button
     if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
-        return  
+        return  # Ignore without alerting
 
     # Debugging log
-    message_id = callback_query.message.message_id if callback_query.message else None
-    chat_id = callback_query.message.chat.id if callback_query.message else callback_query.from_user.id
-
-    print(f"✅ Processing Callback - Chat ID: {chat_id}, Message ID: {message_id}")
-
-    if message_id is None:
-        print("⚠️ Message ID missing, using alternative method...")
-        await callback_query.answer("Error: Message not found, using fallback.", show_alert=True)
+    if callback_query.message is None:
+        print(f"Callback query message is None for callback_query: {callback_query}")
+        await callback_query.answer("Error: Callback query message is missing.", show_alert=True)
         return
 
     # Ensure message object is properly handled
-    chat = callback_query.message.chat if callback_query.message else None
+    chat = callback_query.message.chat
     if not chat:
         await callback_query.answer("Error: Chat information is missing.", show_alert=True)
         return
 
-    # Manually create a mock message
     mock_message = Message(
         client=client,
-        message_id=message_id,
+        message_id=callback_query.message.message_id,
         chat=chat,
         from_user=callback_query.from_user,
-        date=callback_query.message.date if callback_query.message else None,
+        date=callback_query.message.date,
         text=f"/{action} {user_id}",
         command=[action, str(user_id)]
     )
 
-    # Perform action based on button click
     if action == "approve":
         await allow_pm(client, mock_message)
         await callback_query.answer("✅ User approved to PM.", show_alert=True)
