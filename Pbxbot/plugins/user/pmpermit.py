@@ -238,13 +238,13 @@ async def handle_incoming_pm(client: Client, message: Message):
 @bot.on_inline_query(filters.regex(r"pmpermit_menu_(\d+)"))
 async def inline_pmpermit(client: Client, inline_query):
     user_id = int(inline_query.matches[0].group(1))
+    owner_id = client.me.id  # Get the bot owner's ID
 
     # Get Bot Owner Info
     bot_info = await client.get_me()
     owner_name = bot_info.first_name
     owner_mention = f"[{owner_name}](tg://user?id={bot_info.id})"
     
-
     # Custom PM Message
     pm_msg = "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄ𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
     custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
@@ -266,6 +266,10 @@ async def inline_pmpermit(client: Client, inline_query):
         [
             InlineKeyboardButton("✅ Approve", callback_data=f"approve_{user_id}"),
             InlineKeyboardButton("❌ Block", callback_data=f"block_{user_id}"),
+        ],
+        [
+            InlineKeyboardButton("🚫 Disallow", callback_data=f"disallow_{user_id}"),
+            InlineKeyboardButton("🔓 Unblock", callback_data=f"unblock_{user_id}"),
         ]
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
@@ -282,7 +286,29 @@ async def inline_pmpermit(client: Client, inline_query):
     ]
     
     await inline_query.answer(results, cache_time=0)
-    
+
+# Handle the callback data
+@bot.on_callback_query(filters.regex(r"^(approve|block|disallow|unblock)_(\d+)$"))
+async def handle_callback_query(client: Client, callback_query):
+    action, user_id = callback_query.data.split("_")
+    user_id = int(user_id)
+
+    # Check if the callback is triggered by the bot owner
+    if callback_query.from_user.id != client.me.id:
+        return await callback_query.answer("My owner is offline, please wait.", show_alert=True)
+
+    if action == "approve":
+        await db.add_pmpermit(client.me.id, user_id)
+        await callback_query.answer("User approved to PM.")
+    elif action == "block":
+        await client.block_user(user_id)
+        await callback_query.answer("User blocked.")
+    elif action == "disallow":
+        await db.rm_pmpermit(client.me.id, user_id)
+        await callback_query.answer("User disallowed to PM.")
+    elif action == "unblock":
+        await client.unblock_user(user_id)
+        await callback_query.answer("User unblocked.")
     
     
 HelpMenu("pmpermit").add(
