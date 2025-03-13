@@ -293,26 +293,24 @@ async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
     user_id = int(user_id)
 
-    bot_owner = client.me.id  # Bot owner ki ID le rahe hain
+    bot_owner = client.me.id  # Bot owner ki ID
 
-    # Agar owner button click kare to action execute ho
-    if callback_query.from_user.id == bot_owner:
-        if action == "approve":
-            await db.add_pmpermit(bot_owner, user_id)
-            await callback_query.answer("✅ User approved to PM.", show_alert=True)
-        elif action == "block":
-            await client.block_user(user_id)
-            await callback_query.answer("❌ User blocked.", show_alert=True)
-        elif action == "disallow":
-            await db.rm_pmpermit(bot_owner, user_id)
-            await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
-        elif action == "unblock":
-            await client.unblock_user(user_id)
-            await callback_query.answer("🔓 User unblocked.", show_alert=True)
-    else:
-        # Agar koi aur button click kare to "My owner is offline" ka alert show ho
-        await callback_query.answer("🚨 My owner is offline, please wait.", show_alert=True)
+    # Sirf owner button click kar sake
+    if callback_query.from_user.id != bot_owner:
+        return  # Alert nahi dega, bas ignore kar dega
 
+    if action == "approve":
+        await db.add_pmpermit(bot_owner, user_id)
+        await callback_query.answer("✅ User approved to PM.", show_alert=True)
+    elif action == "block":
+        await client.block_user(user_id)
+        await callback_query.answer("❌ User blocked.", show_alert=True)
+    elif action == "disallow":
+        await db.rm_pmpermit(bot_owner, user_id)
+        await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
+    elif action == "unblock":
+        await client.unblock_user(user_id)
+        await callback_query.answer("🔓 User unblocked.", show_alert=True)
 
 HelpMenu("pmpermit").add(
     "block",
