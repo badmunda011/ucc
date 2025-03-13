@@ -293,26 +293,35 @@ async def inline_pmpermit(client: Client, inline_query):
 async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
     user_id = int(user_id)
-    
+
     bot_owner = client.me.id  # Bot owner's ID
 
     # Allow only authorized users to click the button
     if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
-        return  # Ignore without alerting
+        return  
 
-    # Debugging log
-    if callback_query.message is None:
-        print(f"Callback query message is None for callback_query: {callback_query}")
-        await callback_query.answer("Error: Callback query message is missing.", show_alert=True)
+    # Handle Inline Message (when callback_query.message is None)
+    if callback_query.message is None and callback_query.inline_message_id:
+        print(f"⚠️ Inline Mode Detected - Using inline_message_id: {callback_query.inline_message_id}")
+        try:
+            await client.edit_message_text(
+                inline_message_id=callback_query.inline_message_id,
+                text=f"Action: {action} executed for user {user_id}"
+            )
+            await callback_query.answer(f"✅ {action.capitalize()} executed successfully.", show_alert=True)
+        except Exception as e:
+            print(f"❌ Error editing inline message: {str(e)}")
+            await callback_query.answer("Error: Unable to edit the inline message.", show_alert=True)
         return
 
     # Ensure message object is properly handled
-    chat = callback_query.message.chat
+    chat = callback_query.message.chat if callback_query.message else None
     if not chat:
         await callback_query.answer("Error: Chat information is missing.", show_alert=True)
         return
 
+    # Manually create a mock message
     mock_message = Message(
         client=client,
         message_id=callback_query.message.message_id,
@@ -323,6 +332,7 @@ async def handle_callback_query(client: Client, callback_query):
         command=[action, str(user_id)]
     )
 
+    # Perform action based on button click
     if action == "approve":
         await allow_pm(client, mock_message)
         await callback_query.answer("✅ User approved to PM.", show_alert=True)
