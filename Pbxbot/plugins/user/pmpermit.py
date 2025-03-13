@@ -288,6 +288,7 @@ async def inline_pmpermit(client: Client, inline_query):
     await inline_query.answer(results, cache_time=0)
 
 # Handle the callback data
+# Handle the callback data
 @bot.on_callback_query(filters.regex(r"^(approve|block|disallow|unblock)_(\d+)$"))
 async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
@@ -297,6 +298,7 @@ async def handle_callback_query(client: Client, callback_query):
 
     # Only the owner can click the button
     if callback_query.from_user.id != bot_owner:
+        await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
         return  # Ignore without alerting
 
     mock_message = Message(
@@ -321,7 +323,6 @@ async def handle_callback_query(client: Client, callback_query):
     elif action == "unblock":
         await unblock_user(client, mock_message)
         await callback_query.answer("🔓 User unblocked.", show_alert=True)
-
 
 HelpMenu("pmpermit").add(
     "block",
