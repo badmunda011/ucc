@@ -293,19 +293,22 @@ async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
     user_id = int(user_id)
     
-    bot_owner = client.me.id  # Bot owner's ID
-
-    # Allow only authorized users to click the button
-    if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
-        await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
-        return  # Ignore without alerting
-
-    # Debugging log
-    if callback_query.message is None:
-        print(f"Callback query message is None for callback_query: {callback_query}")
-        await callback_query.answer("Error: Callback query message is None.", show_alert=True)
+    if not callback_query.message:
+        await callback_query.answer("⚠️ Error: Callback query message is missing.", show_alert=True)
         return
 
+    bot_owner = client.me.id
+
+    if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
+        await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
+        return
+
+    try:
+        await callback_query.message.edit_text(f"Processing {action} for user {user_id}...")
+    except Exception as e:
+        print(f"Edit Message Error: {e}")
+
+    # Mock message creation
     mock_message = Message(
         client=client,
         message_id=callback_query.message.message_id,
@@ -329,6 +332,10 @@ async def handle_callback_query(client: Client, callback_query):
         await unblock_user(client, mock_message)
         await callback_query.answer("🔓 User unblocked.", show_alert=True)
 
+
+
+
+    
 HelpMenu("pmpermit").add(
     "block",
     "<reply to user>/<userid/username>",
