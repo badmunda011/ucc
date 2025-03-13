@@ -293,23 +293,27 @@ async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
     user_id = int(user_id)
 
-    # Check if the callback is triggered by the bot owner
+    # Agar callback trigger karne wala user wahi hai jiska session laga hai
     if callback_query.from_user.id == client.me.id:
         if action == "approve":
             await db.add_pmpermit(client.me.id, user_id)
             await callback_query.answer("User approved to PM.")
+            await callback_query.message.edit_text(f"✅ Approved {user_id} to PM.")
         elif action == "block":
             await client.block_user(user_id)
             await callback_query.answer("User blocked.")
+            await callback_query.message.edit_text(f"🚫 Blocked {user_id}.")
         elif action == "disallow":
             await db.rm_pmpermit(client.me.id, user_id)
             await callback_query.answer("User disallowed to PM.")
+            await callback_query.message.edit_text(f"❌ Disallowed {user_id} to PM.")
         elif action == "unblock":
             await client.unblock_user(user_id)
             await callback_query.answer("User unblocked.")
+            await callback_query.message.edit_text(f"🔓 Unblocked {user_id}.")
     else:
         await callback_query.answer("My owner is offline, please wait.", show_alert=True)
-    
+
 HelpMenu("pmpermit").add(
     "block",
     "<reply to user>/<userid/username>",
