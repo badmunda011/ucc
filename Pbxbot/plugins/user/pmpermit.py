@@ -1,4 +1,5 @@
 import random
+
 import time
 from pyrogram.enums import ChatType
 from pyrogram import Client, filters
@@ -334,45 +335,4 @@ async def handle_callback_query(client: Client, callback_query):
     except Exception as e:
         print(f"Error handling callback query: {e}")
         await callback_query.answer("An error occurred. Try again.", show_alert=True)
-
-
-
-
-
-
-
-
-
-
-    
-HelpMenu("pmpermit").add(
-    "block",
-    "<reply to user>/<userid/username>",
-    "Block a user from pm-ing you.",
-    "block @ll_THE_BAD_BOT_ll",
-).add(
-    "unblock",
-    "<reply to user>/<userid/username>",
-    "Unblock a user from pm-ing you.",
-    "unblock @ll_THE_BAD_BOT_ll",
-).add(
-    "allow",
-    "<reply to user>/<userid/username>",
-    "Allow a user to pm you.",
-    "allow @ll_THE_BAD_BOT_ll",
-    "An alias of 'approve' is also available.",
-).add(
-    "disallow",
-    "<reply to user>/<userid/username>",
-    "Disallow a user to pm you.",
-    "disallow @ll_THE_BAD_BOT_ll",
-    "An alias of 'disapprove' is also available.",
-).add(
-    "allowlist",
-    None,
-    "List all users allowed to pm you.",
-    "allowlist",
-    "An alias of 'approvelist' is also available.",
-).info(
-    "Manage who can pm you."
-).done()
+        
