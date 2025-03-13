@@ -292,25 +292,36 @@ async def inline_pmpermit(client: Client, inline_query):
 async def handle_callback_query(client: Client, callback_query):
     action, user_id = callback_query.data.split("_")
     user_id = int(user_id)
+    
+    bot_owner = client.me.id  # Bot owner's ID
 
-    bot_owner = client.me.id  # Bot owner ki ID
-
-    # Sirf owner button click kar sake
+    # Only the owner can click the button
     if callback_query.from_user.id != bot_owner:
-        return  # Alert nahi dega, bas ignore kar dega
+        return  # Ignore without alerting
+
+    mock_message = Message(
+        client=client,
+        message_id=callback_query.message.message_id,
+        chat=callback_query.message.chat,
+        from_user=callback_query.from_user,
+        date=callback_query.message.date,
+        text=f"/{action} {user_id}",
+        command=[action, str(user_id)]
+    )
 
     if action == "approve":
-        await db.add_pmpermit(bot_owner, user_id)
+        await allow_pm(client, mock_message)
         await callback_query.answer("✅ User approved to PM.", show_alert=True)
     elif action == "block":
-        await client.block_user(user_id)
+        await block_user(client, mock_message)
         await callback_query.answer("❌ User blocked.", show_alert=True)
     elif action == "disallow":
-        await db.rm_pmpermit(bot_owner, user_id)
+        await disallow_pm(client, mock_message)
         await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
     elif action == "unblock":
-        await client.unblock_user(user_id)
+        await unblock_user(client, mock_message)
         await callback_query.answer("🔓 User unblocked.", show_alert=True)
+
 
 HelpMenu("pmpermit").add(
     "block",
