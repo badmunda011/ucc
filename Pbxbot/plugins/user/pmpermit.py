@@ -296,7 +296,7 @@ async def handle_callback_query(client: Client, callback_query):
     bot_owner = client.me.id  # Bot owner ki ID le rahe hain
 
     # Agar owner button click kare to action execute ho
-    if callback_query.from_user.id in [bot_owner, *Config.DEVS]:
+    if callback_query.from_user.id == bot_owner:
         if action == "approve":
             await db.add_pmpermit(bot_owner, user_id)
             await callback_query.answer("✅ User approved to PM.", show_alert=True)
@@ -312,7 +312,6 @@ async def handle_callback_query(client: Client, callback_query):
     else:
         # Agar koi aur button click kare to "My owner is offline" ka alert show ho
         await callback_query.answer("🚨 My owner is offline, please wait.", show_alert=True)
-
 
 
 HelpMenu("pmpermit").add(
