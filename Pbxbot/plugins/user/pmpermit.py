@@ -296,18 +296,17 @@ async def handle_callback_query(client: Client, callback_query):
 
     bot_owner = client.me.id  # Bot owner's ID
 
-    # Allow only authorized users to click the button
     if callback_query.from_user.id != bot_owner and callback_query.from_user.id not in Config.AUTH_USERS:
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
         return  
 
-    # Handle Inline Message (when callback_query.message is None)
-    if callback_query.message is None and callback_query.inline_message_id:
+    if callback_query.inline_message_id:
         print(f"⚠️ Inline Mode Detected - Using inline_message_id: {callback_query.inline_message_id}")
         try:
-            await client.edit_message_text(
+            # Only removing buttons instead of full message edit
+            await client.edit_message_reply_markup(
                 inline_message_id=callback_query.inline_message_id,
-                text=f"Action: {action} executed for user {user_id}"
+                reply_markup=None  # Removing buttons
             )
             await callback_query.answer(f"✅ {action.capitalize()} executed successfully.", show_alert=True)
         except Exception as e:
@@ -315,33 +314,28 @@ async def handle_callback_query(client: Client, callback_query):
             await callback_query.answer("Error: Unable to edit the inline message.", show_alert=True)
         return
 
-    # Ensure message object is properly handled
-    chat = callback_query.message.chat if callback_query.message else None
-    if not chat:
-        await callback_query.answer("Error: Chat information is missing.", show_alert=True)
-        return
+    # Normal Message Handling
+    if callback_query.message:
+        chat = callback_query.message.chat
+        mock_message = Message(
+            client=client,
+            message_id=callback_query.message.message_id,
+            chat=chat,
+            from_user=callback_query.from_user,
+            date=callback_query.message.date,
+            text=f"/{action} {user_id}",
+            command=[action, str(user_id)]
+        )
 
-    # Manually create a mock message
-    mock_message = Message(
-        client=client,
-        message_id=callback_query.message.message_id,
-        chat=chat,
-        from_user=callback_query.from_user,
-        date=callback_query.message.date,
-        text=f"/{action} {user_id}",
-        command=[action, str(user_id)]
-    )
-
-    # Perform action based on button click
-    if action == "approve":
-        await allow_pm(client, mock_message)
-        await callback_query.answer("✅ User approved to PM.", show_alert=True)
-    elif action == "block":
-        await block_user(client, mock_message)
-        await callback_query.answer("❌ User blocked.", show_alert=True)
-    elif action == "disallow":
-        await disallow_pm(client, mock_message)
-        await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
-    elif action == "unblock":
-        await unblock_user(client, mock_message)
-        await callback_query.answer("🔓 User unblocked.", show_alert=True)
+        if action == "approve":
+            await allow_pm(client, mock_message)
+            await callback_query.answer("✅ User approved to PM.", show_alert=True)
+        elif action == "block":
+            await block_user(client, mock_message)
+            await callback_query.answer("❌ User blocked.", show_alert=True)
+        elif action == "disallow":
+            await disallow_pm(client, mock_message)
+            await callback_query.answer("🚫 User disallowed to PM.", show_alert=True)
+        elif action == "unblock":
+            await unblock_user(client, mock_message)
+            await callback_query.answer("🔓 User unblocked.", show_alert=True)
