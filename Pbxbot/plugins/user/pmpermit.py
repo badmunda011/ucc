@@ -39,8 +39,9 @@ async def handle_incoming_pm(client: Client, message: Message):
 
     # Get Bot Owner Info
     bot_info = await client.get_me()
-    owner_name = client.me.first_name  # Get the name of the user who hosted the bot
-    owner_mention = f"[{owner_name}](tg://user?id={client.me.id})"
+    owner_name = bot_info.first_name
+    owner_mention = f"[{owner_name}](tg://user?id={bot_info.id})"
+    
 
     # Custom PM Message
     pm_msg = "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄ𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
@@ -50,7 +51,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         pm_msg += f"{custom_pmmsg}\n\n☠ 𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍! ☠"
     else:
         pm_msg += (
-            f"👋🏻 **𝐇ყ {message.from_user.first_name}!**\n"  # Use the sender's first name
+            f"👋🏻 **𝐇ყ {message.from_user.mention}!**\n"
             "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
             "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
             f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_mention} ❤️**\n\n"
@@ -76,8 +77,9 @@ async def inline_pmpermit(client: Client, inline_query):
 
     # Get Bot Owner Info
     bot_info = await client.get_me()
-    owner_name = client.me.first_name  # Get the name of the user who hosted the bot
-    owner_mention = f"[{owner_name}](tg://user?id={client.me.id})"
+    owner_name = bot_info.first_name
+    owner_mention = f"[{owner_name}](tg://user?id={bot_info.id})"
+    
 
     # Custom PM Message
     pm_msg = "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄ𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
@@ -89,9 +91,9 @@ async def inline_pmpermit(client: Client, inline_query):
         pm_msg += f"{custom_pmmsg}\n\n☠ 𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍! ☠"
     else:
         pm_msg += (
-            f"👋🏻 **𝐇ყ [{await client.get_users(user_id).first_name}](tg://user?id={user_id})!**\n"  # Use the sender's first name
+            f"👋🏻 **𝐇ყ {message.from_user.mention}!**\n"
             "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
-            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓү 🌸**\n"
+            "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
             f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_mention} ❤️**\n\n"
             f"☠ **𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍!** ☠"
         )
