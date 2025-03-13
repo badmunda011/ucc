@@ -9,7 +9,7 @@ from pyrogram.types import (
 )
 
 from Pbxbot.core import ENV
-from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message
+from . import Config, HelpMenu, Symbols, custom_handler, db, Pbxbot, on_message, bot
 
 blocked_messages = [
     "🤐 User has entered the silent zone.",
