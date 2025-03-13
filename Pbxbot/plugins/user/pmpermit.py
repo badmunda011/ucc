@@ -296,7 +296,7 @@ async def handle_callback_query(client: Client, callback_query):
     bot_owner = client.me.id  # Bot owner ki ID le rahe hain
 
     # Agar owner button click kare to action execute ho
-    if callback_query.from_user.id == bot_owner:
+    if callback_query.from_user.id in [bot_owner, *Config.DEVS]:
         if action == "approve":
             await db.add_pmpermit(bot_owner, user_id)
             await callback_query.answer("✅ User approved to PM.", show_alert=True)
