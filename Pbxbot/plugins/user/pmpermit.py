@@ -1,5 +1,6 @@
 import random
 import time
+from pyrogram.enums import ChatType
 from pyrogram import Client, filters
 from pyrogram.types import (
     Message,
