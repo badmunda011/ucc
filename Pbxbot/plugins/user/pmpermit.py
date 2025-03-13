@@ -300,6 +300,10 @@ async def handle_callback_query(client: Client, callback_query):
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
         return  # Ignore without alerting
 
+    if callback_query.message is None:
+        await callback_query.answer("Error: Callback query message is None.", show_alert=True)
+        return
+
     mock_message = Message(
         client=client,
         message_id=callback_query.message.message_id,
