@@ -215,7 +215,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         pm_msg += f"{custom_pmmsg}\n\n☠ 𝐘𝗈𝗎 𝐇𝖺𝗏𝖾 {warns} 𝐖𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝐋𝖾𝖿𝗍! ☠"
     else:
         pm_msg += (
-            f"👋🏻 **𝐇ყ {message.from_user.mention}!**\n"
+            f"👋🏻 **𝐇ყ 𝐈 𝐀m {message.from_user.mention}!**\n"
             "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
             "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
             f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {owner_mention} ❤️**\n\n"
@@ -255,7 +255,7 @@ async def inline_pmpermit(client: Client, inline_query):
         pm_msg += f"{custom_pmmsg}\n\n☠ 𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍! ☠"
     else:
         pm_msg += (
-            f"👋🏻 **𝐇ყ 𝐈m {inline_query.from_user.mention}!**\n"
+            f"👋🏻 **𝐇ყ 𝐈 𝐀m {inline_query.from_user.mention}!**\n"
             "❤️ **𝐎ɯɳҽɾ 𝐈ʂ 𝐎ϝϝℓιɳҽ 𝐒ꪮ 𝐏ℓꫀαʂꫀ 𝐃σɳ'ƚ 𝐒ραɱ🌪️**\n"
             "⚡ **𝐈ϝ 𝐘συ 𝐒ραɱ , 𝐘συ 𝐖ιℓℓ 𝐁ҽ 𝐁ℓσ¢ƙҽԃ 𝐀υƚσɱαƚι¢ℓℓу 🌸**\n"
             f"🦋 **𝐖αιт 𝐅σя  𝐌у 𝐂υтє {inline_query.from_user.mention} ❤️**\n\n"
