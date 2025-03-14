@@ -64,7 +64,7 @@ async def delstan(client: Client, message: Message):
                 message,
                 "__Reply to a user or give me a user id to remove them from stans!__",
             )
-        user = message.from_user
+        user = message.reply_to_message.from_user
     else:
         try:
             user = await client.get_users(message.command[1])
@@ -72,6 +72,9 @@ async def delstan(client: Client, message: Message):
             return await Pbxbot.delete(
                 message, "__Give me a valid user id to remove them from stans!__"
             )
+
+    if user.id in Config.STAN_USERS:
+        return await Pbxbot.delete(message, "__This user is protected and cannot be removed!__")
 
     if await db.is_stan(client.me.id, user.id):
         await db.rm_stan(client.me.id, user.id)
