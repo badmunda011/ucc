@@ -16,7 +16,7 @@ async def echo(client: Client, message: Message):
         user = (await client.get_users(message.command[1])).id
     else:
         return await Pbxbot.delete(
-            message, "Reply to an user or pass me a user id to start echoing!"
+            message, "Reply to a user or pass me a user id to start echoing!"
         )
 
     if await db.is_echo(client.me.id, message.chat.id, user):
@@ -34,7 +34,7 @@ async def unecho(client: Client, message: Message):
         user = (await client.get_users(message.command[1])).id
     else:
         return await Pbxbot.delete(
-            message, "Reply to an user or pass me a user id to stop echoing!"
+            message, "Reply to a user or pass me a user id to stop echoing!"
         )
 
     if not await db.is_echo(client.me.id, message.chat.id, user):
@@ -50,7 +50,7 @@ async def listecho(client: Client, message: Message):
     if not echos:
         return await Pbxbot.delete(message, "No echos in this chat!")
 
-    text = "**𝖫𝗂𝗌𝗍 𝗈𝖿 𝖤𝖼𝗁𝗈 𝗂𝗇 𝗍𝗁𝗂𝗌 𝖼𝗁𝖺𝗍:**\n\n"
+    text = "**List of Echo in this chat:**\n\n"
     for echo in echos:
         text += f"    {Symbols.anchor} `{echo}`\n"
 
@@ -65,8 +65,14 @@ async def echo_handler(client: Client, message: Message):
     await asyncio.sleep(1)
     if message.sticker:
         await message.reply_sticker(message.sticker.file_id)
-    else:
+    elif message.text:
         await message.reply(message.text)
+    elif message.photo:
+        await message.reply_photo(message.photo.file_id)
+    elif message.document:
+        await message.reply_document(message.document.file_id)
+    elif message.video:
+        await message.reply_video(message.video.file_id)
 
 
 @on_message(["resend", "copy"], allow_stan=True)
@@ -81,18 +87,18 @@ async def reSend(_, message: Message):
 HelpMenu("echo").add(
     "echo",
     "<reply> or <userid>",
-    "Echo every message of the replied user in present chat!",
+    "Echo every message of the replied user in the present chat!",
     "echo @II_BAD_MUNDA_II",
     "Echo works on text and sticker messages only!",
 ).add(
     "unecho",
     "<reply> or <userid>",
-    "Stop echoing messages of the replied user in present chat!",
+    "Stop echoing messages of the replied user in the present chat!",
     "unecho @II_BAD_MUNDA_II",
 ).add(
     "listecho",
     None,
-    "List all the users whose messages are being echoed in present chat!",
+    "List all the users whose messages are being echoed in the present chat!",
     "listecho",
 ).add(
     "resend",
