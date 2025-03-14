@@ -108,17 +108,24 @@ async def get_wallpapers(
 
     if isRandom:
         api = f"https://api.unsplash.com/photos/random?count={limit}"
-        response = httpx.get(api, headers=headers)
-        results = response.json()
-        urls = [i["urls"]["raw"] for i in results]
     else:
         api = f"https://api.unsplash.com/search/photos?query={query}&page={limit_per_page(limit)}"
-        response = httpx.get(api, headers=headers)
-        result = response.json()
-        urls = [i["urls"]["raw"] for i in result["results"]]
+
+    response = httpx.get(api, headers=headers)
+    if response.status_code != 200:
+        raise Exception(f"Unsplash API error: {response.status_code} {response.text}")
+
+    results = response.json()
+
+    try:
+        if isRandom:
+            urls = [i["urls"]["raw"] for i in results]
+        else:
+            urls = [i["urls"]["raw"] for i in results["results"]]
+    except KeyError:
+        raise Exception("Invalid response structure from Unsplash API")
 
     random.shuffle(urls)
-
     return urls[:limit]
 
 
