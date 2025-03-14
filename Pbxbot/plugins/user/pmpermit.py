@@ -299,20 +299,6 @@ async def handle_callback_query(client: Client, callback_query):
         await callback_query.answer("You are not authorized to perform this action.", show_alert=True)
         return  
 
-    if callback_query.inline_message_id:
-        print(f"⚠️ Inline Mode Detected - Using inline_message_id: {callback_query.inline_message_id}")
-        try:
-            # Only removing buttons instead of full message edit
-            await client.edit_message_reply_markup(
-                inline_message_id=callback_query.inline_message_id,
-                reply_markup=None  # Removing buttons
-            )
-            await callback_query.answer(f"✅ {action.capitalize()} executed successfully.", show_alert=True)
-        except Exception as e:
-            print(f"❌ Error editing inline message: {str(e)}")
-            await callback_query.answer("Error: Unable to edit the inline message.", show_alert=True)
-        return
-
     # Normal Message Handling
     if callback_query.message:
         chat = callback_query.message.chat
