@@ -100,7 +100,7 @@ async def ylogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -132,7 +132,7 @@ async def rlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -164,7 +164,7 @@ async def vlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -196,7 +196,7 @@ async def blogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
