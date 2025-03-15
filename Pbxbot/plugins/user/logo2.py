@@ -67,11 +67,10 @@ async def generate_logo(event, text, stroke_color):
     img.save(fname, "png")
     return fname
 
-
 @on_message("logo", allow_stan=True)
 async def logo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -87,12 +86,11 @@ async def logo(client: Client, message: Message):
     except Exception as e:
         await message.reply_text(f'Error, report to ')
         print(f"Error in logo command: {e}")
-# Similarly update other functions (ylogo, rlogo, wlogo, vlogo, blogo, alogo, glogo) to replace draw.textsize with draw.textbbox
 
 @on_message("ylogo", allow_stan=True)
 async def ylogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -105,8 +103,9 @@ async def ylogo(client: Client, message: Message):
         fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
@@ -123,7 +122,7 @@ async def ylogo(client: Client, message: Message):
 @on_message("rlogo", allow_stan=True)
 async def rlogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -133,11 +132,12 @@ async def rlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
@@ -154,7 +154,7 @@ async def rlogo(client: Client, message: Message):
 @on_message("wlogo", allow_stan=True)
 async def wlogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -164,11 +164,12 @@ async def wlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
@@ -185,7 +186,7 @@ async def wlogo(client: Client, message: Message):
 @on_message("vlogo", allow_stan=True)
 async def vlogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -195,11 +196,12 @@ async def vlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(65, 105, 225))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
@@ -216,7 +218,7 @@ async def vlogo(client: Client, message: Message):
 @on_message("blogo", allow_stan=True)
 async def blogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -226,11 +228,12 @@ async def blogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
@@ -247,7 +250,7 @@ async def blogo(client: Client, message: Message):
 @on_message("alogo", allow_stan=True)
 async def alogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -257,11 +260,12 @@ async def alogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0, 255, 255))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
@@ -278,7 +282,7 @@ async def alogo(client: Client, message: Message):
 @on_message("glogo", allow_stan=True)
 async def glogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id != Config.OWNER_ID and not quew:
+    if not quew:
         await message.reply_text('Please add text to the image.')
         return
     msg = await message.reply_text('Processing...')
@@ -288,11 +292,12 @@ async def glogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
-        w, h = draw.textsize(text, font=font)
-        h += int(h*0.21)
+        text_bbox = draw.textbbox((0, 0), text, font=font)
+        w = text_bbox[2] - text_bbox[0]
+        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
         draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0, 255, 255))
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
