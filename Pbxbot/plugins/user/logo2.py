@@ -14,6 +14,7 @@ from MukeshRobot import telethn as tbot
 from telethon.tl.types import InputMessagesFilterPhotos
 from io import BytesIO
 from requests import get
+from . import Config, HelpMenu, db, Pbxbot, on_message
 
 LOGO_LINKS = [
     "https://telegra.ph/file/d1838efdafce9fe611d0c.jpg",
@@ -41,7 +42,7 @@ LOGO_LINKS = [
     ]
 
 
-@register(pattern="^/loggo ?(.*)")
+@on_message("logo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -83,9 +84,7 @@ async def lego(event):
     await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT}  ʙᴀʙʏ🥀')
 
 
-
-
-@register(pattern="^/ylogo ?(.*)")
+@on_message("ylogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -127,11 +126,7 @@ async def lego(event):
 
 
 
-    
-    
-    
-    
-@register(pattern="^/rlogo ?(.*)")
+@on_message("rlogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -173,10 +168,8 @@ async def lego(event):
 
 
 
-    
-    
-    
-@register(pattern="^/wlogo ?(.*)")
+
+@on_message("wlogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -218,10 +211,7 @@ async def lego(event):
 
 
 
-    
-    
-    
-@register(pattern="^/vlogo ?(.*)")
+@on_message("vlogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -262,7 +252,7 @@ async def lego(event):
     await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')
 
     
-@register(pattern="^/blogo ?(.*)")
+@on_message("blogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -304,11 +294,7 @@ async def lego(event):
     
     
     
-    
-    
-
-    
-@register(pattern="^/alogo ?(.*)")
+@on_message("alogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
@@ -349,8 +335,7 @@ async def lego(event):
     await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')  
 
 
-    
-@register(pattern="^/glogo ?(.*)")
+@on_message("glogo", allow_stan=True)
 async def lego(event):
  quew = event.pattern_match.group(1)
  if event.sender_id == OWNER_ID:
