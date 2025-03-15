@@ -1721,7 +1721,7 @@ async def generate_logo(event, text, stroke_color):
     x = (image_widthz - w) / 2
     y = (image_heightz - h) / 2 + 6
     draw.text((x, y), text, font=font, fill="white", stroke_width=1, stroke_fill=stroke_color)
-    fname = "LogoMakeBy_IRO.png"
+    fname = "LogoMake.png"
     img.save(fname, "png")
     return fname
 
@@ -1768,7 +1768,7 @@ async def ylogo(client: Client, message: Message):
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
         draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="yellow")
-        fname="LogoMakeBy_IRO.png"
+        fname="LogoMake.png"
         img.save(fname, "png")
         await message.reply_photo(photo=fname, caption=f"ᴍᴀᴅᴇ ʙʏ @PBX_CHAT")
         os.remove(fname)
@@ -1800,7 +1800,7 @@ async def rlogo(client: Client, message: Message):
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
         draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="red")
-        fname="LogoMakeBy_IRO.png"
+        fname="LogoMake.png"
         img.save(fname, "png")
         await message.reply_photo(photo=fname, caption=f"ᴍᴀᴅᴇ ʙʏ @PBX_CHAT")
         os.remove(fname)
@@ -1832,7 +1832,7 @@ async def vlogo(client: Client, message: Message):
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
         draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="DarkMagenta")
-        fname="LogoMakeBy_IRO.png"
+        fname="LogoMake.png"
         img.save(fname, "png")
         await message.reply_photo(photo=fname, caption=f"Made by")
         os.remove(fname)
@@ -1864,7 +1864,7 @@ async def blogo(client: Client, message: Message):
         x = (image_widthz-w)/2
         y= ((image_heightz-h)/2+6)
         draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="blue")
-        fname="LogoMakeBy_IRO.png"
+        fname="LogoMake.png"
         img.save(fname, "png")
         await message.reply_photo(photo=fname, caption=f"ᴍᴀᴅᴇ ʙʏ @PBX_CHAT")
         os.remove(fname)
