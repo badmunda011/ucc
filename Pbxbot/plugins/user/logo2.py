@@ -44,7 +44,7 @@ async def generate_logo(event, text, stroke_color):
     pointsize = 350
     fillcolor = "black"
     shadowcolor = "blue"
-    fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+    fnt = glob.glob("./Pbxbot/resources/fonts/*")
     randf = random.choice(fnt)
     font = ImageFont.truetype(randf, 120)
     w, h = draw.textsize(text, font=font)
@@ -60,12 +60,9 @@ async def generate_logo(event, text, stroke_color):
 @on_message("logo", allow_stan=True)
 async def logo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -75,16 +72,14 @@ async def logo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in logo command: {e}")
 
 @on_message("ylogo", allow_stan=True)
 async def ylogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -92,9 +87,7 @@ async def ylogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
-        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         w, h = draw.textsize(text, font=font)
@@ -110,16 +103,14 @@ async def ylogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in ylogo command: {e}")
 
 @on_message("rlogo", allow_stan=True)
 async def rlogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -127,8 +118,6 @@ async def rlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
         fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
@@ -145,16 +134,14 @@ async def rlogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in rlogo command: {e}")
 
 @on_message("wlogo", allow_stan=True)
 async def wlogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -162,8 +149,6 @@ async def wlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
         fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
@@ -180,16 +165,14 @@ async def wlogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in wlogo command: {e}")
 
 @on_message("vlogo", allow_stan=True)
 async def vlogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -197,8 +180,6 @@ async def vlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
         fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
@@ -215,16 +196,14 @@ async def vlogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in vlogo command: {e}")
 
 @on_message("blogo", allow_stan=True)
 async def blogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -232,8 +211,6 @@ async def blogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
         fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
@@ -250,16 +227,14 @@ async def blogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in blogo command: {e}")
 
 @on_message("alogo", allow_stan=True)
 async def alogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -267,8 +242,6 @@ async def alogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
         fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
@@ -285,16 +258,14 @@ async def alogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in alogo command: {e}")
 
 @on_message("glogo", allow_stan=True)
 async def glogo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if message.from_user.id == Config.OWNER_ID:
-        pass
-    else:
-        if not quew:
-            await message.reply_text('Please add text to the image.')
-            return
+    if message.from_user.id != Config.OWNER_ID and not quew:
+        await message.reply_text('Please add text to the image.')
+        return
     msg = await message.reply_text('Processing...')
     try:
         text = quew
@@ -302,8 +273,6 @@ async def glogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fillcolor = "black"
-        shadowcolor = "blue"
         fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
@@ -320,3 +289,4 @@ async def glogo(client: Client, message: Message):
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
+        print(f"Error in glogo command: {e}")
