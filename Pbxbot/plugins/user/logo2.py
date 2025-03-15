@@ -53,7 +53,7 @@ async def generate_logo(event, text, stroke_color):
     pointsize = 350
     fillcolor = "black"
     shadowcolor = "blue"
-    fnt = glob.glob("./Pbxbot/resources/fonts/*")
+    fnt = glob.glob("./Pbxbot/resources/fonts/font/*")
     randf = random.choice(fnt)
     font = ImageFont.truetype(randf, 120)
     text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -100,7 +100,7 @@ async def ylogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -132,7 +132,7 @@ async def rlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -164,7 +164,7 @@ async def vlogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -196,7 +196,7 @@ async def blogo(client: Client, message: Message):
         draw = ImageDraw.Draw(img)
         image_widthz, image_heightz = img.size
         pointsize = 500
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
+        fnt = glob.glob("./Pbxbot/resources/fonts/font/font/*")
         randf = random.choice(fnt)
         font = ImageFont.truetype(randf, 800)
         text_bbox = draw.textbbox((0, 0), text, font=font)
@@ -214,128 +214,4 @@ async def blogo(client: Client, message: Message):
     except Exception as e:
         await message.reply_text(f'Error, report to ')
         print(f"Error in blogo command: {e}")
-
-
-@on_message("alogo", allow_stan=True)
-async def alogo(client: Client, message: Message):
-    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if not quew:
-        await message.reply_text('Please add text to the image.')
-        return
-    msg = await message.reply_text('Processing...')
-    try:
-        text = quew
-        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
-        draw = ImageDraw.Draw(img)
-        image_widthz, image_heightz = img.size
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
-        randf = random.choice(fnt)
-        font = ImageFont.truetype(randf, 800)
-        text_bbox = draw.textbbox((0, 0), text, font=font)
-        w = text_bbox[2] - text_bbox[0]
-        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
-        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0, 255, 255))
-        x = (image_widthz-w)/2
-        y = ((image_heightz-h)/2 + 6)
-        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="aqua")
-        fname = "LogoMakeBy_IRO.png"
-        img.save(fname, "png")
-        await message.reply_photo(photo=fname, caption=f"Made by ")
-        os.remove(fname)
-        await msg.delete()
-    except Exception as e:
-        await message.reply_text(f'Error, report to ')
-        print(f"Error in alogo command: {e}")
-
-@on_message("blogo", allow_stan=True)
-async def blogo(client: Client, message: Message):
-    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if not quew:
-        await message.reply_text('Please add text to the image.')
-        return
-    msg = await message.reply_text('Processing...')
-    try:
-        text = quew
-        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
-        draw = ImageDraw.Draw(img)
-        image_widthz, image_heightz = img.size
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
-        randf = random.choice(fnt)
-        font = ImageFont.truetype(randf, 800)
-        text_bbox = draw.textbbox((0, 0), text, font=font)
-        w = text_bbox[2] - text_bbox[0]
-        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
-        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-        x = (image_widthz-w)/2
-        y = ((image_heightz-h)/2 + 6)
-        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="blue")
-        fname = "LogoMakeBy_IRO.png"
-        img.save(fname, "png")
-        await message.reply_photo(photo=fname, caption=f"Made by ")
-        os.remove(fname)
-        await msg.delete()
-    except Exception as e:
-        await message.reply_text(f'Error, report to ')
-        print(f"Error in blogo command: {e}")
-
-@on_message("wlogo", allow_stan=True)
-async def wlogo(client: Client, message: Message):
-    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if not quew:
-        await message.reply_text('Please add text to the image.')
-        return
-    msg = await message.reply_text('Processing...')
-    try:
-        text = quew
-        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
-        draw = ImageDraw.Draw(img)
-        image_widthz, image_heightz = img.size
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
-        randf = random.choice(fnt)
-        font = ImageFont.truetype(randf, 800)
-        text_bbox = draw.textbbox((0, 0), text, font=font)
-        w = text_bbox[2] - text_bbox[0]
-        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
-        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-        x = (image_widthz-w)/2
-        y = ((image_heightz-h)/2 + 6)
-        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="white")
-        fname = "LogoMakeBy_IRO.png"
-        img.save(fname, "png")
-        await message.reply_photo(photo=fname, caption=f"Made by")
-        os.remove(fname)
-        await msg.delete()
-    except Exception as e:
-        await message.reply_text(f'Error, report to ')
-        print(f"Error in wlogo command: {e}")
-
-@on_message("glogo", allow_stan=True)
-async def glogo(client: Client, message: Message):
-    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
-    if not quew:
-        await message.reply_text('Please add text to the image.')
-        return
-    msg = await message.reply_text('Processing...')
-    try:
-        text = quew
-        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
-        draw = ImageDraw.Draw(img)
-        image_widthz, image_heightz = img.size
-        fnt = glob.glob("./Pbxbot/resources/fonts/*")
-        randf = random.choice(fnt)
-        font = ImageFont.truetype(randf, 800)
-        text_bbox = draw.textbbox((0, 0), text, font=font)
-        w = text_bbox[2] - text_bbox[0]
-        h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
-        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0, 255, 255))
-        x = (image_widthz-w)/2
-        y = ((image_heightz-h)/2 + 6)
-        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="mediumspringgreen")
-        fname = "LogoMakeBy_IRO.png"
-        img.save(fname, "png")
-        await message.reply_photo(photo=fname, caption=f"Made by ")
-        os.remove(fname)
-        await msg.delete()
-    except Exception as e:
-        await message.reply_text(f'Error, report to ')
-        print(f"Error in glogo command: {e}")
+    
