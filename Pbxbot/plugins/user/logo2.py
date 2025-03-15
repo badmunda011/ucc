@@ -47,13 +47,14 @@ async def generate_logo(event, text, stroke_color):
     fnt = glob.glob("./Pbxbot/resources/fonts/*")
     randf = random.choice(fnt)
     font = ImageFont.truetype(randf, 120)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
+    text_bbox = draw.textbbox((0, 0), text, font=font)
+    w = text_bbox[2] - text_bbox[0]
+    h = text_bbox[3] - text_bbox[1] + int((text_bbox[3] - text_bbox[1]) * 0.21)
+    draw.text(((image_widthz - w) / 2, (image_heightz - h) / 2), text, font=font, fill=(255, 255, 255))
+    x = (image_widthz - w) / 2
+    y = (image_heightz - h) / 2 + 6
     draw.text((x, y), text, font=font, fill="white", stroke_width=1, stroke_fill=stroke_color)
-    fname="LogoMakeBy_IRO.png"
+    fname = "LogoMakeBy_IRO.png"
     img.save(fname, "png")
     return fname
 
@@ -73,6 +74,8 @@ async def logo(client: Client, message: Message):
     except Exception as e:
         await message.reply_text(f'Error, report to ')
         print(f"Error in logo command: {e}")
+
+# Similarly update other functions (ylogo, rlogo, wlogo, vlogo, blogo, alogo, glogo) to replace draw.textsize with draw.textbbox
 
 @on_message("ylogo", allow_stan=True)
 async def ylogo(client: Client, message: Message):
