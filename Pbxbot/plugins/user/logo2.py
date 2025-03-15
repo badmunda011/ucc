@@ -38,7 +38,16 @@ LOGO_LINKS = [
 
 async def generate_logo(event, text, stroke_color):
     randc = random.choice(LOGO_LINKS)
-    img = Image.open(io.BytesIO(requests.get(randc).content))
+    try:
+        response = requests.get(randc)
+        response.raise_for_status()
+        img = Image.open(io.BytesIO(response.content))
+        img.verify()  # Verify that it is a valid image
+        img = Image.open(io.BytesIO(response.content))  # Reopen after verify
+    except (requests.RequestException, IOError) as e:
+        print(f"Error fetching or opening image: {e}")
+        return None
+
     draw = ImageDraw.Draw(img)
     image_widthz, image_heightz = img.size
     pointsize = 350
@@ -58,6 +67,7 @@ async def generate_logo(event, text, stroke_color):
     img.save(fname, "png")
     return fname
 
+
 @on_message("logo", allow_stan=True)
 async def logo(client: Client, message: Message):
     quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
@@ -68,13 +78,15 @@ async def logo(client: Client, message: Message):
     try:
         text = quew
         fname = await generate_logo(message, text, "black")
+        if fname is None:
+            await message.reply_text('Error generating logo, please try again.')
+            return
         await message.reply_photo(photo=fname, caption=f"Made by ")
         os.remove(fname)
         await msg.delete()
     except Exception as e:
         await message.reply_text(f'Error, report to ')
         print(f"Error in logo command: {e}")
-
 # Similarly update other functions (ylogo, rlogo, wlogo, vlogo, blogo, alogo, glogo) to replace draw.textsize with draw.textbbox
 
 @on_message("ylogo", allow_stan=True)
