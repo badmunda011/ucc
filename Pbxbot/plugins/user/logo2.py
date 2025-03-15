@@ -1,20 +1,15 @@
-import os 
+import os
 import io
-import shutil 
-import random, re
+import shutil
+import random
+import re
 import glob
 import time
 import requests
-import random
 from PIL import Image, ImageDraw, ImageFont
-from MukeshRobot.modules.nightmode import button_row
-from MukeshRobot import BOT_USERNAME, OWNER_ID,BOT_NAME, SUPPORT_CHAT, telethn
-from MukeshRobot.events import register
-from MukeshRobot import telethn as tbot
-from telethon.tl.types import InputMessagesFilterPhotos
-from io import BytesIO
-from requests import get
 from . import Config, HelpMenu, db, Pbxbot, on_message
+from pyrogram import Client, filters
+from pyrogram.types import Message
 
 LOGO_LINKS = [
     "https://telegra.ph/file/d1838efdafce9fe611d0c.jpg",
@@ -39,24 +34,9 @@ LOGO_LINKS = [
     "https://telegra.ph/file/ff9053f2c7bfb2badc99e.jpg",
     "https://telegra.ph/file/00b9ebbb816285d9a59f9.jpg",
     "https://telegra.ph/file/ad92e1c829d14afa25cf2.jpg",
-    ]
+]
 
-
-@on_message("logo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
-    else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
+async def generate_logo(event, text, stroke_color):
     randc = random.choice(LOGO_LINKS)
     img = Image.open(io.BytesIO(requests.get(randc).content))
     draw = ImageDraw.Draw(img)
@@ -64,324 +44,279 @@ async def lego(event):
     pointsize = 350
     fillcolor = "black"
     shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
+    fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
     randf = random.choice(fnt)
     font = ImageFont.truetype(randf, 120)
     w, h = draw.textsize(text, font=font)
     h += int(h*0.21)
-    image_width, image_height = img.size
     draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
     x = (image_widthz-w)/2
     y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="white", stroke_width=1, stroke_fill="black")
+    draw.text((x, y), text, font=font, fill="white", stroke_width=1, stroke_fill=stroke_color)
     fname="LogoMakeBy_IRO.png"
     img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT}  ʙᴀʙʏ🥀')
+    return fname
 
+@on_message("logo", allow_stan=True)
+async def logo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
+    else:
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        fname = await generate_logo(message, text, "black")
+        await message.reply_photo(photo=fname, caption=f"Made by ")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
 
 @on_message("ylogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def ylogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="yellow")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')  
-
-
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="yellow")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by ")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
 
 @on_message("rlogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def rlogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="red")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT}  ʙᴀʙʏ🥀')  
-
-
-
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="red")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by ")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
 
 @on_message("wlogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def wlogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="white")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')  
-
-
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="white")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
 
 @on_message("vlogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def vlogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(65, 105, 225))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="DarkMagenta")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(65, 105, 225))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="DarkMagenta")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
 
-    
 @on_message("blogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def blogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="blue")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')  
-    
-    
-    
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(255, 255, 255))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="blue")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by ")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
+
 @on_message("alogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def alogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0,255,255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="aqua")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')  
-
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0, 255, 255))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="aqua")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by ")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
 
 @on_message("glogo", allow_stan=True)
-async def lego(event):
- quew = event.pattern_match.group(1)
- if event.sender_id == OWNER_ID:
-     pass
- else:
-
-    if not quew:
-       await event.reply('`ᴘʟᴇᴀꜱᴇ ᴀᴅᴅ ᴛᴇxᴛ ᴛᴏ ᴛʜᴇ ɪᴍᴀɢᴇ ʙᴀʙʏ🥀.`')
-       return
+async def glogo(client: Client, message: Message):
+    quew = message.text.split(' ', 1)[1] if ' ' in message.text else None
+    if message.from_user.id == Config.OWNER_ID:
+        pass
     else:
-       pass
- pesan = await event.reply('`ᴘʀᴏᴄᴇꜱꜱɪɴɢ ʙᴀʙʏ🥀...`')
- try:
-    text = event.pattern_match.group(1)
-    img = Image.open('./MukeshRobot/resources/blackbg.jpg')
-    draw = ImageDraw.Draw(img)
-    image_widthz, image_heightz = img.size
-    pointsize = 500
-    fillcolor = "black"
-    shadowcolor = "blue"
-    fnt = glob.glob("./MukeshRobot/resources/fonts/*")
-    randf = random.choice(fnt)
-    font = ImageFont.truetype(randf, 800)
-    w, h = draw.textsize(text, font=font)
-    h += int(h*0.21)
-    image_width, image_height = img.size
-    draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0,255,255))
-    x = (image_widthz-w)/2
-    y= ((image_heightz-h)/2+6)
-    draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="mediumspringgreen")
-    fname="LogoMakeBy_IRO.png"
-    img.save(fname, "png")
-    await tbot.send_file(event.chat_id, file=fname, caption=f"ᴍᴀᴅᴇ ʙʏ [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ʙᴀʙʏ🥀")         
-    await pesan.delete()
-    if os.path.exists(fname):
-            os.remove(fname)
- except Exception as e:
-    await event.reply(f'ᴇʀʀᴏʀ, ʀᴇᴘᴏʀᴛ ᴛᴏ @{SUPPORT_CHAT} ʙᴀʙʏ🥀')  
-
-
-    
-
-    
-    
-    
- 
-file_help = os.path.basename(__file__)
-file_help = file_help.replace(".py", "")
-file_helpo = file_help.replace("_", " ")
+        if not quew:
+            await message.reply_text('Please add text to the image.')
+            return
+    msg = await message.reply_text('Processing...')
+    try:
+        text = quew
+        img = Image.open('./Pbxbot/resources/fonts/blackbg.jpg')
+        draw = ImageDraw.Draw(img)
+        image_widthz, image_heightz = img.size
+        pointsize = 500
+        fillcolor = "black"
+        shadowcolor = "blue"
+        fnt = glob.glob("./Pbxbot/resources/fonts/Montserrat.ttf*")
+        randf = random.choice(fnt)
+        font = ImageFont.truetype(randf, 800)
+        w, h = draw.textsize(text, font=font)
+        h += int(h*0.21)
+        draw.text(((image_widthz-w)/2, (image_heightz-h)/2), text, font=font, fill=(0, 255, 255))
+        x = (image_widthz-w)/2
+        y= ((image_heightz-h)/2+6)
+        draw.text((x, y), text, font=font, fill="black", stroke_width=25, stroke_fill="mediumspringgreen")
+        fname="LogoMakeBy_IRO.png"
+        img.save(fname, "png")
+        await message.reply_photo(photo=fname, caption=f"Made by ")
+        os.remove(fname)
+        await msg.delete()
+    except Exception as e:
+        await message.reply_text(f'Error, report to ')
