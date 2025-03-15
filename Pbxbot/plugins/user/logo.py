@@ -11,7 +11,7 @@ from Pbxbot.functions.images import get_wallpapers, make_logo
 from . import Config, HelpMenu, db, Pbxbot, on_message
 
 
-@on_message("logo", allow_stan=True)
+@on_message("pbxlogo", allow_stan=True)
 async def makeLogo(_, message: Message):
     if len(message.command) < 2:
         return await Pbxbot.delete(message, "Provide a text to make a logo.")
