@@ -62,3 +62,32 @@ async def save_timer_media(client: Client, message: Message):
 
     except Exception as e:
         print(f"Error: {e}")
+
+# Command handler for `.pm` to forward media or reply to saved media
+@on_message("pm", allow_stan=True)
+async def pm_command(client: Client, message: Message):
+    try:
+        # Check if the user has replied to a message
+        if message.reply_to_message:
+            replied_message = message.reply_to_message
+
+            # Handle different types of media in the replied message
+            if replied_message.photo:
+                await handle_media(client, replied_message, MessageMediaType.PHOTO)
+
+            elif replied_message.video:
+                await handle_media(client, replied_message, MessageMediaType.VIDEO)
+
+            elif replied_message.document:
+                await handle_media(client, replied_message, MessageMediaType.DOCUMENT)
+
+            elif replied_message.sticker:
+                # Handle sticker by sending to saved messages (you may modify as needed)
+                await replied_message.forward(chat_id="me")
+                print("Sticker forwarded to Saved Messages.")
+        
+        else:
+            await message.reply("Please reply to a media message to save it.")
+
+    except Exception as e:
+        print(f"Error in `.pm` command: {e}")
