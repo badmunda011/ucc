@@ -28,7 +28,7 @@ async def handle_media(client: Client, message: Message, media_type: MessageMedi
         print(f"Error handling {media_type.name}: {e}")
 
 # Command handler for `.pm` to forward media or reply to saved media
-@on_message("pm", allow_stan=True)
+@on_message("save", allow_stan=True)
 async def pm_command(client: Client, message: Message):
     try:
         # Check if the user has replied to a message
