@@ -66,6 +66,36 @@ class Database:
     async def get_all_env(self) -> list:
         return [i async for i in self.env.find({})]
 
+    async def is_bot_session(self, bot_id: int) -> bool:
+    """Check if a bot session exists in the database."""
+    if await self.session.find_one({"bot_id": bot_id}):
+        return True
+    return False
+
+async def update_bot_session(self, bot_id: int, bot_token: str) -> None:
+    """Update or add a bot session in the database."""
+    await self.session.update_one(
+        {"bot_id": bot_id},
+        {"$set": {"bot_token": bot_token, "date": self.get_datetime()}},
+        upsert=True,
+    )
+
+async def rm_bot_session(self, bot_id: int) -> None:
+    """Remove a bot session from the database."""
+    await self.session.delete_one({"bot_id": bot_id})
+
+async def get_bot_session(self, bot_id: int):
+    """Retrieve a specific bot session from the database."""
+    if not await self.is_bot_session(bot_id):
+        return None
+    data = await self.session.find_one({"bot_id": bot_id})
+    return data
+
+async def get_all_bot_sessions(self) -> list:
+    """Retrieve all bot sessions from the database."""
+    return [i async for i in self.session.find({"bot_id": {"$exists": True}})]
+    
+
     async def is_stan(self, client: int, user_id: int) -> bool:
         if await self.stan_users.find_one({"client": client, "user_id": user_id}):
             return True
