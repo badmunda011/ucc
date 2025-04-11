@@ -23,6 +23,40 @@ async def session_menu(_, message: Message):
         reply_markup=session_keyboard(),
     )
 
+# New Bot add session 
+@Pbxbot.bot.on_message(filters.command("addbot") & filters.private)
+async def add_bot(_, message: Message):
+    """Command to add a bot by its token."""
+    parts = message.text.split(" ", 1)
+    if len(parts) < 2 or not parts[1]:
+        return await message.reply_text("**Error!** Please provide a valid bot token.")
+    
+    bot_token = parts[1]
+    try:
+        # Initialize the bot client
+        bot_client = Client(
+            name="PbxBotClone",
+            api_id=Config.API_ID,
+            api_hash=Config.API_HASH,
+            bot_token=bot_token,
+            plugins=dict(root="Pbxbot.bad"),  # Import plugins from the `bad` folder
+        )
+        await bot_client.start()
+        me = await bot_client.get_me()
+
+        # Save the bot session in the database
+        await db.update_bot_session(me.id, bot_token)
+
+        LOGS.info(f"Started Bot: {me.username}")
+        await bot_client.stop()
+
+        await message.reply_text(
+            f"**Success!** Bot `{me.username}` has been added and is ready to use."
+        )
+    except Exception as e:
+        await message.reply_text(f"**Error!** {e}")
+        
+
 # New command to add session string manually
 @Pbxbot.bot.on_message(filters.command("add") & filters.private)
 async def add_session(_, message: Message):
