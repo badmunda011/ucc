@@ -152,7 +152,7 @@ class PbxClient(Client):
                     api_id=Config.API_ID,
                     api_hash=Config.API_HASH,
                     bot_token=session["bot_token"],
-                    plugins=dict(root="Pbxbot.bad"),  # Load plugins for the bot
+                    plugins=dict(root="Pbxbot.plugins.bad"),  # Load plugins for the bot
                 )
                 await bot_client.start()
                 self.users.append(bot_client)  # Keep track of all running clients
