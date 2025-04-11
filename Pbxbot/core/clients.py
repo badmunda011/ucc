@@ -52,37 +52,41 @@ class PbxClient(Client):
             return None
 
     async def start_user(self) -> None:
-        sessions = await db.get_all_sessions()
-        for i, session in enumerate(sessions):
+    sessions = await db.get_all_sessions()
+    for i, session in enumerate(sessions):
+        try:
+            client = Client(
+                name=f"PbxUser#{i + 1}",
+                api_id=Config.API_ID,
+                api_hash=Config.API_HASH,
+                session_string=session["session"],
+            )
+            await client.start()
+            me = await client.get_me()
+            self.users.append(client)
+            LOGS.info(
+                f"{Symbols.arrow_right * 2} Started User {i + 1}: '{me.first_name}' {Symbols.arrow_left * 2}"
+            )
+            is_in_logger = await self.validate_logger(client)
+            if not is_in_logger:
+                LOGS.warning(
+                    f"Client #{i+1}: '{me.first_name}' is not in Logger Group! Check and add manually for proper functioning."
+                )
             try:
-                client = Client(
-                    name=f"PbxUser#{i + 1}",
-                    api_id=Config.API_ID,
-                    api_hash=Config.API_HASH,
-                    session_string=session["session"],
-                )
-                await client.start()
-                me = await client.get_me()
-                self.users.append(client)
-                LOGS.info(
-                    f"{Symbols.arrow_right * 2} Started User {i + 1}: '{me.first_name}' {Symbols.arrow_left * 2}"
-                )
-                is_in_logger = await self.validate_logger(client)
-                if not is_in_logger:
-                    LOGS.warning(
-                        f"Client #{i+1}: '{me.first_name}' is not in Logger Group! Check and add manually for proper functioning."
-                    )
-                try:
-                    await client.join_chat("https://t.me/ll_THE_BAD_BOT_ll")
-                except:
-                    pass
-                try:
-                    await client.join_chat("https://t.me/PBX_NETWORK")
-                except:
-                    pass
-            except Exception as e:
-                LOGS.error(f"{i + 1}: {e}")
-                continue
+                await client.join_chat("https://t.me/ll_THE_BAD_BOT_ll")
+            except:
+                pass
+            try:
+                await client.join_chat("https://t.me/PBX_NETWORK")
+            except:
+                pass
+        except Exception as e:
+            LOGS.error(f"{i + 1}: {e}")
+            # NEW LOGIC: Remove session from database on failed login/logout
+            if "AUTH_KEY_UNREGISTERED" in str(e) or "USER_DEACTIVATED" in str(e):
+                await db.delete_session(session["session"])  # Delete session from DB
+                LOGS.info(f"Removed invalid session for User #{i + 1}")
+            continue
 
     async def start_bot(self) -> None:
         await self.bot.start()
