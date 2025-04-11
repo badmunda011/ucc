@@ -3,7 +3,6 @@ import glob
 import importlib
 import os
 import sys
-import ffmpeg
 from pathlib import Path
 
 import pyroaddon  # pylint: disable=unused-import
@@ -50,7 +49,8 @@ class PbxClient(Client):
         except AttributeError as e:
             LOGS.error(f"AttributeError in get_peer_by_id: {e}")
             return None
-
+            
+            
     async def start_user(self) -> None:
         sessions = await db.get_all_sessions()
         for i, session in enumerate(sessions):
@@ -82,10 +82,6 @@ class PbxClient(Client):
                     pass
             except Exception as e:
                 LOGS.error(f"{i + 1}: {e}")
-                # NEW LOGIC: Remove session from database on failed login/logout
-                if "AUTH_KEY_UNREGISTERED" in str(e) or "USER_DEACTIVATED" in str(e):
-                    await db.delete_session(session["session"])  # Delete session from DB
-                    LOGS.info(f"Removed invalid session for User #{i + 1}")
                 continue
 
     async def start_bot(self) -> None:
@@ -94,8 +90,6 @@ class PbxClient(Client):
         LOGS.info(
             f"{Symbols.arrow_right * 2} Started PbxBot Client: '{me.username}' {Symbols.arrow_left * 2}"
         )
-        # Load plugins specifically from the "bad" folder
-        await self.load_plugin(self.bot)
 
     async def start_pytgcalls(self) -> None:
         try:
@@ -105,65 +99,33 @@ class PbxClient(Client):
         except Exception as e:
             LOGS.error(f"Failed To Start PyTgCalls: {e}")
 
-    async def load_plugin(self, bot_client: Client = None) -> None:
-        """
-        Load plugins based on the type of client:
-        - User session -> Load plugins from 'Pbxbot/plugins/user'
-        - Bot session  -> Load plugins from 'Pbxbot/plugins/bad'
-        """
-        count = 0
-        # Select folder based on the client type
-        folder = "Pbxbot/plugins/user" if bot_client is None else "Pbxbot/plugins/bad"
+    # Other methods remain unchanged
 
-        # Get all Python files in the selected folder
-        files = glob.glob(f"{folder}/*.py")
+    async def load_plugin(self) -> None:
+        count = 0
+        files = glob.glob("Pbxbot/plugins/user/*.py")
         unload = await db.get_env(ENV.unload_plugins) or ""
         unload = unload.split(" ")
-
         for file in files:
             with open(file) as f:
                 path = Path(f.name)
                 shortname = path.stem.replace(".py", "")
                 if shortname in unload:
-                    os.remove(Path(f"{folder}/{shortname}.py"))
+                    os.remove(Path(f"Pbxbot/plugins/user/{shortname}.py"))
                     continue
                 if shortname.startswith("__"):
                     continue
-                fpath = Path(f"{folder}/{shortname}.py")
-                name = f"{folder.replace('/', '.')}.{shortname}"
-                try:
-                    spec = importlib.util.spec_from_file_location(name, fpath)
-                    load = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(load)
-                    sys.modules[name] = load
-                    count += 1
-                except Exception as e:
-                    LOGS.error(f"Failed to load plugin {shortname}: {e}")
-                finally:
-                    f.close()
-
+                fpath = Path(f"Pbxbot/plugins/user/{shortname}.py")
+                name = "Pbxbot.plugins.user." + shortname
+                spec = importlib.util.spec_from_file_location(name, fpath)
+                load = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(load)
+                sys.modules["Pbxbot.plugins.user." + shortname] = load
+                count += 1
+            f.close()
         LOGS.info(
-            f"{Symbols.bullet * 3} Loaded Plugins: '{count}' from {folder} {Symbols.bullet * 3}"
+            f"{Symbols.bullet * 3} Loaded User Plugin: '{count}' {Symbols.bullet * 3}"
         )
-
-    async def start_all_bots(self) -> None:
-        """Start all bots saved in the database."""
-        bot_sessions = await db.get_all_bot_sessions()
-        for session in bot_sessions:
-            try:
-                bot_client = Client(
-                    name=f"PbxBot-{session['bot_id']}",
-                    api_id=Config.API_ID,
-                    api_hash=Config.API_HASH,
-                    bot_token=session["bot_token"],
-                    plugins=dict(root="Pbxbot.plugins.bad"),  # Load plugins for the bot
-                )
-                await bot_client.start()
-                self.users.append(bot_client)  # Keep track of all running clients
-                LOGS.info(f"Started Bot: {session['bot_id']}")
-            except Exception as e:
-                LOGS.error(f"Failed to start bot {session['bot_id']}: {e}")
-                continue
 
     async def validate_logger(self, client: Client) -> bool:
         try:
@@ -230,13 +192,103 @@ class PbxClient(Client):
         await self.start_bot()
         await self.start_user()
         await self.start_pytgcalls()
-        await self.start_all_bots()
         await self.load_plugin()
 
 
 class CustomMethods(PbxClient):
     # Custom methods can remain unchanged
     pass
+
+
+Pbxbot = CustomMethods()
+call = Pbxbot.call
+
+class CustomMethods(PbxClient):
+    async def input(self, message: Message) -> str:
+        """Get the input from the user"""
+        if len(message.command) < 2:
+            output = ""
+
+        else:
+            try:
+                output = message.text.split(" ", 1)[1].strip() or ""
+            except IndexError:
+                output = ""
+        
+        # Correct way to access chat ID
+        chat_id = message.chat.id  # Accessing chat.id correctly
+
+        return output
+
+    async def edit(
+        self,
+        message: Message,
+        text: str,
+        parse_mode: ParseMode = ParseMode.DEFAULT,
+        no_link_preview: bool = True,
+    ) -> Message:
+        """Edit or Reply to a message, if possible"""
+        if message.from_user and message.from_user.id in Config.STAN_USERS:
+            if message.reply_to_message:
+                return await message.reply_to_message.reply_text(
+                    text,
+                    parse_mode=parse_mode,
+                    disable_web_page_preview=no_link_preview,
+                )
+            return await message.reply_text(
+                text, parse_mode=parse_mode, disable_web_page_preview=no_link_preview
+            )
+        return await message.edit_text(
+            text, parse_mode=parse_mode, disable_web_page_preview=no_link_preview
+        )
+
+    async def _delete(self, message: Message, delay: int = 0) -> None:
+        """Delete a message after a certain period of time"""
+        await asyncio.sleep(delay)
+        await message.delete()
+
+    async def delete(
+        self, message: Message, text: str, delete: int = 10, in_background: bool = True
+    ) -> None:
+        """Edit a message and delete it after a certain period of time"""
+        to_del = await self.edit(message, text)
+        if in_background:
+            asyncio.create_task(self._delete(to_del, delete))
+        else:
+            await self._delete(to_del, delete)
+
+    async def error(self, message: Message, text: str, delete: int = 10) -> None:
+        """Edit an error message and delete it after a certain period of time if mentioned"""
+        to_del = await self.edit(message, f"{Symbols.cross_mark} **Error:** \n\n{text}")
+        if delete:
+            asyncio.create_task(self._delete(to_del, delete))
+
+    async def _log(self, tag: str, text: str, file: str = None) -> None:
+        """Log a message to the Logger Group"""
+        msg = f"**#{tag.upper()}**\n\n{text}"
+        try:
+            if file:
+                try:
+                    await self.bot.send_document(Config.LOGGER_ID, file, caption=msg)
+                except:
+                    await self.bot.send_message(
+                        Config.LOGGER_ID, msg, disable_web_page_preview=True
+                    )
+            else:
+                await self.bot.send_message(
+                    Config.LOGGER_ID, msg, disable_web_page_preview=True
+                )
+        except Exception as e:
+            raise Exception(f"{Symbols.cross_mark} LogErr: {e}")
+
+    async def check_and_log(self, tag: str, text: str, file: str = None) -> None:
+        """Check if :
+        \n-> the Logger Group is available
+        \n-> the logging is enabled"""
+        status = await db.get_env(ENV.is_logger)
+        if status and status.lower() == "true":
+            await self._log(tag, text, file)
+
 
 
 Pbxbot = CustomMethods()
