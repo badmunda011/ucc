@@ -81,6 +81,11 @@ class Database:
             upsert=True,
         )
 
+    async def delete_session(session_string: str) -> None:
+    """Delete a session from the database."""
+    await your_database_table.delete_one({"session": session_string})
+    LOGS.info(f"Session deleted: {session_string}")
+
     async def rm_bot_session(self, bot_id: int) -> None:
         """Remove a bot session from the database."""
         await self.session.delete_one({"bot_id": bot_id})
