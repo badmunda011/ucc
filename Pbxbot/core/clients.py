@@ -102,7 +102,7 @@ class PbxClient(Client):
     async def load_plugin(self, bot_client: Client = None) -> None:
         """Load plugins for user or bot."""
         count = 0
-        folder = "Pbxbot/plugins/bad" if bot_client is None else "Pbxbot/bad"
+        folder = "Pbxbot/plugins/user" if bot_client is None else "Pbxbot/plugins/bad"
         files = glob.glob(f"{folder}/*.py")
         unload = await db.get_env(ENV.unload_plugins) or ""
         unload = unload.split(" ")
