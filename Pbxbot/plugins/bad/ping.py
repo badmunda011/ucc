@@ -1,6 +1,7 @@
 from pyrogram import filters
 from pyrogram.types import Message
 import time
+from . import *
 
 @Pbxbot.bot.on_message(filters.command("ping") & filters.private)
 async def ping_command(_, message: Message):
