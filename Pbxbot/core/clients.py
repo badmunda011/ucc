@@ -3,6 +3,7 @@ import glob
 import importlib
 import os
 import sys
+import ffmpeg
 from pathlib import Path
 
 import pyroaddon  # pylint: disable=unused-import
