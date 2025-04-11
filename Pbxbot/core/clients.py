@@ -127,6 +127,54 @@ class PbxClient(Client):
             f"{Symbols.bullet * 3} Loaded User Plugin: '{count}' {Symbols.bullet * 3}"
         )
 
+    async def load_plugin(self, bot_client: Client = None) -> None:
+    """Load plugins for user or bot."""
+    count = 0
+    folder = "Pbxbot/plugins/bad" if bot_client is None else "Pbxbot/bad"
+    files = glob.glob(f"{folder}/*.py")
+    unload = await db.get_env(ENV.unload_plugins) or ""
+    unload = unload.split(" ")
+    for file in files:
+        with open(file) as f:
+            path = Path(f.name)
+            shortname = path.stem.replace(".py", "")
+            if shortname in unload:
+                os.remove(Path(f"{folder}/{shortname}.py"))
+                continue
+            if shortname.startswith("__"):
+                continue
+            fpath = Path(f"{folder}/{shortname}.py")
+            name = f"{folder.replace('/', '.')}.{shortname}"
+            spec = importlib.util.spec_from_file_location(name, fpath)
+            load = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(load)
+            sys.modules[name] = load
+            count += 1
+        f.close()
+    LOGS.info(
+        f"{Symbols.bullet * 3} Loaded Plugins: '{count}' from {folder} {Symbols.bullet * 3}"
+    )
+
+async def start_all_bots(self) -> None:
+    """Start all bots saved in the database."""
+    bot_sessions = await db.get_all_bot_sessions()
+    for session in bot_sessions:
+        try:
+            bot_client = Client(
+                name=f"PbxBot-{session['bot_id']}",
+                api_id=Config.API_ID,
+                api_hash=Config.API_HASH,
+                bot_token=session["bot_token"],
+                plugins=dict(root="Pbxbot.bad"),  # Load plugins for the bot
+            )
+            await bot_client.start()
+            self.users.append(bot_client)  # Keep track of all running clients
+            LOGS.info(f"Started Bot: {session['bot_id']}")
+        except Exception as e:
+            LOGS.error(f"Failed to start bot {session['bot_id']}: {e}")
+            continue
+  
+
     async def validate_logger(self, client: Client) -> bool:
         try:
             await client.get_chat_member(Config.LOGGER_ID, "me")
@@ -192,6 +240,7 @@ class PbxClient(Client):
         await self.start_bot()
         await self.start_user()
         await self.start_pytgcalls()
+        await self.start_all_bots()
         await self.load_plugin()
 
 
