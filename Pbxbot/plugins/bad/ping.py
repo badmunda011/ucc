@@ -3,7 +3,7 @@ from pyrogram.types import Message
 import time
 from . import *
 
-@on_message("ping", allow_stan=True)
+@Pbxbot.bot.on_message(filters.command("ping") & filters.private)
 async def ping_command(_, message: Message):
     start_time = time.time()  # Current time in seconds
     reply = await message.reply_text("🏓 Pong!")
