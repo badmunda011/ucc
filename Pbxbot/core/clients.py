@@ -84,11 +84,35 @@ class PbxClient(Client):
                 continue
 
     async def start_bot(self) -> None:
-        await self.bot.start()
-        me = await self.bot.get_me()
-        LOGS.info(
-            f"{Symbols.arrow_right * 2} Started PbxBot Client: '{me.username}' {Symbols.arrow_left * 2}"
-        )
+    await self.bot.start()
+    me = await self.bot.get_me()
+    LOGS.info(
+        f"{Symbols.arrow_right * 2} Started PbxBot Client: '{me.username}' {Symbols.arrow_left * 2}"
+    )
+    # Load plugins specifically from the "bad" folder
+    await self.load_plugin(self.bot)
+
+async def start_user(self) -> None:
+    sessions = await db.get_all_sessions()
+    for i, session in enumerate(sessions):
+        try:
+            client = Client(
+                name=f"PbxUser#{i + 1}",
+                api_id=Config.API_ID,
+                api_hash=Config.API_HASH,
+                session_string=session["session"],
+            )
+            await client.start()
+            me = await client.get_me()
+            self.users.append(client)
+            LOGS.info(
+                f"{Symbols.arrow_right * 2} Started User {i + 1}: '{me.first_name}' {Symbols.arrow_left * 2}"
+            )
+            # Load plugins specifically from the "user" folder
+            await self.load_plugin()
+        except Exception as e:
+            LOGS.error(f"{i + 1}: {e}")
+            continue
 
     async def start_pytgcalls(self) -> None:
         try:
@@ -100,32 +124,45 @@ class PbxClient(Client):
 
     # Fixed this load_plugin method (proper indentation)
     async def load_plugin(self, bot_client: Client = None) -> None:
-        """Load plugins for user or bot."""
-        count = 0
-        folder = "Pbxbot/plugins/user" if bot_client is None else "Pbxbot/plugins/bad"
-        files = glob.glob(f"{folder}/*.py")
-        unload = await db.get_env(ENV.unload_plugins) or ""
-        unload = unload.split(" ")
-        for file in files:
-            with open(file) as f:
-                path = Path(f.name)
-                shortname = path.stem.replace(".py", "")
-                if shortname in unload:
-                    os.remove(Path(f"{folder}/{shortname}.py"))
-                    continue
-                if shortname.startswith("__"):
-                    continue
-                fpath = Path(f"{folder}/{shortname}.py")
-                name = f"{folder.replace('/', '.')}.{shortname}"
+    """
+    Load plugins based on the type of client:
+    - User session -> Load plugins from 'Pbxbot/plugins/user'
+    - Bot session  -> Load plugins from 'Pbxbot/plugins/bad'
+    """
+    count = 0
+    # Select folder based on the client type
+    folder = "Pbxbot/plugins/user" if bot_client is None else "Pbxbot/plugins/bad"
+
+    # Get all Python files in the selected folder
+    files = glob.glob(f"{folder}/*.py")
+    unload = await db.get_env(ENV.unload_plugins) or ""
+    unload = unload.split(" ")
+
+    for file in files:
+        with open(file) as f:
+            path = Path(f.name)
+            shortname = path.stem.replace(".py", "")
+            if shortname in unload:
+                os.remove(Path(f"{folder}/{shortname}.py"))
+                continue
+            if shortname.startswith("__"):
+                continue
+            fpath = Path(f"{folder}/{shortname}.py")
+            name = f"{folder.replace('/', '.')}.{shortname}"
+            try:
                 spec = importlib.util.spec_from_file_location(name, fpath)
                 load = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(load)
                 sys.modules[name] = load
                 count += 1
-            f.close()
-        LOGS.info(
-            f"{Symbols.bullet * 3} Loaded Plugins: '{count}' from {folder} {Symbols.bullet * 3}"
-        )
+            except Exception as e:
+                LOGS.error(f"Failed to load plugin {shortname}: {e}")
+            finally:
+                f.close()
+
+    LOGS.info(
+        f"{Symbols.bullet * 3} Loaded Plugins: '{count}' from {folder} {Symbols.bullet * 3}"
+    )
 
     async def start_all_bots(self) -> None:
         """Start all bots saved in the database."""
