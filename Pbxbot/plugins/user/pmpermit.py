@@ -179,6 +179,14 @@ async def allowlist(client: Client, message: Message):
             
     await Pbx.edit(text)
 
+@on_message("pmon", allow_stan=True)
+async def pm_on(client: Client, message: Message):
+    user_id = message.chat.id
+    if user_id not in PMOFF_USERS:
+        return await Pbxbot.delete(message, "`PM permit is already enabled for you!`")
+
+    PMOFF_USERS.remove(user_id)
+    await Pbxbot.delete(message, "`PM permit has been enabled for your ID.`")
 
 @on_message("pmoff", allow_stan=True)
 async def pm_off(client: Client, message: Message):
