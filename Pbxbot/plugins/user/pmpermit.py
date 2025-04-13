@@ -190,14 +190,13 @@ async def pm_off(client: Client, message: Message):
     await Pbxbot.delete(message, "`PM permit has been disabled for your ID.`")
 
 @on_message("pmon", allow_stan=True)
- async def pm_on(client: Client, message: Message):
-     user_id = message.chat.id
-     if user_id not in PMOFF_USERS:
-         return await Pbxbot.delete(message, "`PM permit is already enabled for you!`")
- 
-     PMOFF_USERS.remove(user_id)
-     await Pbxbot.delete(message, "`PM permit has been enabled for your ID.`")
+async def pm_on(client: Client, message: Message):
+    user_id = message.chat.id
+    if user_id not in PMOFF_USERS:
+        return await Pbxbot.delete(message, "`PM permit is already enabled for you!`")
 
+    PMOFF_USERS.remove(user_id)
+    await Pbxbot.delete(message, "`PM permit has been enabled for your ID.`")
 
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
