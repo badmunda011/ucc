@@ -180,7 +180,7 @@ async def allowlist(client: Client, message: Message):
     await Pbx.edit(text)
     
     
- @on_message("pmoff", allow_stan=True)
+@on_message("pmoff", allow_stan=True)
  async def pm_off(client: Client, message: Message):
      user_id = message.chat.id
      if user_id in PMOFF_USERS:
