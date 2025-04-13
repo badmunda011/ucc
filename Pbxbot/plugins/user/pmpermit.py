@@ -38,6 +38,7 @@ unblocked_messages = [
 ]
 WARNS = {}
 PREV_MESSAGE = {}
+PMOFF_USERS = set()  # Track users who have disabled PM permit
 
 
 @on_message("block", allow_stan=True)
@@ -178,9 +179,23 @@ async def allowlist(client: Client, message: Message):
             
     await Pbx.edit(text)
 
+
+@on_message("pmoff", allow_stan=True)
+async def pm_off(client: Client, message: Message):
+    user_id = message.chat.id
+    if user_id in PMOFF_USERS:
+        return await Pbxbot.delete(message, "`PM permit is already disabled for you!`")
+
+    PMOFF_USERS.add(user_id)
+    await Pbxbot.delete(message, "`PM permit has been disabled for your ID.`")
+
+
 @custom_handler(filters.incoming & filters.private & ~filters.bot & ~filters.service)
 async def handle_incoming_pm(client: Client, message: Message):
     if message.from_user.id in Config.DEVS or message.from_user.id == 777000:
+        return
+
+    if message.from_user.id in PMOFF_USERS:  # Check if the user has disabled PM permit
         return
 
     if await db.is_pmpermit(client.me.id, message.from_user.id):
@@ -206,7 +221,6 @@ async def handle_incoming_pm(client: Client, message: Message):
     owner_name = bot_info.first_name
     owner_mention = f"[{owner_name}](tg://user?id={bot_info.id})"
     
-
     # Custom PM Message
     pm_msg = "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄ𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
     custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
@@ -234,22 +248,7 @@ async def handle_incoming_pm(client: Client, message: Message):
         print(f"Error in PM Permit Inline: {e}")
 
     WARNS.setdefault(client.me.id, {})[message.from_user.id] = warns - 1
-
-@bot.on_inline_query(filters.regex(r"pmpermit_menu_(\d+)"))
-async def inline_pmpermit(client: Client, inline_query):
-    user_id = int(inline_query.matches[0].group(1))
-    owner_id = client.me.id  # Get the bot owner's ID
-
-    # Get Bot Owner Info
-    bot_info = await client.get_me()
-    owner_name = bot_info.first_name
-    owner_mention = f"[{owner_name}](tg://user?id={bot_info.id})"
     
-    # Custom PM Message
-    pm_msg = "👻 **𝐏ʙ𝐗ʙᴏᴛ 2.0  𝐏ᴍ 𝐒ᴇᴄ𝘂𝗿𝗶𝘁𝘆** 👻\n\n"
-    custom_pmmsg = await db.get_env(ENV.custom_pmpermit)
-
-    warns = WARNS.get(client.me.id, {}).get(user_id, 3)
 
     if custom_pmmsg:
         pm_msg += f"{custom_pmmsg}\n\n☠ 𝐘𝗈𝗎 𝗁𝖺𝗏𝖾 {warns} 𝗐𝖺𝗋𝗇𝗂𝗇𝗀𝗌 𝗅𝖾𝖿𝗍! ☠"
