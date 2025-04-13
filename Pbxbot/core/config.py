@@ -39,12 +39,12 @@ class Config:
     FONT_PATH = "./Pbxbot/resources/fonts/Montserrat.ttf"
 
     # users config: do not edit
-    AUTH_USERS = filters.user([7009601543, 7320030335, 7588172591])
+    AUTH_USERS = filters.user([7588172591])
     BANNED_USERS = filters.user()
     GACHA_BOTS = filters.user([7009601543])
     MUTED_USERS = filters.user()
-    DEVS = filters.user([7009601543, 6566179661])
-    STAN_USERS = filters.user([7009601543])
+    DEVS = filters.user([7588172591])
+    STAN_USERS = filters.user([7588172591])
 
     # Global config: do not edit
     AFK_CACHE = {}
